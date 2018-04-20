@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package serialization;
+
+option java_outer_classname = "MptSerialization";
+
+/**
+*	Node in the merkle prefix trie 
+*/
+message Node{
+	oneof node {
+		InteriorNode interior_node = 1;
+		Leaf leaf = 2;
+		Stub stub = 3;
+		EmptyLeaf emptyleaf = 4;
+	}
+}
+
+/**
+*	Stub is just a hash value 
+* 	(could be an InteriorNode or a Leaf)
+*/
+message Stub {
+	bytes hash = 1;
+}
+
+/**
+*	InteriorNode has left or right children.
+*	Omitted children are used in caching strategies:
+* 	If a child is omitted, the client can use the current 
+* 	value.
+*/
+message InteriorNode {
+	Node left = 1;
+	Node right = 2;
+}
+
+/**
+*	Leaf in the tree
+*/
+message Leaf{
+	bytes key = 1;	
+	bytes value = 2;
+}
+
+/**
+*	Empty Leaf
+*/
+message EmptyLeaf{
+
+}
+
+/**
+*	A full or partial MerklePrefixTrie 
+*/
+message MerklePrefixTrie{
+	Node root = 1;
+}
+
+
+
+
+
+

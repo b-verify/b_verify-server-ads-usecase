@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package serialization;
+
+// import other definitions
+import "protos/mpt.proto";
+
+option java_outer_classname = "BVerifyAPIMessageSerialization";
+
+/** Messages sent from the client to the server **/
+
+/**
+* Request for the server to issue a receipt (initiated 
+* by a client)
+*/
+message IssueReceiptRequest {
+	bytes warehouse_id = 1;
+	bytes recepient_id = 2;
+	bytes receipt_data = 3;
+}
+
+/**
+* Request for the server to redeem a receipt (initiated
+* by a client)
+*/
+message RedeemReceiptRequest {
+	bytes warehouse_id = 1;
+	bytes recepient_id = 2;
+	// this will depend on the decisions we make
+	// and what kind of ADS we will store the 
+	// receipts in!
+	bytes receipt_hash = 3;
+}
+
+/**
+* Request for the server to transfer a receiept (intiated
+* by a client)
+*/
+message ReceiptTransferRequest {
+	bytes warehouse_id = 1;
+	bytes recepient_id = 2;
+	bytes sender_id = 3;
+	bytes receipt_hash = 4;
+}
+
+/**
+* Request for the server to send updates (initiated 
+* by a client)
+*/
+message GetUpdatesRequest {
+	bytes keys = 1; 
+	int32 last_update_number = 2;
+}
+
+/**
+* 	Generic signature message which contains the signed 
+* 	(witnessed) data along with the signature.
+*/
+message Signature {
+	bytes witness = 1; 
+	bytes signer_id = 2;
+	bytes signature = 3;
+}
+
+/** Messages sent from the server to the client */
+
+message ReceiptIssueApprove {
+	MerklePrefixTrie proof = 1;
+}
+
+message ReceiptRedeemApprove {
+	MerklePrefixTrie proof = 1;
+}
+
+message ReceiptTransferApprove {
+	MerklePrefixTrie proof = 1;
+}
+
+message Updates {
+	repeated MerklePrefixTrie updates = 1;
+}
+
+
+
+
+
+
+
