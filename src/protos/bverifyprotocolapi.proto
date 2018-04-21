@@ -35,7 +35,7 @@ message RedeemReceiptRequest {
 * Request for the server to transfer a receiept (intiated
 * by a client)
 */
-message ReceiptTransferRequest {
+message TransferReceiptRequest {
 	bytes warehouse_id = 1;
 	bytes recepient_id = 2;
 	bytes sender_id = 3;
@@ -47,8 +47,8 @@ message ReceiptTransferRequest {
 * by a client)
 */
 message GetUpdatesRequest {
-	bytes keys = 1; 
-	int32 last_update_number = 2;
+	int32 from_commit_number = 1;
+	repeated bytes keys = 2; 
 }
 
 /**
@@ -90,7 +90,7 @@ message ReceiptTransferApprove {
 * A sequence of updates (starting from the oldest)
 */
 message Updates {
-	repeated MerklePrefixTrie updates = 1;
+	repeated MerklePrefixTrie update = 1;
 }
 
 

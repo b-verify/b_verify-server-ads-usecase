@@ -3,7 +3,7 @@ package api;
 import java.rmi.Remote;
 
 /**
- * The API exposed by b_verify clients to the server
+ * The API exposed by b_verify clients to the b_verify server
  * 
  * @author Henry Aspegren
  *

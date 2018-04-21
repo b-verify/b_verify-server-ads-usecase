@@ -1240,8 +1240,8 @@ public final class BVerifyAPIMessageSerialization {
 
   }
 
-  public interface ReceiptTransferRequestOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:serialization.ReceiptTransferRequest)
+  public interface TransferReceiptRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:serialization.TransferReceiptRequest)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -1271,18 +1271,18 @@ public final class BVerifyAPIMessageSerialization {
    * by a client)
    * </pre>
    *
-   * Protobuf type {@code serialization.ReceiptTransferRequest}
+   * Protobuf type {@code serialization.TransferReceiptRequest}
    */
-  public  static final class ReceiptTransferRequest extends
+  public  static final class TransferReceiptRequest extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:serialization.ReceiptTransferRequest)
-      ReceiptTransferRequestOrBuilder {
+      // @@protoc_insertion_point(message_implements:serialization.TransferReceiptRequest)
+      TransferReceiptRequestOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use ReceiptTransferRequest.newBuilder() to construct.
-    private ReceiptTransferRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use TransferReceiptRequest.newBuilder() to construct.
+    private TransferReceiptRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private ReceiptTransferRequest() {
+    private TransferReceiptRequest() {
       warehouseId_ = com.google.protobuf.ByteString.EMPTY;
       recepientId_ = com.google.protobuf.ByteString.EMPTY;
       senderId_ = com.google.protobuf.ByteString.EMPTY;
@@ -1294,7 +1294,7 @@ public final class BVerifyAPIMessageSerialization {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private ReceiptTransferRequest(
+    private TransferReceiptRequest(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1354,14 +1354,14 @@ public final class BVerifyAPIMessageSerialization {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptTransferRequest_descriptor;
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceiptRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptTransferRequest_fieldAccessorTable
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceiptRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest.class, serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest.Builder.class);
+              serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest.class, serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest.Builder.class);
     }
 
     public static final int WAREHOUSE_ID_FIELD_NUMBER = 1;
@@ -1458,10 +1458,10 @@ public final class BVerifyAPIMessageSerialization {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest)) {
+      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest)) {
         return super.equals(obj);
       }
-      serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest other = (serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest) obj;
+      serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest other = (serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest) obj;
 
       boolean result = true;
       result = result && getWarehouseId()
@@ -1496,69 +1496,69 @@ public final class BVerifyAPIMessageSerialization {
       return hash;
     }
 
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest parseFrom(byte[] data)
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest parseFrom(java.io.InputStream input)
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest parseDelimitedFrom(java.io.InputStream input)
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest parseDelimitedFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1570,7 +1570,7 @@ public final class BVerifyAPIMessageSerialization {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest prototype) {
+    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -1591,25 +1591,25 @@ public final class BVerifyAPIMessageSerialization {
      * by a client)
      * </pre>
      *
-     * Protobuf type {@code serialization.ReceiptTransferRequest}
+     * Protobuf type {@code serialization.TransferReceiptRequest}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:serialization.ReceiptTransferRequest)
-        serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequestOrBuilder {
+        // @@protoc_insertion_point(builder_implements:serialization.TransferReceiptRequest)
+        serialization.BVerifyAPIMessageSerialization.TransferReceiptRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptTransferRequest_descriptor;
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceiptRequest_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptTransferRequest_fieldAccessorTable
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceiptRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest.class, serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest.Builder.class);
+                serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest.class, serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest.Builder.class);
       }
 
-      // Construct using serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest.newBuilder()
+      // Construct using serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1639,23 +1639,23 @@ public final class BVerifyAPIMessageSerialization {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptTransferRequest_descriptor;
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceiptRequest_descriptor;
       }
 
-      public serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest getDefaultInstanceForType() {
-        return serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest.getDefaultInstance();
+      public serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest getDefaultInstanceForType() {
+        return serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest.getDefaultInstance();
       }
 
-      public serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest build() {
-        serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest result = buildPartial();
+      public serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest build() {
+        serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest buildPartial() {
-        serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest result = new serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest(this);
+      public serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest buildPartial() {
+        serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest result = new serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest(this);
         result.warehouseId_ = warehouseId_;
         result.recepientId_ = recepientId_;
         result.senderId_ = senderId_;
@@ -1691,16 +1691,16 @@ public final class BVerifyAPIMessageSerialization {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest) {
-          return mergeFrom((serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest)other);
+        if (other instanceof serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest) {
+          return mergeFrom((serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest other) {
-        if (other == serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest.getDefaultInstance()) return this;
+      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest other) {
+        if (other == serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest.getDefaultInstance()) return this;
         if (other.getWarehouseId() != com.google.protobuf.ByteString.EMPTY) {
           setWarehouseId(other.getWarehouseId());
         }
@@ -1726,11 +1726,11 @@ public final class BVerifyAPIMessageSerialization {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest parsedMessage = null;
+        serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest) e.getUnfinishedMessage();
+          parsedMessage = (serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1866,39 +1866,39 @@ public final class BVerifyAPIMessageSerialization {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:serialization.ReceiptTransferRequest)
+      // @@protoc_insertion_point(builder_scope:serialization.TransferReceiptRequest)
     }
 
-    // @@protoc_insertion_point(class_scope:serialization.ReceiptTransferRequest)
-    private static final serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:serialization.TransferReceiptRequest)
+    private static final serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest();
+      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest();
     }
 
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest getDefaultInstance() {
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<ReceiptTransferRequest>
-        PARSER = new com.google.protobuf.AbstractParser<ReceiptTransferRequest>() {
-      public ReceiptTransferRequest parsePartialFrom(
+    private static final com.google.protobuf.Parser<TransferReceiptRequest>
+        PARSER = new com.google.protobuf.AbstractParser<TransferReceiptRequest>() {
+      public TransferReceiptRequest parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ReceiptTransferRequest(input, extensionRegistry);
+        return new TransferReceiptRequest(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<ReceiptTransferRequest> parser() {
+    public static com.google.protobuf.Parser<TransferReceiptRequest> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<ReceiptTransferRequest> getParserForType() {
+    public com.google.protobuf.Parser<TransferReceiptRequest> getParserForType() {
       return PARSER;
     }
 
-    public serialization.BVerifyAPIMessageSerialization.ReceiptTransferRequest getDefaultInstanceForType() {
+    public serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1909,14 +1909,22 @@ public final class BVerifyAPIMessageSerialization {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>bytes keys = 1;</code>
+     * <code>int32 from_commit_number = 1;</code>
      */
-    com.google.protobuf.ByteString getKeys();
+    int getFromCommitNumber();
 
     /**
-     * <code>int32 last_update_number = 2;</code>
+     * <code>repeated bytes keys = 2;</code>
      */
-    int getLastUpdateNumber();
+    java.util.List<com.google.protobuf.ByteString> getKeysList();
+    /**
+     * <code>repeated bytes keys = 2;</code>
+     */
+    int getKeysCount();
+    /**
+     * <code>repeated bytes keys = 2;</code>
+     */
+    com.google.protobuf.ByteString getKeys(int index);
   }
   /**
    * <pre>
@@ -1937,8 +1945,8 @@ public final class BVerifyAPIMessageSerialization {
       super(builder);
     }
     private GetUpdatesRequest() {
-      keys_ = com.google.protobuf.ByteString.EMPTY;
-      lastUpdateNumber_ = 0;
+      fromCommitNumber_ = 0;
+      keys_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -1972,14 +1980,17 @@ public final class BVerifyAPIMessageSerialization {
               }
               break;
             }
-            case 10: {
+            case 8: {
 
-              keys_ = input.readBytes();
+              fromCommitNumber_ = input.readInt32();
               break;
             }
-            case 16: {
-
-              lastUpdateNumber_ = input.readInt32();
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                keys_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              keys_.add(input.readBytes());
               break;
             }
           }
@@ -1990,6 +2001,9 @@ public final class BVerifyAPIMessageSerialization {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          keys_ = java.util.Collections.unmodifiableList(keys_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -2006,22 +2020,36 @@ public final class BVerifyAPIMessageSerialization {
               serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest.class, serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest.Builder.class);
     }
 
-    public static final int KEYS_FIELD_NUMBER = 1;
-    private com.google.protobuf.ByteString keys_;
+    private int bitField0_;
+    public static final int FROM_COMMIT_NUMBER_FIELD_NUMBER = 1;
+    private int fromCommitNumber_;
     /**
-     * <code>bytes keys = 1;</code>
+     * <code>int32 from_commit_number = 1;</code>
      */
-    public com.google.protobuf.ByteString getKeys() {
-      return keys_;
+    public int getFromCommitNumber() {
+      return fromCommitNumber_;
     }
 
-    public static final int LAST_UPDATE_NUMBER_FIELD_NUMBER = 2;
-    private int lastUpdateNumber_;
+    public static final int KEYS_FIELD_NUMBER = 2;
+    private java.util.List<com.google.protobuf.ByteString> keys_;
     /**
-     * <code>int32 last_update_number = 2;</code>
+     * <code>repeated bytes keys = 2;</code>
      */
-    public int getLastUpdateNumber() {
-      return lastUpdateNumber_;
+    public java.util.List<com.google.protobuf.ByteString>
+        getKeysList() {
+      return keys_;
+    }
+    /**
+     * <code>repeated bytes keys = 2;</code>
+     */
+    public int getKeysCount() {
+      return keys_.size();
+    }
+    /**
+     * <code>repeated bytes keys = 2;</code>
+     */
+    public com.google.protobuf.ByteString getKeys(int index) {
+      return keys_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2036,11 +2064,11 @@ public final class BVerifyAPIMessageSerialization {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!keys_.isEmpty()) {
-        output.writeBytes(1, keys_);
+      if (fromCommitNumber_ != 0) {
+        output.writeInt32(1, fromCommitNumber_);
       }
-      if (lastUpdateNumber_ != 0) {
-        output.writeInt32(2, lastUpdateNumber_);
+      for (int i = 0; i < keys_.size(); i++) {
+        output.writeBytes(2, keys_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -2050,13 +2078,18 @@ public final class BVerifyAPIMessageSerialization {
       if (size != -1) return size;
 
       size = 0;
-      if (!keys_.isEmpty()) {
+      if (fromCommitNumber_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, keys_);
+          .computeInt32Size(1, fromCommitNumber_);
       }
-      if (lastUpdateNumber_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, lastUpdateNumber_);
+      {
+        int dataSize = 0;
+        for (int i = 0; i < keys_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(keys_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getKeysList().size();
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2074,10 +2107,10 @@ public final class BVerifyAPIMessageSerialization {
       serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest other = (serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest) obj;
 
       boolean result = true;
-      result = result && getKeys()
-          .equals(other.getKeys());
-      result = result && (getLastUpdateNumber()
-          == other.getLastUpdateNumber());
+      result = result && (getFromCommitNumber()
+          == other.getFromCommitNumber());
+      result = result && getKeysList()
+          .equals(other.getKeysList());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -2089,10 +2122,12 @@ public final class BVerifyAPIMessageSerialization {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + KEYS_FIELD_NUMBER;
-      hash = (53 * hash) + getKeys().hashCode();
-      hash = (37 * hash) + LAST_UPDATE_NUMBER_FIELD_NUMBER;
-      hash = (53 * hash) + getLastUpdateNumber();
+      hash = (37 * hash) + FROM_COMMIT_NUMBER_FIELD_NUMBER;
+      hash = (53 * hash) + getFromCommitNumber();
+      if (getKeysCount() > 0) {
+        hash = (37 * hash) + KEYS_FIELD_NUMBER;
+        hash = (53 * hash) + getKeysList().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2228,10 +2263,10 @@ public final class BVerifyAPIMessageSerialization {
       }
       public Builder clear() {
         super.clear();
-        keys_ = com.google.protobuf.ByteString.EMPTY;
+        fromCommitNumber_ = 0;
 
-        lastUpdateNumber_ = 0;
-
+        keys_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -2254,8 +2289,15 @@ public final class BVerifyAPIMessageSerialization {
 
       public serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest buildPartial() {
         serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest result = new serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        result.fromCommitNumber_ = fromCommitNumber_;
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          keys_ = java.util.Collections.unmodifiableList(keys_);
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
         result.keys_ = keys_;
-        result.lastUpdateNumber_ = lastUpdateNumber_;
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -2297,11 +2339,18 @@ public final class BVerifyAPIMessageSerialization {
 
       public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest other) {
         if (other == serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest.getDefaultInstance()) return this;
-        if (other.getKeys() != com.google.protobuf.ByteString.EMPTY) {
-          setKeys(other.getKeys());
+        if (other.getFromCommitNumber() != 0) {
+          setFromCommitNumber(other.getFromCommitNumber());
         }
-        if (other.getLastUpdateNumber() != 0) {
-          setLastUpdateNumber(other.getLastUpdateNumber());
+        if (!other.keys_.isEmpty()) {
+          if (keys_.isEmpty()) {
+            keys_ = other.keys_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureKeysIsMutable();
+            keys_.addAll(other.keys_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -2329,58 +2378,102 @@ public final class BVerifyAPIMessageSerialization {
         }
         return this;
       }
+      private int bitField0_;
 
-      private com.google.protobuf.ByteString keys_ = com.google.protobuf.ByteString.EMPTY;
+      private int fromCommitNumber_ ;
       /**
-       * <code>bytes keys = 1;</code>
+       * <code>int32 from_commit_number = 1;</code>
        */
-      public com.google.protobuf.ByteString getKeys() {
-        return keys_;
+      public int getFromCommitNumber() {
+        return fromCommitNumber_;
       }
       /**
-       * <code>bytes keys = 1;</code>
+       * <code>int32 from_commit_number = 1;</code>
        */
-      public Builder setKeys(com.google.protobuf.ByteString value) {
+      public Builder setFromCommitNumber(int value) {
+        
+        fromCommitNumber_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 from_commit_number = 1;</code>
+       */
+      public Builder clearFromCommitNumber() {
+        
+        fromCommitNumber_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<com.google.protobuf.ByteString> keys_ = java.util.Collections.emptyList();
+      private void ensureKeysIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          keys_ = new java.util.ArrayList<com.google.protobuf.ByteString>(keys_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      /**
+       * <code>repeated bytes keys = 2;</code>
+       */
+      public java.util.List<com.google.protobuf.ByteString>
+          getKeysList() {
+        return java.util.Collections.unmodifiableList(keys_);
+      }
+      /**
+       * <code>repeated bytes keys = 2;</code>
+       */
+      public int getKeysCount() {
+        return keys_.size();
+      }
+      /**
+       * <code>repeated bytes keys = 2;</code>
+       */
+      public com.google.protobuf.ByteString getKeys(int index) {
+        return keys_.get(index);
+      }
+      /**
+       * <code>repeated bytes keys = 2;</code>
+       */
+      public Builder setKeys(
+          int index, com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  
-        keys_ = value;
+  ensureKeysIsMutable();
+        keys_.set(index, value);
         onChanged();
         return this;
       }
       /**
-       * <code>bytes keys = 1;</code>
+       * <code>repeated bytes keys = 2;</code>
+       */
+      public Builder addKeys(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureKeysIsMutable();
+        keys_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bytes keys = 2;</code>
+       */
+      public Builder addAllKeys(
+          java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
+        ensureKeysIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, keys_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bytes keys = 2;</code>
        */
       public Builder clearKeys() {
-        
-        keys_ = getDefaultInstance().getKeys();
-        onChanged();
-        return this;
-      }
-
-      private int lastUpdateNumber_ ;
-      /**
-       * <code>int32 last_update_number = 2;</code>
-       */
-      public int getLastUpdateNumber() {
-        return lastUpdateNumber_;
-      }
-      /**
-       * <code>int32 last_update_number = 2;</code>
-       */
-      public Builder setLastUpdateNumber(int value) {
-        
-        lastUpdateNumber_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>int32 last_update_number = 2;</code>
-       */
-      public Builder clearLastUpdateNumber() {
-        
-        lastUpdateNumber_ = 0;
+        keys_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
       }
@@ -3049,6 +3142,11 @@ public final class BVerifyAPIMessageSerialization {
     serialization.MptSerialization.MerklePrefixTrieOrBuilder getProofOrBuilder();
   }
   /**
+   * <pre>
+   **
+   * A proof showing an issued receipt
+   * </pre>
+   *
    * Protobuf type {@code serialization.ReceiptIssueApprove}
    */
   public  static final class ReceiptIssueApprove extends
@@ -3309,6 +3407,11 @@ public final class BVerifyAPIMessageSerialization {
       return builder;
     }
     /**
+     * <pre>
+     **
+     * A proof showing an issued receipt
+     * </pre>
+     *
      * Protobuf type {@code serialization.ReceiptIssueApprove}
      */
     public static final class Builder extends
@@ -3631,6 +3734,11 @@ public final class BVerifyAPIMessageSerialization {
     serialization.MptSerialization.MerklePrefixTrieOrBuilder getProofOrBuilder();
   }
   /**
+   * <pre>
+   **
+   * A proof showing a redeemed receipt
+   * </pre>
+   *
    * Protobuf type {@code serialization.ReceiptRedeemApprove}
    */
   public  static final class ReceiptRedeemApprove extends
@@ -3891,6 +3999,11 @@ public final class BVerifyAPIMessageSerialization {
       return builder;
     }
     /**
+     * <pre>
+     **
+     * A proof showing a redeemed receipt
+     * </pre>
+     *
      * Protobuf type {@code serialization.ReceiptRedeemApprove}
      */
     public static final class Builder extends
@@ -4213,6 +4326,11 @@ public final class BVerifyAPIMessageSerialization {
     serialization.MptSerialization.MerklePrefixTrieOrBuilder getProofOrBuilder();
   }
   /**
+   * <pre>
+   **
+   * A proof showing a transferred receipt
+   * </pre>
+   *
    * Protobuf type {@code serialization.ReceiptTransferApprove}
    */
   public  static final class ReceiptTransferApprove extends
@@ -4473,6 +4591,11 @@ public final class BVerifyAPIMessageSerialization {
       return builder;
     }
     /**
+     * <pre>
+     **
+     * A proof showing a transferred receipt
+     * </pre>
+     *
      * Protobuf type {@code serialization.ReceiptTransferApprove}
      */
     public static final class Builder extends
@@ -4782,30 +4905,35 @@ public final class BVerifyAPIMessageSerialization {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+     * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
      */
     java.util.List<serialization.MptSerialization.MerklePrefixTrie> 
-        getUpdatesList();
+        getUpdateList();
     /**
-     * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+     * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
      */
-    serialization.MptSerialization.MerklePrefixTrie getUpdates(int index);
+    serialization.MptSerialization.MerklePrefixTrie getUpdate(int index);
     /**
-     * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+     * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
      */
-    int getUpdatesCount();
+    int getUpdateCount();
     /**
-     * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+     * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
      */
     java.util.List<? extends serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
-        getUpdatesOrBuilderList();
+        getUpdateOrBuilderList();
     /**
-     * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+     * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
      */
-    serialization.MptSerialization.MerklePrefixTrieOrBuilder getUpdatesOrBuilder(
+    serialization.MptSerialization.MerklePrefixTrieOrBuilder getUpdateOrBuilder(
         int index);
   }
   /**
+   * <pre>
+   **
+   * A sequence of updates (starting from the oldest)
+   * </pre>
+   *
    * Protobuf type {@code serialization.Updates}
    */
   public  static final class Updates extends
@@ -4818,7 +4946,7 @@ public final class BVerifyAPIMessageSerialization {
       super(builder);
     }
     private Updates() {
-      updates_ = java.util.Collections.emptyList();
+      update_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -4854,10 +4982,10 @@ public final class BVerifyAPIMessageSerialization {
             }
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                updates_ = new java.util.ArrayList<serialization.MptSerialization.MerklePrefixTrie>();
+                update_ = new java.util.ArrayList<serialization.MptSerialization.MerklePrefixTrie>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              updates_.add(
+              update_.add(
                   input.readMessage(serialization.MptSerialization.MerklePrefixTrie.parser(), extensionRegistry));
               break;
             }
@@ -4870,7 +4998,7 @@ public final class BVerifyAPIMessageSerialization {
             e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-          updates_ = java.util.Collections.unmodifiableList(updates_);
+          update_ = java.util.Collections.unmodifiableList(update_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -4888,39 +5016,39 @@ public final class BVerifyAPIMessageSerialization {
               serialization.BVerifyAPIMessageSerialization.Updates.class, serialization.BVerifyAPIMessageSerialization.Updates.Builder.class);
     }
 
-    public static final int UPDATES_FIELD_NUMBER = 1;
-    private java.util.List<serialization.MptSerialization.MerklePrefixTrie> updates_;
+    public static final int UPDATE_FIELD_NUMBER = 1;
+    private java.util.List<serialization.MptSerialization.MerklePrefixTrie> update_;
     /**
-     * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+     * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
      */
-    public java.util.List<serialization.MptSerialization.MerklePrefixTrie> getUpdatesList() {
-      return updates_;
+    public java.util.List<serialization.MptSerialization.MerklePrefixTrie> getUpdateList() {
+      return update_;
     }
     /**
-     * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+     * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
      */
     public java.util.List<? extends serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
-        getUpdatesOrBuilderList() {
-      return updates_;
+        getUpdateOrBuilderList() {
+      return update_;
     }
     /**
-     * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+     * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
      */
-    public int getUpdatesCount() {
-      return updates_.size();
+    public int getUpdateCount() {
+      return update_.size();
     }
     /**
-     * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+     * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
      */
-    public serialization.MptSerialization.MerklePrefixTrie getUpdates(int index) {
-      return updates_.get(index);
+    public serialization.MptSerialization.MerklePrefixTrie getUpdate(int index) {
+      return update_.get(index);
     }
     /**
-     * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+     * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
      */
-    public serialization.MptSerialization.MerklePrefixTrieOrBuilder getUpdatesOrBuilder(
+    public serialization.MptSerialization.MerklePrefixTrieOrBuilder getUpdateOrBuilder(
         int index) {
-      return updates_.get(index);
+      return update_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -4935,8 +5063,8 @@ public final class BVerifyAPIMessageSerialization {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      for (int i = 0; i < updates_.size(); i++) {
-        output.writeMessage(1, updates_.get(i));
+      for (int i = 0; i < update_.size(); i++) {
+        output.writeMessage(1, update_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -4946,9 +5074,9 @@ public final class BVerifyAPIMessageSerialization {
       if (size != -1) return size;
 
       size = 0;
-      for (int i = 0; i < updates_.size(); i++) {
+      for (int i = 0; i < update_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, updates_.get(i));
+          .computeMessageSize(1, update_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4966,8 +5094,8 @@ public final class BVerifyAPIMessageSerialization {
       serialization.BVerifyAPIMessageSerialization.Updates other = (serialization.BVerifyAPIMessageSerialization.Updates) obj;
 
       boolean result = true;
-      result = result && getUpdatesList()
-          .equals(other.getUpdatesList());
+      result = result && getUpdateList()
+          .equals(other.getUpdateList());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -4979,9 +5107,9 @@ public final class BVerifyAPIMessageSerialization {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (getUpdatesCount() > 0) {
-        hash = (37 * hash) + UPDATES_FIELD_NUMBER;
-        hash = (53 * hash) + getUpdatesList().hashCode();
+      if (getUpdateCount() > 0) {
+        hash = (37 * hash) + UPDATE_FIELD_NUMBER;
+        hash = (53 * hash) + getUpdateList().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -5077,6 +5205,11 @@ public final class BVerifyAPIMessageSerialization {
       return builder;
     }
     /**
+     * <pre>
+     **
+     * A sequence of updates (starting from the oldest)
+     * </pre>
+     *
      * Protobuf type {@code serialization.Updates}
      */
     public static final class Builder extends
@@ -5108,16 +5241,16 @@ public final class BVerifyAPIMessageSerialization {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getUpdatesFieldBuilder();
+          getUpdateFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
-        if (updatesBuilder_ == null) {
-          updates_ = java.util.Collections.emptyList();
+        if (updateBuilder_ == null) {
+          update_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
         } else {
-          updatesBuilder_.clear();
+          updateBuilder_.clear();
         }
         return this;
       }
@@ -5142,14 +5275,14 @@ public final class BVerifyAPIMessageSerialization {
       public serialization.BVerifyAPIMessageSerialization.Updates buildPartial() {
         serialization.BVerifyAPIMessageSerialization.Updates result = new serialization.BVerifyAPIMessageSerialization.Updates(this);
         int from_bitField0_ = bitField0_;
-        if (updatesBuilder_ == null) {
+        if (updateBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
-            updates_ = java.util.Collections.unmodifiableList(updates_);
+            update_ = java.util.Collections.unmodifiableList(update_);
             bitField0_ = (bitField0_ & ~0x00000001);
           }
-          result.updates_ = updates_;
+          result.update_ = update_;
         } else {
-          result.updates_ = updatesBuilder_.build();
+          result.update_ = updateBuilder_.build();
         }
         onBuilt();
         return result;
@@ -5192,29 +5325,29 @@ public final class BVerifyAPIMessageSerialization {
 
       public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.Updates other) {
         if (other == serialization.BVerifyAPIMessageSerialization.Updates.getDefaultInstance()) return this;
-        if (updatesBuilder_ == null) {
-          if (!other.updates_.isEmpty()) {
-            if (updates_.isEmpty()) {
-              updates_ = other.updates_;
+        if (updateBuilder_ == null) {
+          if (!other.update_.isEmpty()) {
+            if (update_.isEmpty()) {
+              update_ = other.update_;
               bitField0_ = (bitField0_ & ~0x00000001);
             } else {
-              ensureUpdatesIsMutable();
-              updates_.addAll(other.updates_);
+              ensureUpdateIsMutable();
+              update_.addAll(other.update_);
             }
             onChanged();
           }
         } else {
-          if (!other.updates_.isEmpty()) {
-            if (updatesBuilder_.isEmpty()) {
-              updatesBuilder_.dispose();
-              updatesBuilder_ = null;
-              updates_ = other.updates_;
+          if (!other.update_.isEmpty()) {
+            if (updateBuilder_.isEmpty()) {
+              updateBuilder_.dispose();
+              updateBuilder_ = null;
+              update_ = other.update_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              updatesBuilder_ = 
+              updateBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getUpdatesFieldBuilder() : null;
+                   getUpdateFieldBuilder() : null;
             } else {
-              updatesBuilder_.addAllMessages(other.updates_);
+              updateBuilder_.addAllMessages(other.update_);
             }
           }
         }
@@ -5246,244 +5379,244 @@ public final class BVerifyAPIMessageSerialization {
       }
       private int bitField0_;
 
-      private java.util.List<serialization.MptSerialization.MerklePrefixTrie> updates_ =
+      private java.util.List<serialization.MptSerialization.MerklePrefixTrie> update_ =
         java.util.Collections.emptyList();
-      private void ensureUpdatesIsMutable() {
+      private void ensureUpdateIsMutable() {
         if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-          updates_ = new java.util.ArrayList<serialization.MptSerialization.MerklePrefixTrie>(updates_);
+          update_ = new java.util.ArrayList<serialization.MptSerialization.MerklePrefixTrie>(update_);
           bitField0_ |= 0x00000001;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> updatesBuilder_;
+          serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> updateBuilder_;
 
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public java.util.List<serialization.MptSerialization.MerklePrefixTrie> getUpdatesList() {
-        if (updatesBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(updates_);
+      public java.util.List<serialization.MptSerialization.MerklePrefixTrie> getUpdateList() {
+        if (updateBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(update_);
         } else {
-          return updatesBuilder_.getMessageList();
+          return updateBuilder_.getMessageList();
         }
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public int getUpdatesCount() {
-        if (updatesBuilder_ == null) {
-          return updates_.size();
+      public int getUpdateCount() {
+        if (updateBuilder_ == null) {
+          return update_.size();
         } else {
-          return updatesBuilder_.getCount();
+          return updateBuilder_.getCount();
         }
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public serialization.MptSerialization.MerklePrefixTrie getUpdates(int index) {
-        if (updatesBuilder_ == null) {
-          return updates_.get(index);
+      public serialization.MptSerialization.MerklePrefixTrie getUpdate(int index) {
+        if (updateBuilder_ == null) {
+          return update_.get(index);
         } else {
-          return updatesBuilder_.getMessage(index);
+          return updateBuilder_.getMessage(index);
         }
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public Builder setUpdates(
+      public Builder setUpdate(
           int index, serialization.MptSerialization.MerklePrefixTrie value) {
-        if (updatesBuilder_ == null) {
+        if (updateBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureUpdatesIsMutable();
-          updates_.set(index, value);
+          ensureUpdateIsMutable();
+          update_.set(index, value);
           onChanged();
         } else {
-          updatesBuilder_.setMessage(index, value);
+          updateBuilder_.setMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public Builder setUpdates(
+      public Builder setUpdate(
           int index, serialization.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
-        if (updatesBuilder_ == null) {
-          ensureUpdatesIsMutable();
-          updates_.set(index, builderForValue.build());
+        if (updateBuilder_ == null) {
+          ensureUpdateIsMutable();
+          update_.set(index, builderForValue.build());
           onChanged();
         } else {
-          updatesBuilder_.setMessage(index, builderForValue.build());
+          updateBuilder_.setMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public Builder addUpdates(serialization.MptSerialization.MerklePrefixTrie value) {
-        if (updatesBuilder_ == null) {
+      public Builder addUpdate(serialization.MptSerialization.MerklePrefixTrie value) {
+        if (updateBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureUpdatesIsMutable();
-          updates_.add(value);
+          ensureUpdateIsMutable();
+          update_.add(value);
           onChanged();
         } else {
-          updatesBuilder_.addMessage(value);
+          updateBuilder_.addMessage(value);
         }
         return this;
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public Builder addUpdates(
+      public Builder addUpdate(
           int index, serialization.MptSerialization.MerklePrefixTrie value) {
-        if (updatesBuilder_ == null) {
+        if (updateBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          ensureUpdatesIsMutable();
-          updates_.add(index, value);
+          ensureUpdateIsMutable();
+          update_.add(index, value);
           onChanged();
         } else {
-          updatesBuilder_.addMessage(index, value);
+          updateBuilder_.addMessage(index, value);
         }
         return this;
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public Builder addUpdates(
+      public Builder addUpdate(
           serialization.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
-        if (updatesBuilder_ == null) {
-          ensureUpdatesIsMutable();
-          updates_.add(builderForValue.build());
+        if (updateBuilder_ == null) {
+          ensureUpdateIsMutable();
+          update_.add(builderForValue.build());
           onChanged();
         } else {
-          updatesBuilder_.addMessage(builderForValue.build());
+          updateBuilder_.addMessage(builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public Builder addUpdates(
+      public Builder addUpdate(
           int index, serialization.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
-        if (updatesBuilder_ == null) {
-          ensureUpdatesIsMutable();
-          updates_.add(index, builderForValue.build());
+        if (updateBuilder_ == null) {
+          ensureUpdateIsMutable();
+          update_.add(index, builderForValue.build());
           onChanged();
         } else {
-          updatesBuilder_.addMessage(index, builderForValue.build());
+          updateBuilder_.addMessage(index, builderForValue.build());
         }
         return this;
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public Builder addAllUpdates(
+      public Builder addAllUpdate(
           java.lang.Iterable<? extends serialization.MptSerialization.MerklePrefixTrie> values) {
-        if (updatesBuilder_ == null) {
-          ensureUpdatesIsMutable();
+        if (updateBuilder_ == null) {
+          ensureUpdateIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, updates_);
+              values, update_);
           onChanged();
         } else {
-          updatesBuilder_.addAllMessages(values);
+          updateBuilder_.addAllMessages(values);
         }
         return this;
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public Builder clearUpdates() {
-        if (updatesBuilder_ == null) {
-          updates_ = java.util.Collections.emptyList();
+      public Builder clearUpdate() {
+        if (updateBuilder_ == null) {
+          update_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
         } else {
-          updatesBuilder_.clear();
+          updateBuilder_.clear();
         }
         return this;
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public Builder removeUpdates(int index) {
-        if (updatesBuilder_ == null) {
-          ensureUpdatesIsMutable();
-          updates_.remove(index);
+      public Builder removeUpdate(int index) {
+        if (updateBuilder_ == null) {
+          ensureUpdateIsMutable();
+          update_.remove(index);
           onChanged();
         } else {
-          updatesBuilder_.remove(index);
+          updateBuilder_.remove(index);
         }
         return this;
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public serialization.MptSerialization.MerklePrefixTrie.Builder getUpdatesBuilder(
+      public serialization.MptSerialization.MerklePrefixTrie.Builder getUpdateBuilder(
           int index) {
-        return getUpdatesFieldBuilder().getBuilder(index);
+        return getUpdateFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public serialization.MptSerialization.MerklePrefixTrieOrBuilder getUpdatesOrBuilder(
+      public serialization.MptSerialization.MerklePrefixTrieOrBuilder getUpdateOrBuilder(
           int index) {
-        if (updatesBuilder_ == null) {
-          return updates_.get(index);  } else {
-          return updatesBuilder_.getMessageOrBuilder(index);
+        if (updateBuilder_ == null) {
+          return update_.get(index);  } else {
+          return updateBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
       public java.util.List<? extends serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
-           getUpdatesOrBuilderList() {
-        if (updatesBuilder_ != null) {
-          return updatesBuilder_.getMessageOrBuilderList();
+           getUpdateOrBuilderList() {
+        if (updateBuilder_ != null) {
+          return updateBuilder_.getMessageOrBuilderList();
         } else {
-          return java.util.Collections.unmodifiableList(updates_);
+          return java.util.Collections.unmodifiableList(update_);
         }
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public serialization.MptSerialization.MerklePrefixTrie.Builder addUpdatesBuilder() {
-        return getUpdatesFieldBuilder().addBuilder(
+      public serialization.MptSerialization.MerklePrefixTrie.Builder addUpdateBuilder() {
+        return getUpdateFieldBuilder().addBuilder(
             serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance());
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
-      public serialization.MptSerialization.MerklePrefixTrie.Builder addUpdatesBuilder(
+      public serialization.MptSerialization.MerklePrefixTrie.Builder addUpdateBuilder(
           int index) {
-        return getUpdatesFieldBuilder().addBuilder(
+        return getUpdateFieldBuilder().addBuilder(
             index, serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance());
       }
       /**
-       * <code>repeated .serialization.MerklePrefixTrie updates = 1;</code>
+       * <code>repeated .serialization.MerklePrefixTrie update = 1;</code>
        */
       public java.util.List<serialization.MptSerialization.MerklePrefixTrie.Builder> 
-           getUpdatesBuilderList() {
-        return getUpdatesFieldBuilder().getBuilderList();
+           getUpdateBuilderList() {
+        return getUpdateFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
           serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
-          getUpdatesFieldBuilder() {
-        if (updatesBuilder_ == null) {
-          updatesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+          getUpdateFieldBuilder() {
+        if (updateBuilder_ == null) {
+          updateBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder>(
-                  updates_,
+                  update_,
                   ((bitField0_ & 0x00000001) == 0x00000001),
                   getParentForChildren(),
                   isClean());
-          updates_ = null;
+          update_ = null;
         }
-        return updatesBuilder_;
+        return updateBuilder_;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -5545,10 +5678,10 @@ public final class BVerifyAPIMessageSerialization {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_serialization_RedeemReceiptRequest_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_serialization_ReceiptTransferRequest_descriptor;
+    internal_static_serialization_TransferReceiptRequest_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_serialization_ReceiptTransferRequest_fieldAccessorTable;
+      internal_static_serialization_TransferReceiptRequest_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_serialization_GetUpdatesRequest_descriptor;
   private static final 
@@ -5594,21 +5727,21 @@ public final class BVerifyAPIMessageSerialization {
       "ient_id\030\002 \001(\014\022\024\n\014receipt_data\030\003 \001(\014\"X\n\024R" +
       "edeemReceiptRequest\022\024\n\014warehouse_id\030\001 \001(" +
       "\014\022\024\n\014recepient_id\030\002 \001(\014\022\024\n\014receipt_hash\030" +
-      "\003 \001(\014\"m\n\026ReceiptTransferRequest\022\024\n\014wareh" +
+      "\003 \001(\014\"m\n\026TransferReceiptRequest\022\024\n\014wareh" +
       "ouse_id\030\001 \001(\014\022\024\n\014recepient_id\030\002 \001(\014\022\021\n\ts" +
       "ender_id\030\003 \001(\014\022\024\n\014receipt_hash\030\004 \001(\014\"=\n\021" +
-      "GetUpdatesRequest\022\014\n\004keys\030\001 \001(\014\022\032\n\022last_" +
-      "update_number\030\002 \001(\005\"B\n\tSignature\022\017\n\007witn" +
+      "GetUpdatesRequest\022\032\n\022from_commit_number\030" +
+      "\001 \001(\005\022\014\n\004keys\030\002 \003(\014\"B\n\tSignature\022\017\n\007witn" +
       "ess\030\001 \001(\014\022\021\n\tsigner_id\030\002 \001(\014\022\021\n\tsignatur" +
       "e\030\003 \001(\014\"E\n\023ReceiptIssueApprove\022.\n\005proof\030" +
       "\001 \001(\0132\037.serialization.MerklePrefixTrie\"F" +
       "\n\024ReceiptRedeemApprove\022.\n\005proof\030\001 \001(\0132\037." +
       "serialization.MerklePrefixTrie\"H\n\026Receip" +
       "tTransferApprove\022.\n\005proof\030\001 \001(\0132\037.serial" +
-      "ization.MerklePrefixTrie\";\n\007Updates\0220\n\007u" +
-      "pdates\030\001 \003(\0132\037.serialization.MerklePrefi" +
-      "xTrieB B\036BVerifyAPIMessageSerializationb" +
-      "\006proto3"
+      "ization.MerklePrefixTrie\":\n\007Updates\022/\n\006u" +
+      "pdate\030\001 \003(\0132\037.serialization.MerklePrefix" +
+      "TrieB B\036BVerifyAPIMessageSerializationb\006" +
+      "proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -5635,18 +5768,18 @@ public final class BVerifyAPIMessageSerialization {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_serialization_RedeemReceiptRequest_descriptor,
         new java.lang.String[] { "WarehouseId", "RecepientId", "ReceiptHash", });
-    internal_static_serialization_ReceiptTransferRequest_descriptor =
+    internal_static_serialization_TransferReceiptRequest_descriptor =
       getDescriptor().getMessageTypes().get(2);
-    internal_static_serialization_ReceiptTransferRequest_fieldAccessorTable = new
+    internal_static_serialization_TransferReceiptRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_serialization_ReceiptTransferRequest_descriptor,
+        internal_static_serialization_TransferReceiptRequest_descriptor,
         new java.lang.String[] { "WarehouseId", "RecepientId", "SenderId", "ReceiptHash", });
     internal_static_serialization_GetUpdatesRequest_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_serialization_GetUpdatesRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_serialization_GetUpdatesRequest_descriptor,
-        new java.lang.String[] { "Keys", "LastUpdateNumber", });
+        new java.lang.String[] { "FromCommitNumber", "Keys", });
     internal_static_serialization_Signature_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_serialization_Signature_fieldAccessorTable = new
@@ -5676,7 +5809,7 @@ public final class BVerifyAPIMessageSerialization {
     internal_static_serialization_Updates_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_serialization_Updates_descriptor,
-        new java.lang.String[] { "Updates", });
+        new java.lang.String[] { "Update", });
     serialization.MptSerialization.getDescriptor();
   }
 
