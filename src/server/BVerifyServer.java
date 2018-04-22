@@ -7,18 +7,18 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import api.BVerifyProtocolServerAPI;
-import mpt.MerklePrefixTrieDelta;
-import mpt.MerklePrefixTrieFull;
+import mpt.dictionary.MPTDictionaryDelta;
+import mpt.dictionary.MPTDictionaryFull;
 import serialization.BVerifyAPIMessageSerialization.*;
 import serialization.MptSerialization.MerklePrefixTrie;
 
 public class BVerifyServer implements BVerifyProtocolServerAPI {
 	
-	private MerklePrefixTrieFull currentAuthenticationInformation;
+	private MPTDictionaryFull currentAuthenticationInformation;
 	
 	// we also store changes 
 	// index = commitment #, value = changes
-	private List<MerklePrefixTrieDelta>	deltas;
+	private List<MPTDictionaryDelta>	deltas;
 	
 	// changes are batched for efficiency 
 	// we keep track of all requests 
@@ -76,7 +76,7 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			for(int commitmentNumber = startingFrom ; commitmentNumber < this.deltas.size();
 					commitmentNumber++) {
 				// get the changes
-				MerklePrefixTrieDelta delta = this.deltas.get(commitmentNumber);
+				MPTDictionaryDelta delta = this.deltas.get(commitmentNumber);
 				// and calculate the updates
 				MerklePrefixTrie update = delta.getUpdates(keys);
 				updates.addUpdate(update);
