@@ -52,7 +52,7 @@ public class Account implements Serializable {
 		// generate a (unique) random id
 		this.id = UUID.randomUUID();
 		
-		// along with pubkeys
+		// along with pubKeys
 		KeyPair keys = CryptographicSignature.generateNewKeyPair();
 		this.pubKey = keys.getPublic();
 		this.privKey = keys.getPrivate();

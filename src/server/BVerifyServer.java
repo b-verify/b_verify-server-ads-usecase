@@ -15,30 +15,28 @@ import serialization.MptSerialization.MerklePrefixTrie;
 public class BVerifyServer implements BVerifyProtocolServerAPI {
 	
 	/**
-	 * Components
+	 * Client ADSes - stored on disk
 	 */
+	private final ClientADSManager clientadsManager;
 	
 	/**
-	 * Actual ADSes - stored as
+	 * Server (Authentication) ADSes - stored in memory
 	 */
-	
-	// authentication information
-	// 
-	private MPTDictionaryFull currentAuthenticationInformation;
-	
-	// we also store changes 
-	// index = commitment #, value = changes
-	private List<MPTDictionaryDelta>	deltas;
-	
-	// changes are batched for efficiency 
-	// we keep track of all requests 
-	// and try to apply them all at once
+	private final ServerADSManager serveradsManager;
+		
+	/**
+	 * Changes to be applied.
+	 * We batch changes for efficiency 
+	 * we keep track of all requests 
+	 * and try to apply them all at once.
+	 */
 	private List<IssueReceiptRequest> issueRequests;
 	private List<RedeemReceiptRequest> redeemRequests;
 	private List<TransferReceiptRequest> transferRequests;
 	
-	public BVerifyServer() {
-		this.currentAuthenticationInformation = new MPTDictionaryFull();
+	public BVerifyServer(String base) {
+		this.clientadsManager = new ClientADSManager(base+"/client-ads/");
+		this.serveradsManager = new ServerADSManager(base+"/server-ads/");
 	}
 
 	@Override
@@ -82,19 +80,8 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			for(ByteString keyHashByteString : keyHashesByteStrings) {
 				keyHashes.add(keyHashByteString.toByteArray());
 			}
-			Updates.Builder updates = Updates.newBuilder();
-			
-			// go through each commitment 
-			int startingFrom = request.getFromCommitNumber();
-			for(int commitmentNumber = startingFrom ; commitmentNumber < this.deltas.size();
-					commitmentNumber++) {
-				// get the changes
-				MPTDictionaryDelta delta = this.deltas.get(commitmentNumber);
-				// and calculate the updates
-				MerklePrefixTrie update = delta.getUpdatesKeyHashes(keyHashes);
-				updates.addUpdate(update);
-			}
-			return updates.build().toByteArray();
+			int from = request.getFromCommitNumber();
+			return this.serveradsManager.getUpdate(from, keyHashes);
 			
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
