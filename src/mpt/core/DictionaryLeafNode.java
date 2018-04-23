@@ -5,6 +5,7 @@ import java.util.Arrays;
 import com.google.protobuf.ByteString;
 
 import crpyto.CryptographicDigest;
+import crpyto.CryptographicUtils;
 import serialization.MptSerialization;
 
 /**
@@ -39,7 +40,7 @@ public class DictionaryLeafNode implements Node {
 		
 	public DictionaryLeafNode(byte[] key, byte[] value){
 		this.key = key.clone();
-		this.keyHash = CryptographicDigest.digest(key);
+		this.keyHash = CryptographicDigest.hash(key);
 		this.value = value.clone();
 		this.changed = true;
 		this.recalculateHash = true;
@@ -65,7 +66,7 @@ public class DictionaryLeafNode implements Node {
 	public byte[] getHash() {
 		if(this.recalculateHash) {
 			// witness
-			this.commitmentHash = CryptographicDigest.witnessKeyAndValue(this.key, this.value);
+			this.commitmentHash = CryptographicUtils.witnessKeyAndValue(this.key, this.value);
 			this.recalculateHash = false;
 		}
 		return this.commitmentHash.clone();

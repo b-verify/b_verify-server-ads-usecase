@@ -14,6 +14,16 @@ import serialization.MptSerialization.MerklePrefixTrie;
 
 public class BVerifyServer implements BVerifyProtocolServerAPI {
 	
+	/**
+	 * Components
+	 */
+	
+	/**
+	 * Actual ADSes - stored as
+	 */
+	
+	// authentication information
+	// 
 	private MPTDictionaryFull currentAuthenticationInformation;
 	
 	// we also store changes 
@@ -26,6 +36,10 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 	private List<IssueReceiptRequest> issueRequests;
 	private List<RedeemReceiptRequest> redeemRequests;
 	private List<TransferReceiptRequest> transferRequests;
+	
+	public BVerifyServer() {
+		this.currentAuthenticationInformation = new MPTDictionaryFull();
+	}
 
 	@Override
 	public void startIssueReceipt(byte[] requestIssueMessage) {
@@ -62,13 +76,12 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 		try {
 			GetUpdatesRequest request = GetUpdatesRequest.parseFrom(updateRequest);
 			
-			// parse the keys
-			List<byte[]> keys = new ArrayList<>();
-			List<ByteString> keyStrings = request.getKeysList();
-			for(ByteString keyString : keyStrings) {
-				keys.add(keyString.toByteArray());
+			// parse the key hashes
+			List<byte[]> keyHashes = new ArrayList<>();
+			List<ByteString> keyHashesByteStrings = request.getKeyHashesList();
+			for(ByteString keyHashByteString : keyHashesByteStrings) {
+				keyHashes.add(keyHashByteString.toByteArray());
 			}
-			
 			Updates.Builder updates = Updates.newBuilder();
 			
 			// go through each commitment 
@@ -78,7 +91,7 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 				// get the changes
 				MPTDictionaryDelta delta = this.deltas.get(commitmentNumber);
 				// and calculate the updates
-				MerklePrefixTrie update = delta.getUpdates(keys);
+				MerklePrefixTrie update = delta.getUpdatesKeyHashes(keyHashes);
 				updates.addUpdate(update);
 			}
 			return updates.build().toByteArray();

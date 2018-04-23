@@ -13,7 +13,7 @@ option java_outer_classname = "BVerifyAPIMessageSerialization";
 * by a client)
 */
 message IssueReceiptRequest {
-	bytes warehouse_id = 1;
+	bytes issuer_id = 1;
 	bytes recepient_id = 2;
 	bytes receipt_data = 3;
 }
@@ -23,7 +23,7 @@ message IssueReceiptRequest {
 * by a client)
 */
 message RedeemReceiptRequest {
-	bytes warehouse_id = 1;
+	bytes issuer_id = 1;
 	bytes recepient_id = 2;
 	// this will depend on the decisions we make
 	// and what kind of ADS we will store the 
@@ -36,7 +36,7 @@ message RedeemReceiptRequest {
 * by a client)
 */
 message TransferReceiptRequest {
-	bytes warehouse_id = 1;
+	bytes issuer_id = 1;
 	bytes recepient_id = 2;
 	bytes sender_id = 3;
 	bytes receipt_hash = 4;
@@ -48,17 +48,16 @@ message TransferReceiptRequest {
 */
 message GetUpdatesRequest {
 	int32 from_commit_number = 1;
-	repeated bytes keys = 2; 
+	repeated bytes key_hashes = 2; 
 }
 
 /**
-* 	Generic signature message which contains the signed 
-* 	(witnessed) data along with the signature.
+* 	Generic signature message along with the 
+*	signer id
 */
 message Signature {
-	bytes witness = 1; 
-	bytes signer_id = 2;
-	bytes signature = 3;
+	bytes signer_id = 1;
+	bytes signature = 2;
 }
 
 /** 
