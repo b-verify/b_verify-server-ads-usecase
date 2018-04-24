@@ -34,9 +34,13 @@ public class ServerADSManager {
 		return null;
 	}
 	
-	public byte[] getProof(List<byte[]> keyHashes) {
-		MPTDictionaryPartial partial = new MPTDictionaryPartial(this.ads, keyHashes);
-		return partial.serialize();
+	public byte[] get(byte[] key) {
+		return this.ads.get(key);
+	}
+	
+	public byte[] getProof(List<byte[]> keys) {
+		MPTDictionaryPartial partial = new MPTDictionaryPartial(this.ads, keys);
+		return partial.serialize().toByteArray();
 	}
 		
 	public byte[] getUpdate(int startingCommitNumber, 
@@ -49,7 +53,7 @@ public class ServerADSManager {
 			// get the changes
 			MPTDictionaryDelta delta = this.deltas.get(commitmentNumber);
 			// and calculate the updates
-			MerklePrefixTrie update = delta.getUpdatesKeyHashes(keyHashes);
+			MerklePrefixTrie update = delta.getUpdates(keyHashes);
 			updates.addUpdate(update);
 		}
 		return updates.build().toByteArray();

@@ -17,6 +17,11 @@ public class PKIDirectory {
 		return Account.loadFromFile(base+id.toString());
 	}
 	
+	public Account getAccount(String uuidString) {
+		UUID uuid = UUID.fromString(uuidString);
+		return this.getAccount(uuid);
+	}
+	
 	public List<UUID> listAccounts(){
 		File[] files = new File(base).listFiles();
 		List<UUID> uuids = new ArrayList<>();

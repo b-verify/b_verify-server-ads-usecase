@@ -37,4 +37,6 @@ public interface AuthenticatedSetClient {
 	 * @return
 	 */
 	public byte[] commitment();
+
+	byte[] serialize();
 }

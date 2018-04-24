@@ -24,10 +24,7 @@ message IssueReceiptRequest {
 */
 message RedeemReceiptRequest {
 	bytes issuer_id = 1;
-	bytes recepient_id = 2;
-	// this will depend on the decisions we make
-	// and what kind of ADS we will store the 
-	// receipts in!
+	bytes owner_id = 2;
 	bytes receipt_hash = 3;
 }
 
@@ -37,8 +34,8 @@ message RedeemReceiptRequest {
 */
 message TransferReceiptRequest {
 	bytes issuer_id = 1;
-	bytes recepient_id = 2;
-	bytes sender_id = 3;
+	bytes current_owner_id = 2;
+	bytes new_owner_id = 3;
 	bytes receipt_hash = 4;
 }
 
@@ -48,7 +45,7 @@ message TransferReceiptRequest {
 */
 message GetUpdatesRequest {
 	int32 from_commit_number = 1;
-	repeated bytes key_hashes = 2; 
+	repeated bytes keys = 2; 
 }
 
 /**
@@ -68,21 +65,29 @@ message Signature {
 * A proof showing an issued receipt
 */
 message ReceiptIssueApprove {
-	MerklePrefixTrie proof = 1;
+	bytes receipt_data = 1;
+	MerklePrefixTrie authentication_proof = 2;
 }
 
 /**
 * A proof showing a redeemed receipt
 */
 message ReceiptRedeemApprove {
-	MerklePrefixTrie proof = 1;
+	bytes receipt_hash = 1;
+	MerklePrefixTrie authentication_proof = 2;
 }
 
 /**
 * A proof showing a transferred receipt
 */
 message ReceiptTransferApprove {
-	MerklePrefixTrie proof = 1;
+	bytes issuer_id = 1;
+	bytes current_owner_id = 2;
+	bytes new_owner_id = 3;
+	bytes receipt_hash = 4;
+	MerklePrefixTrie added_proof = 5;
+	MerklePrefixTrie removed_proof = 6;
+	MerklePrefixTrie authentication_proof = 7;
 }
 
 /**

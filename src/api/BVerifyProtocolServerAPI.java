@@ -19,8 +19,9 @@ public interface BVerifyProtocolServerAPI extends Remote {
 	 * @param requestIssueMessage a serialized request 
 	 * for the server to issue a receipt (see 
 	 * 	IssueReceiptRequest in bverifyprotocol.proto)
+	 * @return 
 	 */
-	public void startIssueReceipt(byte[] requestIssueMessage);
+	public boolean startIssueReceipt(byte[] requestIssueMessage);
 	
 	/**
 	 * Invoked by a client remotely on the server to 
@@ -31,8 +32,9 @@ public interface BVerifyProtocolServerAPI extends Remote {
 	 * @param requestRedeemMessage a serialized request 
 	 * for the server to redeem a receipt (see 
 	 *  RedeemReceiptRequest in bverifyprotocol.proto)
+	 * @return 
 	 */
-	public void startRedeemReceipt(byte[] requestRedeemMessage);
+	public boolean startRedeemReceipt(byte[] requestRedeemMessage);
 	
 	/**
 	 * Invoked by a client remotely on the server to 
@@ -43,8 +45,9 @@ public interface BVerifyProtocolServerAPI extends Remote {
 	 * @param requestTransferMessage a serialized request 
 	 * for the server to transfer a receipt (see 
 	 * 	TransferReceiptRequest in bverifyprotocol.proto)
+	 * @return 
 	 */
-	public void startTransferReceipt(byte[] requestTransferMessage);
+	public boolean startTransferReceipt(byte[] requestTransferMessage);
 	
 	/**
 	 * Invoked by a client remotely on the server to request
