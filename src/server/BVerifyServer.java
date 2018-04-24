@@ -186,27 +186,57 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			ads1accounts.add(issuer);
 			ads1accounts.add(currentOwner);
 			byte[] ads1Key = CryptographicUtils.setOfAccountsToADSKey(ads1accounts);
-			byte[] currentOwnerAds = this.serveradsManager.get(ads1Key);
-			AuthenticatedSetServer ads1 = this.clientadsManager.getADS(ads1Key);
+			byte[] currentOwnerAdsValueOld = this.serveradsManager.get(ads1Key);
+			MPTSetFull ads1 = (MPTSetFull) this.clientadsManager.getADS(ads1Key);
 			if(!ads1.inSet(receiptHash)) {
 				return false;
-			}
-			MPTSetFull fullOld = (MPTSetFull) ads1;
-			AuthenticatedSetClient ads1client = new MPTSetPartial(fullOld, 
-					receiptHash);
-			
-			byte[] proofOldAds = ads1client.serialize();
+			}	
+			byte[] proofCurrentOwnerAdsOld = (new MPTSetPartial(ads1, receiptHash)).serialize();
 			
 			Set<Account> ads2accounts = new HashSet<>();
 			ads2accounts.add(issuer);
 			ads2accounts.add(newOwner);
 			byte[] ads2Key = CryptographicUtils.setOfAccountsToADSKey(ads2accounts);
-			byte[] newOwnerAds = this.serveradsManager.get(ads2Key);
-			AuthenticatedSetServer ads2 = this.clientadsManager.getADS(ads2Key);
+			byte[] newOwnerAdsValueOld = this.serveradsManager.get(ads2Key);
+			MPTSetFull ads2 = (MPTSetFull) this.clientadsManager.getADS(ads2Key);
+			if(ads2.inSet(receiptHash)) {
+				return false;
+			}
+			byte[] proofNewOwnerAdsOld = (new MPTSetPartial(ads2, receiptHash)).serialize();
 
+			
+			// now move the receipt from one ads to the other and 
+			// create the corresponding proofs
+			ads1.delete(receiptHash);
+			ads2.insert(receiptHash);
+			
+			byte[] currentOwnerAdsValueNew = ads1.commitment();
+			byte[] proofCurrentOwnerAdsNew = (new MPTSetPartial(ads1, receiptHash)).serialize();
+			byte[] newOwnerAdsValueNew = ads2.commitment();
+			byte[] proofNewOwnerAdsNew = (new MPTSetPartial(ads2, receiptHash)).serialize();
+			
+			// pre-commit the new adses
+			this.clientadsManager.preCommitADS(ads1, ads1Key);
+			this.clientadsManager.preCommitADS(ads2, ads2Key);
+			
+			// schedule the overall request to try and commit later
+			TransferRequest tr = new TransferRequest(
+					issuer, currentOwner, newOwner, receiptHash,
+					ads1Key, ads2Key,
+					currentOwnerAdsValueOld,
+					proofCurrentOwnerAdsOld,
+					currentOwnerAdsValueNew,
+					proofCurrentOwnerAdsNew,
+					newOwnerAdsValueOld,
+					proofNewOwnerAdsOld,
+					newOwnerAdsValueNew,
+					proofNewOwnerAdsNew);
+			this.transferRequests.add(tr);
+			return true;
 			// move the receipt from one ads to another 
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -230,7 +260,8 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 		return null;
 	}
 
-	private boolean tryToCommitEntries() {
+	
+	private boolean attemptCommit() {
 		// start with issue requests
 		for (IssueRequest ir : this.issueRequests) {
 		
