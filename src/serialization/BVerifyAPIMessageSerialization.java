@@ -5221,17 +5221,17 @@ public final class BVerifyAPIMessageSerialization {
         getRecepientIdBytes();
 
     /**
-     * <code>.serialization.Receipt receipt_data = 3;</code>
+     * <code>.serialization.Receipt receipt = 3;</code>
      */
-    boolean hasReceiptData();
+    boolean hasReceipt();
     /**
-     * <code>.serialization.Receipt receipt_data = 3;</code>
+     * <code>.serialization.Receipt receipt = 3;</code>
      */
-    serialization.BVerifyAPIMessageSerialization.Receipt getReceiptData();
+    serialization.BVerifyAPIMessageSerialization.Receipt getReceipt();
     /**
-     * <code>.serialization.Receipt receipt_data = 3;</code>
+     * <code>.serialization.Receipt receipt = 3;</code>
      */
-    serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder getReceiptDataOrBuilder();
+    serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder getReceiptOrBuilder();
 
     /**
      * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
@@ -5313,13 +5313,13 @@ public final class BVerifyAPIMessageSerialization {
             }
             case 26: {
               serialization.BVerifyAPIMessageSerialization.Receipt.Builder subBuilder = null;
-              if (receiptData_ != null) {
-                subBuilder = receiptData_.toBuilder();
+              if (receipt_ != null) {
+                subBuilder = receipt_.toBuilder();
               }
-              receiptData_ = input.readMessage(serialization.BVerifyAPIMessageSerialization.Receipt.parser(), extensionRegistry);
+              receipt_ = input.readMessage(serialization.BVerifyAPIMessageSerialization.Receipt.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(receiptData_);
-                receiptData_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(receipt_);
+                receipt_ = subBuilder.buildPartial();
               }
 
               break;
@@ -5429,25 +5429,25 @@ public final class BVerifyAPIMessageSerialization {
       }
     }
 
-    public static final int RECEIPT_DATA_FIELD_NUMBER = 3;
-    private serialization.BVerifyAPIMessageSerialization.Receipt receiptData_;
+    public static final int RECEIPT_FIELD_NUMBER = 3;
+    private serialization.BVerifyAPIMessageSerialization.Receipt receipt_;
     /**
-     * <code>.serialization.Receipt receipt_data = 3;</code>
+     * <code>.serialization.Receipt receipt = 3;</code>
      */
-    public boolean hasReceiptData() {
-      return receiptData_ != null;
+    public boolean hasReceipt() {
+      return receipt_ != null;
     }
     /**
-     * <code>.serialization.Receipt receipt_data = 3;</code>
+     * <code>.serialization.Receipt receipt = 3;</code>
      */
-    public serialization.BVerifyAPIMessageSerialization.Receipt getReceiptData() {
-      return receiptData_ == null ? serialization.BVerifyAPIMessageSerialization.Receipt.getDefaultInstance() : receiptData_;
+    public serialization.BVerifyAPIMessageSerialization.Receipt getReceipt() {
+      return receipt_ == null ? serialization.BVerifyAPIMessageSerialization.Receipt.getDefaultInstance() : receipt_;
     }
     /**
-     * <code>.serialization.Receipt receipt_data = 3;</code>
+     * <code>.serialization.Receipt receipt = 3;</code>
      */
-    public serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder getReceiptDataOrBuilder() {
-      return getReceiptData();
+    public serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder getReceiptOrBuilder() {
+      return getReceipt();
     }
 
     public static final int AUTHENTICATION_PROOF_FIELD_NUMBER = 4;
@@ -5489,8 +5489,8 @@ public final class BVerifyAPIMessageSerialization {
       if (!getRecepientIdBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, recepientId_);
       }
-      if (receiptData_ != null) {
-        output.writeMessage(3, getReceiptData());
+      if (receipt_ != null) {
+        output.writeMessage(3, getReceipt());
       }
       if (authenticationProof_ != null) {
         output.writeMessage(4, getAuthenticationProof());
@@ -5509,9 +5509,9 @@ public final class BVerifyAPIMessageSerialization {
       if (!getRecepientIdBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, recepientId_);
       }
-      if (receiptData_ != null) {
+      if (receipt_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, getReceiptData());
+          .computeMessageSize(3, getReceipt());
       }
       if (authenticationProof_ != null) {
         size += com.google.protobuf.CodedOutputStream
@@ -5537,10 +5537,10 @@ public final class BVerifyAPIMessageSerialization {
           .equals(other.getIssuerId());
       result = result && getRecepientId()
           .equals(other.getRecepientId());
-      result = result && (hasReceiptData() == other.hasReceiptData());
-      if (hasReceiptData()) {
-        result = result && getReceiptData()
-            .equals(other.getReceiptData());
+      result = result && (hasReceipt() == other.hasReceipt());
+      if (hasReceipt()) {
+        result = result && getReceipt()
+            .equals(other.getReceipt());
       }
       result = result && (hasAuthenticationProof() == other.hasAuthenticationProof());
       if (hasAuthenticationProof()) {
@@ -5562,9 +5562,9 @@ public final class BVerifyAPIMessageSerialization {
       hash = (53 * hash) + getIssuerId().hashCode();
       hash = (37 * hash) + RECEPIENT_ID_FIELD_NUMBER;
       hash = (53 * hash) + getRecepientId().hashCode();
-      if (hasReceiptData()) {
-        hash = (37 * hash) + RECEIPT_DATA_FIELD_NUMBER;
-        hash = (53 * hash) + getReceiptData().hashCode();
+      if (hasReceipt()) {
+        hash = (37 * hash) + RECEIPT_FIELD_NUMBER;
+        hash = (53 * hash) + getReceipt().hashCode();
       }
       if (hasAuthenticationProof()) {
         hash = (37 * hash) + AUTHENTICATION_PROOF_FIELD_NUMBER;
@@ -5708,11 +5708,11 @@ public final class BVerifyAPIMessageSerialization {
 
         recepientId_ = "";
 
-        if (receiptDataBuilder_ == null) {
-          receiptData_ = null;
+        if (receiptBuilder_ == null) {
+          receipt_ = null;
         } else {
-          receiptData_ = null;
-          receiptDataBuilder_ = null;
+          receipt_ = null;
+          receiptBuilder_ = null;
         }
         if (authenticationProofBuilder_ == null) {
           authenticationProof_ = null;
@@ -5744,10 +5744,10 @@ public final class BVerifyAPIMessageSerialization {
         serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove result = new serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove(this);
         result.issuerId_ = issuerId_;
         result.recepientId_ = recepientId_;
-        if (receiptDataBuilder_ == null) {
-          result.receiptData_ = receiptData_;
+        if (receiptBuilder_ == null) {
+          result.receipt_ = receipt_;
         } else {
-          result.receiptData_ = receiptDataBuilder_.build();
+          result.receipt_ = receiptBuilder_.build();
         }
         if (authenticationProofBuilder_ == null) {
           result.authenticationProof_ = authenticationProof_;
@@ -5803,8 +5803,8 @@ public final class BVerifyAPIMessageSerialization {
           recepientId_ = other.recepientId_;
           onChanged();
         }
-        if (other.hasReceiptData()) {
-          mergeReceiptData(other.getReceiptData());
+        if (other.hasReceipt()) {
+          mergeReceipt(other.getReceipt());
         }
         if (other.hasAuthenticationProof()) {
           mergeAuthenticationProof(other.getAuthenticationProof());
@@ -5974,121 +5974,121 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
 
-      private serialization.BVerifyAPIMessageSerialization.Receipt receiptData_ = null;
+      private serialization.BVerifyAPIMessageSerialization.Receipt receipt_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
-          serialization.BVerifyAPIMessageSerialization.Receipt, serialization.BVerifyAPIMessageSerialization.Receipt.Builder, serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder> receiptDataBuilder_;
+          serialization.BVerifyAPIMessageSerialization.Receipt, serialization.BVerifyAPIMessageSerialization.Receipt.Builder, serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder> receiptBuilder_;
       /**
-       * <code>.serialization.Receipt receipt_data = 3;</code>
+       * <code>.serialization.Receipt receipt = 3;</code>
        */
-      public boolean hasReceiptData() {
-        return receiptDataBuilder_ != null || receiptData_ != null;
+      public boolean hasReceipt() {
+        return receiptBuilder_ != null || receipt_ != null;
       }
       /**
-       * <code>.serialization.Receipt receipt_data = 3;</code>
+       * <code>.serialization.Receipt receipt = 3;</code>
        */
-      public serialization.BVerifyAPIMessageSerialization.Receipt getReceiptData() {
-        if (receiptDataBuilder_ == null) {
-          return receiptData_ == null ? serialization.BVerifyAPIMessageSerialization.Receipt.getDefaultInstance() : receiptData_;
+      public serialization.BVerifyAPIMessageSerialization.Receipt getReceipt() {
+        if (receiptBuilder_ == null) {
+          return receipt_ == null ? serialization.BVerifyAPIMessageSerialization.Receipt.getDefaultInstance() : receipt_;
         } else {
-          return receiptDataBuilder_.getMessage();
+          return receiptBuilder_.getMessage();
         }
       }
       /**
-       * <code>.serialization.Receipt receipt_data = 3;</code>
+       * <code>.serialization.Receipt receipt = 3;</code>
        */
-      public Builder setReceiptData(serialization.BVerifyAPIMessageSerialization.Receipt value) {
-        if (receiptDataBuilder_ == null) {
+      public Builder setReceipt(serialization.BVerifyAPIMessageSerialization.Receipt value) {
+        if (receiptBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          receiptData_ = value;
+          receipt_ = value;
           onChanged();
         } else {
-          receiptDataBuilder_.setMessage(value);
+          receiptBuilder_.setMessage(value);
         }
 
         return this;
       }
       /**
-       * <code>.serialization.Receipt receipt_data = 3;</code>
+       * <code>.serialization.Receipt receipt = 3;</code>
        */
-      public Builder setReceiptData(
+      public Builder setReceipt(
           serialization.BVerifyAPIMessageSerialization.Receipt.Builder builderForValue) {
-        if (receiptDataBuilder_ == null) {
-          receiptData_ = builderForValue.build();
+        if (receiptBuilder_ == null) {
+          receipt_ = builderForValue.build();
           onChanged();
         } else {
-          receiptDataBuilder_.setMessage(builderForValue.build());
+          receiptBuilder_.setMessage(builderForValue.build());
         }
 
         return this;
       }
       /**
-       * <code>.serialization.Receipt receipt_data = 3;</code>
+       * <code>.serialization.Receipt receipt = 3;</code>
        */
-      public Builder mergeReceiptData(serialization.BVerifyAPIMessageSerialization.Receipt value) {
-        if (receiptDataBuilder_ == null) {
-          if (receiptData_ != null) {
-            receiptData_ =
-              serialization.BVerifyAPIMessageSerialization.Receipt.newBuilder(receiptData_).mergeFrom(value).buildPartial();
+      public Builder mergeReceipt(serialization.BVerifyAPIMessageSerialization.Receipt value) {
+        if (receiptBuilder_ == null) {
+          if (receipt_ != null) {
+            receipt_ =
+              serialization.BVerifyAPIMessageSerialization.Receipt.newBuilder(receipt_).mergeFrom(value).buildPartial();
           } else {
-            receiptData_ = value;
+            receipt_ = value;
           }
           onChanged();
         } else {
-          receiptDataBuilder_.mergeFrom(value);
+          receiptBuilder_.mergeFrom(value);
         }
 
         return this;
       }
       /**
-       * <code>.serialization.Receipt receipt_data = 3;</code>
+       * <code>.serialization.Receipt receipt = 3;</code>
        */
-      public Builder clearReceiptData() {
-        if (receiptDataBuilder_ == null) {
-          receiptData_ = null;
+      public Builder clearReceipt() {
+        if (receiptBuilder_ == null) {
+          receipt_ = null;
           onChanged();
         } else {
-          receiptData_ = null;
-          receiptDataBuilder_ = null;
+          receipt_ = null;
+          receiptBuilder_ = null;
         }
 
         return this;
       }
       /**
-       * <code>.serialization.Receipt receipt_data = 3;</code>
+       * <code>.serialization.Receipt receipt = 3;</code>
        */
-      public serialization.BVerifyAPIMessageSerialization.Receipt.Builder getReceiptDataBuilder() {
+      public serialization.BVerifyAPIMessageSerialization.Receipt.Builder getReceiptBuilder() {
         
         onChanged();
-        return getReceiptDataFieldBuilder().getBuilder();
+        return getReceiptFieldBuilder().getBuilder();
       }
       /**
-       * <code>.serialization.Receipt receipt_data = 3;</code>
+       * <code>.serialization.Receipt receipt = 3;</code>
        */
-      public serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder getReceiptDataOrBuilder() {
-        if (receiptDataBuilder_ != null) {
-          return receiptDataBuilder_.getMessageOrBuilder();
+      public serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder getReceiptOrBuilder() {
+        if (receiptBuilder_ != null) {
+          return receiptBuilder_.getMessageOrBuilder();
         } else {
-          return receiptData_ == null ?
-              serialization.BVerifyAPIMessageSerialization.Receipt.getDefaultInstance() : receiptData_;
+          return receipt_ == null ?
+              serialization.BVerifyAPIMessageSerialization.Receipt.getDefaultInstance() : receipt_;
         }
       }
       /**
-       * <code>.serialization.Receipt receipt_data = 3;</code>
+       * <code>.serialization.Receipt receipt = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           serialization.BVerifyAPIMessageSerialization.Receipt, serialization.BVerifyAPIMessageSerialization.Receipt.Builder, serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder> 
-          getReceiptDataFieldBuilder() {
-        if (receiptDataBuilder_ == null) {
-          receiptDataBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          getReceiptFieldBuilder() {
+        if (receiptBuilder_ == null) {
+          receiptBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               serialization.BVerifyAPIMessageSerialization.Receipt, serialization.BVerifyAPIMessageSerialization.Receipt.Builder, serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder>(
-                  getReceiptData(),
+                  getReceipt(),
                   getParentForChildren(),
                   isClean());
-          receiptData_ = null;
+          receipt_ = null;
         }
-        return receiptDataBuilder_;
+        return receiptBuilder_;
       }
 
       private serialization.MptSerialization.MerklePrefixTrie authenticationProof_ = null;
@@ -9681,26 +9681,26 @@ public final class BVerifyAPIMessageSerialization {
       "er_id\030\003 \001(\t\022\024\n\014receipt_hash\030\004 \001(\014\"=\n\021Get" +
       "UpdatesRequest\022\032\n\022from_commit_number\030\001 \001" +
       "(\005\022\014\n\004keys\030\002 \003(\014\"1\n\tSignature\022\021\n\tsigner_" +
-      "id\030\001 \001(\t\022\021\n\tsignature\030\002 \001(\014\"\253\001\n\023ReceiptI" +
+      "id\030\001 \001(\t\022\021\n\tsignature\030\002 \001(\014\"\246\001\n\023ReceiptI" +
       "ssueApprove\022\021\n\tissuer_id\030\001 \001(\t\022\024\n\014recepi" +
-      "ent_id\030\002 \001(\t\022,\n\014receipt_data\030\003 \001(\0132\026.ser" +
-      "ialization.Receipt\022=\n\024authentication_pro" +
-      "of\030\004 \001(\0132\037.serialization.MerklePrefixTri" +
-      "e\"\220\001\n\024ReceiptRedeemApprove\022\021\n\tissuer_id\030" +
-      "\001 \001(\t\022\020\n\010owner_id\030\002 \001(\t\022\024\n\014receipt_hash\030" +
-      "\003 \001(\014\022=\n\024authentication_proof\030\004 \001(\0132\037.se" +
-      "rialization.MerklePrefixTrie\"\325\002\n\026Receipt" +
-      "TransferApprove\022\021\n\tissuer_id\030\001 \001(\t\022\030\n\020cu" +
-      "rrent_owner_id\030\002 \001(\t\022\024\n\014new_owner_id\030\003 \001" +
-      "(\t\022\024\n\014receipt_hash\030\004 \001(\014\0225\n\014origin_proof" +
-      "\030\005 \001(\0132\037.serialization.MerklePrefixTrie\022" +
-      "4\n\013added_proof\030\006 \001(\0132\037.serialization.Mer" +
-      "klePrefixTrie\0226\n\rremoved_proof\030\007 \001(\0132\037.s" +
-      "erialization.MerklePrefixTrie\022=\n\024authent" +
-      "ication_proof\030\010 \001(\0132\037.serialization.Merk" +
-      "lePrefixTrie\":\n\007Updates\022/\n\006update\030\001 \003(\0132" +
-      "\037.serialization.MerklePrefixTrieB B\036BVer" +
-      "ifyAPIMessageSerializationb\006proto3"
+      "ent_id\030\002 \001(\t\022\'\n\007receipt\030\003 \001(\0132\026.serializ" +
+      "ation.Receipt\022=\n\024authentication_proof\030\004 " +
+      "\001(\0132\037.serialization.MerklePrefixTrie\"\220\001\n" +
+      "\024ReceiptRedeemApprove\022\021\n\tissuer_id\030\001 \001(\t" +
+      "\022\020\n\010owner_id\030\002 \001(\t\022\024\n\014receipt_hash\030\003 \001(\014" +
+      "\022=\n\024authentication_proof\030\004 \001(\0132\037.seriali" +
+      "zation.MerklePrefixTrie\"\325\002\n\026ReceiptTrans" +
+      "ferApprove\022\021\n\tissuer_id\030\001 \001(\t\022\030\n\020current" +
+      "_owner_id\030\002 \001(\t\022\024\n\014new_owner_id\030\003 \001(\t\022\024\n" +
+      "\014receipt_hash\030\004 \001(\014\0225\n\014origin_proof\030\005 \001(" +
+      "\0132\037.serialization.MerklePrefixTrie\0224\n\013ad" +
+      "ded_proof\030\006 \001(\0132\037.serialization.MerklePr" +
+      "efixTrie\0226\n\rremoved_proof\030\007 \001(\0132\037.serial" +
+      "ization.MerklePrefixTrie\022=\n\024authenticati" +
+      "on_proof\030\010 \001(\0132\037.serialization.MerklePre" +
+      "fixTrie\":\n\007Updates\022/\n\006update\030\001 \003(\0132\037.ser" +
+      "ialization.MerklePrefixTrieB B\036BVerifyAP" +
+      "IMessageSerializationb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -9756,7 +9756,7 @@ public final class BVerifyAPIMessageSerialization {
     internal_static_serialization_ReceiptIssueApprove_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_serialization_ReceiptIssueApprove_descriptor,
-        new java.lang.String[] { "IssuerId", "RecepientId", "ReceiptData", "AuthenticationProof", });
+        new java.lang.String[] { "IssuerId", "RecepientId", "Receipt", "AuthenticationProof", });
     internal_static_serialization_ReceiptRedeemApprove_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_serialization_ReceiptRedeemApprove_fieldAccessorTable = new

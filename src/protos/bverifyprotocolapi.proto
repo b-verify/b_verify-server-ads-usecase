@@ -83,7 +83,7 @@ message Signature {
 message ReceiptIssueApprove {
 	string issuer_id = 1;
 	string recepient_id = 2;
-	Receipt receipt_data = 3;
+	Receipt receipt = 3;
 	MerklePrefixTrie authentication_proof = 4;
 }
 

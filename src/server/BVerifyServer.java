@@ -19,6 +19,7 @@ import pki.Account;
 import pki.PKIDirectory;
 import serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest;
 import serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest;
+import serialization.BVerifyAPIMessageSerialization.Receipt;
 import serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest;
 import serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest;
 import serialization.MptSerialization.MerklePrefixTrie;
@@ -67,7 +68,7 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			String issuerUUID = request.getIssuerId();
 			String recepientUUID = request.getRecepientId();
 			// the receipt data is the actual receipt
-			byte[] receiptData = request.getReceiptData().toByteArray();
+			Receipt receipt = request.getReceipt();
 			
 			// lookup the accounts
 			Account issuer = this.pki.getAccount(issuerUUID);
@@ -87,7 +88,7 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 						
 			// and insert the receipt authentication information 
 			// into the client ADS
-			byte[] receiptHash = CryptographicDigest.hash(receiptData);
+			byte[] receiptHash = CryptographicDigest.hash(receipt.toByteArray());
 			ads.insert(receiptHash);
 			
 			// get the new commitment 
@@ -102,7 +103,7 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			}
 			
 			// schedule the overall request to try and commit later
-			IssueRequest ir = new IssueRequest(issuer, recepient, receiptData, adsKey,
+			IssueRequest ir = new IssueRequest(issuer, recepient, receipt, adsKey,
 					currentADSCommitment, newADSCommitment);
 			this.issueRequests.add(ir);
 
