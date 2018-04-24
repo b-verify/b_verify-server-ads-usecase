@@ -62,8 +62,8 @@ public class RedeemRequest {
 	
 	public ReceiptRedeemApprove serialize() {
 		ReceiptRedeemApprove.Builder builder = ReceiptRedeemApprove.newBuilder();
-		builder.setIssuerId(ByteString.copyFrom(this.issuer.getIdAsBytes()));
-		builder.setOwnerId(ByteString.copyFrom(this.owner.getIdAsBytes()));
+		builder.setIssuerId(this.issuer.getIdAsString());
+		builder.setOwnerId(this.owner.getIdAsString());
 		builder.setReceiptHash(ByteString.copyFrom(this.receiptHash));
 		if(this.authProof == null) {
 			throw new RuntimeException("cannot serialize this request without an authentication proof");

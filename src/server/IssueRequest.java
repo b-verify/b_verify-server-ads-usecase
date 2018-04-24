@@ -62,8 +62,8 @@ public class IssueRequest {
 	
 	public ReceiptIssueApprove serialize() {
 		ReceiptIssueApprove.Builder builder = ReceiptIssueApprove.newBuilder();
-		builder.setIssuerId(ByteString.copyFrom(this.issuer.getIdAsBytes()));
-		builder.setRecepientId(ByteString.copyFrom(this.recepient.getIdAsBytes()));
+		builder.setIssuerId(this.issuer.getIdAsString());
+		builder.setRecepientId(this.recepient.getIdAsString());
 		builder.setReceiptData(ByteString.copyFrom(this.receiptData));
 		if(this.authProof == null) {
 			throw new RuntimeException("cannot serialize this request without an authentication proof");

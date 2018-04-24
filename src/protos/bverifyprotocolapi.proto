@@ -4,6 +4,22 @@ package serialization;
 import "protos/mpt.proto";
 option java_outer_classname = "BVerifyAPIMessageSerialization";
 
+/**
+*   Receipt format
+*/
+message Receipt {
+    string accountant = 1;
+    string depositor = 2;
+    string category = 3;
+    string date = 4;
+    string insurance = 5;
+    int32 weight = 6;
+    int32 volume = 7;
+    int32 humidity = 8;
+    int32 price = 9;
+    string details = 10;
+}
+
 /** 
 *		Messages sent from the CLIENT to the SERVER 
 **/
@@ -13,9 +29,9 @@ option java_outer_classname = "BVerifyAPIMessageSerialization";
 * by a client)
 */
 message IssueReceiptRequest {
-	bytes issuer_id = 1;
-	bytes recepient_id = 2;
-	bytes receipt_data = 3;
+	string issuer_id = 1;
+	string recepient_id = 2;
+	Receipt receipt = 3;
 }
 
 /**
@@ -23,8 +39,8 @@ message IssueReceiptRequest {
 * by a client)
 */
 message RedeemReceiptRequest {
-	bytes issuer_id = 1;
-	bytes owner_id = 2;
+	string issuer_id = 1;
+	string owner_id = 2;
 	bytes receipt_hash = 3;
 }
 
@@ -33,9 +49,9 @@ message RedeemReceiptRequest {
 * by a client)
 */
 message TransferReceiptRequest {
-	bytes issuer_id = 1;
-	bytes current_owner_id = 2;
-	bytes new_owner_id = 3;
+	string issuer_id = 1;
+	string current_owner_id = 2;
+	string new_owner_id = 3;
 	bytes receipt_hash = 4;
 }
 
@@ -53,7 +69,7 @@ message GetUpdatesRequest {
 *	signer id
 */
 message Signature {
-	bytes signer_id = 1;
+	string signer_id = 1;
 	bytes signature = 2;
 }
 
@@ -65,9 +81,9 @@ message Signature {
 * A proof showing an issued receipt
 */
 message ReceiptIssueApprove {
-	bytes issuer_id = 1;
-	bytes recepient_id = 2;
-	bytes receipt_data = 3;
+	string issuer_id = 1;
+	string recepient_id = 2;
+	Receipt receipt_data = 3;
 	MerklePrefixTrie authentication_proof = 4;
 }
 
@@ -75,8 +91,8 @@ message ReceiptIssueApprove {
 * A proof showing a redeemed receipt
 */
 message ReceiptRedeemApprove {
-	bytes issuer_id = 1;
-	bytes owner_id = 2;
+	string issuer_id = 1;
+	string owner_id = 2;
 	bytes receipt_hash = 3;
 	MerklePrefixTrie authentication_proof = 4;
 }
@@ -85,9 +101,9 @@ message ReceiptRedeemApprove {
 * A proof showing a transferred receipt
 */
 message ReceiptTransferApprove {
-	bytes issuer_id = 1;
-	bytes current_owner_id = 2;
-	bytes new_owner_id = 3;
+	string issuer_id = 1;
+	string current_owner_id = 2;
+	string new_owner_id = 3;
 	bytes receipt_hash = 4;
 	MerklePrefixTrie origin_proof = 5;
 	MerklePrefixTrie added_proof = 6;

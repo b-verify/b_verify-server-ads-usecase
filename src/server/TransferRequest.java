@@ -138,9 +138,9 @@ public class TransferRequest {
 	
 	public ReceiptTransferApprove serialize() {
 		ReceiptTransferApprove.Builder request = ReceiptTransferApprove.newBuilder();
-		request.setIssuerId(ByteString.copyFrom(this.issuer.getIdAsBytes()));
-		request.setCurrentOwnerId(ByteString.copyFrom(this.currentOwner.getIdAsBytes()));
-		request.setNewOwnerId(ByteString.copyFrom(this.newOwner.getIdAsBytes()));
+		request.setIssuerId(this.issuer.getIdAsString());
+		request.setCurrentOwnerId(this.currentOwner.getIdAsString());
+		request.setNewOwnerId(this.newOwner.getIdAsString());
 		request.setReceiptHash(ByteString.copyFrom(this.receiptHash));
 		request.setOriginProof(this.proofCurrentOwnerAdsOld);
 		request.setAddedProof(this.proofNewOwnerAdsNew);

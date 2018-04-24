@@ -12,11 +12,11 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import api.BVerifyProtocolServerAPI;
 import crpyto.CryptographicDigest;
 import crpyto.CryptographicUtils;
-import pki.Account;
-import pki.PKIDirectory;
 import mpt.set.AuthenticatedSetServer;
 import mpt.set.MPTSetFull;
 import mpt.set.MPTSetPartial;
+import pki.Account;
+import pki.PKIDirectory;
 import serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest;
 import serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest;
 import serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest;
@@ -64,8 +64,8 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 		try {
 			// parse the request message
 			IssueReceiptRequest request = IssueReceiptRequest.parseFrom(requestIssueMessage);
-			String issuerUUID = new String(request.getIssuerId().toByteArray());
-			String recepientUUID = new String(request.getRecepientId().toByteArray());
+			String issuerUUID = request.getIssuerId();
+			String recepientUUID = request.getRecepientId();
 			// the receipt data is the actual receipt
 			byte[] receiptData = request.getReceiptData().toByteArray();
 			
@@ -118,8 +118,8 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 		try {
 			// parse the request message
 			RedeemReceiptRequest request = RedeemReceiptRequest.parseFrom(requestRedeemMessage);
-			String issuerUUID = new String(request.getIssuerId().toByteArray());
-			String ownerUUID = new String(request.getOwnerId().toByteArray());
+			String issuerUUID = request.getIssuerId(); 
+			String ownerUUID = request.getOwnerId();
 			byte[] receiptHash = request.getReceiptHash().toByteArray();
 			
 			// lookup the accounts
@@ -169,9 +169,9 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 	public boolean startTransferReceipt(byte[] requestTransferMessage) {
 		try {
 			TransferReceiptRequest request = TransferReceiptRequest.parseFrom(requestTransferMessage);
-			String issuerUUID = new String(request.getIssuerId().toByteArray());
-			String currentOwnerUUID = new String(request.getCurrentOwnerId().toByteArray());
-			String newOwnerUUID = new String(request.getNewOwnerId().toByteArray());
+			String issuerUUID = request.getIssuerId();
+			String currentOwnerUUID = request.getCurrentOwnerId();
+			String newOwnerUUID = request.getNewOwnerId();
 			byte[] receiptHash = request.getReceiptHash().toByteArray();
 			
 			// lookup the accounts
