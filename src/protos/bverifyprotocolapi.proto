@@ -5,6 +5,15 @@ import "protos/mpt.proto";
 option java_outer_classname = "BVerifyAPIMessageSerialization";
 
 /**
+* OVERALL NOTES:
+*	- *_id is a string representing a unique user id 
+*		that allows each client to look up that user in the 
+* 		pki. This does not need to be part of a production 
+* 		system and could be changed
+*/
+
+
+/**
 *   Receipt format
 */
 message Receipt {

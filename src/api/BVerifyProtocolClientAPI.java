@@ -15,7 +15,7 @@ public interface BVerifyProtocolClientAPI extends Remote {
 	 * approve an issued receipt. If the client approves, 
 	 * she releases a signature.
 	 * @param approveIssueMessage a serialized proof showing 
-	 * the issued receipt (see IssueReceiptRequest in
+	 * the issued receipt (see ReceiptIssueApprove in
 	 * bverifyprotocolapi.proto)
 	 * @return a serialized witness and signature (see Signature in
 	 * bverifyprotocolapi.proto)
@@ -27,7 +27,7 @@ public interface BVerifyProtocolClientAPI extends Remote {
 	 * approve a redeemed receipt. If the client approves, 
 	 * she releases a signature
 	 * @param approveRedeemMessage a serialized proof showing 
-	 * the redeemed receipt (see RedeemReceiptRequest in
+	 * the redeemed receipt (see ReceiptRedeemApprove in
 	 * bverifyprotocolapi.proto)
 	 * @return a serialized witness and signature (see Signature in
 	 * bverifyprotocolapi.proto)
@@ -39,7 +39,7 @@ public interface BVerifyProtocolClientAPI extends Remote {
 	 * approve a receipt transfer. If the client approves,
 	 * she releases a signature
 	 * @param approveTransferMessage a serialized proof showing 
-	 * the transferred receipt (see TransferReceiptRequest in 
+	 * the transferred receipt (see ReceiptTransferApprove in 
 	 * bverfiyprotocolapi.proto)
 	 * @return a serialized witness and signature (see Signature in 
 	 * bverifyprotocolapi.proto)

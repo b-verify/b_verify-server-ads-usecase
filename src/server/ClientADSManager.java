@@ -69,7 +69,7 @@ public class ClientADSManager {
 	 */
 	public void saveADS(final AuthenticatedSetServer ads,final byte[] adsKey) {
 		String fileName = Utils.byteArrayAsHexString(adsKey);
-		byte[] serialized = ads.serialize();
+		byte[] serialized = ads.serialize().toByteArray();
 		try {
 			File f = new File(base+fileName);
 			FileOutputStream fos = new FileOutputStream(f);
@@ -82,7 +82,7 @@ public class ClientADSManager {
 	
 	public boolean preCommitADS(final AuthenticatedSetServer ads, final byte[] adsKey) {
 		String fileName = base+Utils.byteArrayAsHexString(adsKey)+TMP;
-		byte[] serialized = ads.serialize();
+		byte[] serialized = ads.serialize().toByteArray();
 		try {
 			File f = new File(fileName);
 			if(f.exists()) {
