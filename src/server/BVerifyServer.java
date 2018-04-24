@@ -14,7 +14,6 @@ import crpyto.CryptographicDigest;
 import crpyto.CryptographicUtils;
 import pki.Account;
 import pki.PKIDirectory;
-import mpt.set.AuthenticatedSetClient;
 import mpt.set.AuthenticatedSetServer;
 import mpt.set.MPTSetFull;
 import mpt.set.MPTSetPartial;
@@ -22,6 +21,7 @@ import serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest;
 import serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest;
 import serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest;
 import serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest;
+import serialization.MptSerialization.MerklePrefixTrie;
 
 public class BVerifyServer implements BVerifyProtocolServerAPI {
 
@@ -191,7 +191,7 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			if(!ads1.inSet(receiptHash)) {
 				return false;
 			}	
-			byte[] proofCurrentOwnerAdsOld = (new MPTSetPartial(ads1, receiptHash)).serialize();
+			MerklePrefixTrie proofCurrentOwnerAdsOld = (new MPTSetPartial(ads1, receiptHash)).serialize();
 			
 			Set<Account> ads2accounts = new HashSet<>();
 			ads2accounts.add(issuer);
@@ -202,8 +202,7 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			if(ads2.inSet(receiptHash)) {
 				return false;
 			}
-			byte[] proofNewOwnerAdsOld = (new MPTSetPartial(ads2, receiptHash)).serialize();
-
+			MerklePrefixTrie proofNewOwnerAdsOld = (new MPTSetPartial(ads2, receiptHash)).serialize();
 			
 			// now move the receipt from one ads to the other and 
 			// create the corresponding proofs
@@ -211,9 +210,9 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			ads2.insert(receiptHash);
 			
 			byte[] currentOwnerAdsValueNew = ads1.commitment();
-			byte[] proofCurrentOwnerAdsNew = (new MPTSetPartial(ads1, receiptHash)).serialize();
+			MerklePrefixTrie proofCurrentOwnerAdsNew = (new MPTSetPartial(ads1, receiptHash)).serialize();
 			byte[] newOwnerAdsValueNew = ads2.commitment();
-			byte[] proofNewOwnerAdsNew = (new MPTSetPartial(ads2, receiptHash)).serialize();
+			MerklePrefixTrie proofNewOwnerAdsNew = (new MPTSetPartial(ads2, receiptHash)).serialize();
 			
 			// pre-commit the new adses
 			this.clientadsManager.preCommitADS(ads1, ads1Key);
@@ -262,11 +261,43 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 
 	
 	private boolean attemptCommit() {
-		// start with issue requests
+		// pre-commit all the updates
 		for (IssueRequest ir : this.issueRequests) {
-		
+			this.serveradsManager.preCommitChange(ir.getADSKey(), ir.getNewValue());
 		}
-
+		for (RedeemRequest rr : this.redeemRequests) {
+			this.serveradsManager.preCommitChange(rr.getADSKey(), rr.getNewValue());
+		}
+		for (TransferRequest tr : this.transferRequests) {
+			this.serveradsManager.preCommitChange(tr.getCurrentOwnerAdsKey(), tr.getCurrentOwnerAdsValueNew());
+			this.serveradsManager.preCommitChange(tr.getNewOwnerAdsKey(), tr.getNewOwnerAdsValueNew());
+		}
+		
+		// add in the auth proof to all updates
+		for (IssueRequest ir : this.issueRequests) {
+			List<byte[]> keys = new ArrayList<>();
+			keys.add(ir.getADSKey());
+			MerklePrefixTrie authProof = this.serveradsManager.getProof(keys);
+			ir.setAuthenticationProof(authProof);
+		}
+		for (RedeemRequest rr : this.redeemRequests) {
+			List<byte[]> keys = new ArrayList<>();
+			keys.add(rr.getADSKey());
+			MerklePrefixTrie authProof = this.serveradsManager.getProof(keys);
+			rr.setAuthenticationProof(authProof);
+		}
+		for (TransferRequest tr : this.transferRequests) {
+			List<byte[]> keys = new ArrayList<>();
+			keys.add(tr.getCurrentOwnerAdsKey());
+			keys.add(tr.getNewOwnerAdsKey());
+			MerklePrefixTrie authProof = this.serveradsManager.getProof(keys);
+			tr.setAuthenticationProof(authProof);
+		}
+		
+		// send proofs and wait to collect the signature
+		
+		// commit or abort!
+		
 		return true;
 	}
 

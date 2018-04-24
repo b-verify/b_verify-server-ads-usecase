@@ -45,6 +45,10 @@ public class Account implements Serializable {
 		return id;
 	}
 	
+	public byte[] getIdAsBytes() {
+		return id.toString().getBytes();
+	}
+	
 	public Account(String firstName, String lastName) {
 		this.firstName = firstName;
 		this.lastName = lastName;

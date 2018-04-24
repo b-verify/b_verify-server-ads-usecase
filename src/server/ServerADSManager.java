@@ -1,6 +1,8 @@
 package server;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import mpt.dictionary.MPTDictionaryDelta;
 import mpt.dictionary.MPTDictionaryFull;
@@ -21,26 +23,59 @@ public class ServerADSManager {
 	// or some subset of them on disk
 	private List<MPTDictionaryDelta> deltas;
 	
+	// we keep a log of previous (key, value) mappings
+	// so that if we need to abort a commit they
+	// can be undone
+	private List<Map.Entry<byte[], byte[]>> undoLog;
+	
 	public ServerADSManager(String base) {
 		this.base = base;
 		this.ads = new MPTDictionaryFull();
+		this.undoLog = new ArrayList<>();
 	}
 	
-	public void proposeChange(byte[] key, byte[] value) {
-		
+	public void preCommitChange(byte[] key, byte[] value) {
+		byte[] currentValue = this.ads.get(value);
+		// save the old mapping in the undo log
+		this.undoLog.add(Map.entry(key, currentValue));
+		// make the change
+		this.ads.insert(key, value);
 	}
 	
-	public byte[] commitChanges() {
-		return null;
+	public boolean commitChanges() {
+		// save delta
+		MPTDictionaryDelta delta = new MPTDictionaryDelta(this.ads);
+		this.deltas.add(delta);
+		// clear the changes
+		this.ads.reset();
+		this.undoLog.clear();
+		return true;
+	}
+	
+	public boolean abortChanges() {
+		for(Map.Entry<byte[], byte[]> oldkv : this.undoLog) {
+			byte[] key = oldkv.getKey();
+			byte[] oldvalue = oldkv.getValue();
+			this.undoChange(key, oldvalue);
+		}
+		return true;
+	}
+	
+	private void undoChange(byte[] key, byte[] prevValue) {
+		if(prevValue == null) {
+			this.ads.delete(key);
+		}else {
+			this.ads.insert(key, prevValue);
+		}
 	}
 	
 	public byte[] get(byte[] key) {
 		return this.ads.get(key);
 	}
 	
-	public byte[] getProof(List<byte[]> keys) {
+	public MerklePrefixTrie getProof(List<byte[]> keys) {
 		MPTDictionaryPartial partial = new MPTDictionaryPartial(this.ads, keys);
-		return partial.serialize().toByteArray();
+		return partial.serialize();
 	}
 		
 	public byte[] getUpdate(int startingCommitNumber, 

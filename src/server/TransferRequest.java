@@ -1,6 +1,10 @@
 package server;
 
+import com.google.protobuf.ByteString;
+
 import pki.Account;
+import serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove;
+import serialization.MptSerialization.MerklePrefixTrie;
 
 public class TransferRequest {
 	
@@ -12,26 +16,28 @@ public class TransferRequest {
 	private final byte[] newOwnerAdsKey;
 	
 	private final byte[] currentOwnerAdsValueOld;
-	private final byte[] proofCurrentOwnerAdsOld;
+	private final MerklePrefixTrie proofCurrentOwnerAdsOld;
 	private final byte[] currentOwnerAdsValueNew;
-	private final byte[] proofCurrentOwnerAdsNew;
+	private final MerklePrefixTrie proofCurrentOwnerAdsNew;
 	private final byte[] newOwnerAdsValueOld;
-	private final byte[] proofNewOwnerAdsOld;
+	private final MerklePrefixTrie proofNewOwnerAdsOld;
 	private final byte[] newOwnerAdsValueNew;
-	private final byte[] proofNewOwnerAdsNew;
+	private final MerklePrefixTrie proofNewOwnerAdsNew;
+	
+	private MerklePrefixTrie authProof;
 	
 	
 	public TransferRequest(Account issuer, Account currentOwner,
 			Account newOwner, byte[] receiptHash, 
 			byte[] currentOwnerAdsKey, byte[] newOwnerAdsKey,
 			byte[] currentOwnerAdsValueOld,
-			byte[] proofCurrentOwnerAdsOld,
+			MerklePrefixTrie proofCurrentOwnerAdsOld,
 			byte[] currentOwnerAdsValueNew,
-			byte[] proofCurrentOwnerAdsNew,
+			MerklePrefixTrie proofCurrentOwnerAdsNew,
 			byte[] newOwnerAdsValueOld,
-			byte[] proofNewOwnerAdsOld,
+			MerklePrefixTrie proofNewOwnerAdsOld,
 			byte[] newOwnerAdsValueNew,
-			byte[] proofNewOwnerAdsNew) {
+			MerklePrefixTrie proofNewOwnerAdsNew) {
 		
 		this.issuer = issuer;
 		this.currentOwner = currentOwner;
@@ -88,7 +94,7 @@ public class TransferRequest {
 	}
 
 
-	public byte[] getProofCurrentOwnerAdsOld() {
+	public MerklePrefixTrie getProofCurrentOwnerAdsOld() {
 		return proofCurrentOwnerAdsOld;
 	}
 
@@ -98,7 +104,7 @@ public class TransferRequest {
 	}
 
 
-	public byte[] getProofCurrentOwnerAdsNew() {
+	public MerklePrefixTrie getProofCurrentOwnerAdsNew() {
 		return proofCurrentOwnerAdsNew;
 	}
 
@@ -108,7 +114,7 @@ public class TransferRequest {
 	}
 
 
-	public byte[] getProofNewOwnerAdsOld() {
+	public MerklePrefixTrie getProofNewOwnerAdsOld() {
 		return proofNewOwnerAdsOld;
 	}
 
@@ -118,8 +124,33 @@ public class TransferRequest {
 	}
 
 
-	public byte[] getProofNewOwnerAdsNew() {
+	public MerklePrefixTrie getProofNewOwnerAdsNew() {
 		return proofNewOwnerAdsNew;
 	}
-
+	
+	public void setAuthenticationProof(MerklePrefixTrie authProof) {
+		this.authProof = authProof;
+	}
+	
+	public MerklePrefixTrie getAuthenticationProof() {
+		return this.authProof;
+	}
+	
+	public ReceiptTransferApprove serialize() {
+		ReceiptTransferApprove.Builder request = ReceiptTransferApprove.newBuilder();
+		request.setIssuerId(ByteString.copyFrom(this.issuer.getIdAsBytes()));
+		request.setCurrentOwnerId(ByteString.copyFrom(this.currentOwner.getIdAsBytes()));
+		request.setNewOwnerId(ByteString.copyFrom(this.newOwner.getIdAsBytes()));
+		request.setReceiptHash(ByteString.copyFrom(this.receiptHash));
+		request.setOriginProof(this.proofCurrentOwnerAdsOld);
+		request.setAddedProof(this.proofNewOwnerAdsNew);
+		request.setRemovedProof(this.proofCurrentOwnerAdsNew);
+		if(this.authProof == null) {
+			throw new RuntimeException("tried to serialize a "
+					+ "request without the authentication proof");
+		}
+		request.setAuthenticationProof(this.authProof);
+		return request.build();
+	}
+	
 }

@@ -1,6 +1,7 @@
 package mpt.set;
 
 import mpt.core.InsufficientAuthenticationDataException;
+import serialization.MptSerialization.MerklePrefixTrie;
 
 /**
  * This "client" version of the authenticated set.
@@ -38,5 +39,11 @@ public interface AuthenticatedSetClient {
 	 */
 	public byte[] commitment();
 
-	byte[] serialize();
+	/**
+	 * Returns a protobuf serialization of this 
+	 * data structure that can easily be 
+	 * converted to bytes and sent on the wire.
+	 * @return
+	 */
+	MerklePrefixTrie serialize();
 }

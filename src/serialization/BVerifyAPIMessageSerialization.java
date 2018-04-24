@@ -3033,20 +3033,30 @@ public final class BVerifyAPIMessageSerialization {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>bytes receipt_data = 1;</code>
+     * <code>bytes issuer_id = 1;</code>
+     */
+    com.google.protobuf.ByteString getIssuerId();
+
+    /**
+     * <code>bytes recepient_id = 2;</code>
+     */
+    com.google.protobuf.ByteString getRecepientId();
+
+    /**
+     * <code>bytes receipt_data = 3;</code>
      */
     com.google.protobuf.ByteString getReceiptData();
 
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
      */
     boolean hasAuthenticationProof();
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
      */
     serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof();
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
      */
     serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder();
   }
@@ -3068,6 +3078,8 @@ public final class BVerifyAPIMessageSerialization {
       super(builder);
     }
     private ReceiptIssueApprove() {
+      issuerId_ = com.google.protobuf.ByteString.EMPTY;
+      recepientId_ = com.google.protobuf.ByteString.EMPTY;
       receiptData_ = com.google.protobuf.ByteString.EMPTY;
     }
 
@@ -3104,10 +3116,20 @@ public final class BVerifyAPIMessageSerialization {
             }
             case 10: {
 
-              receiptData_ = input.readBytes();
+              issuerId_ = input.readBytes();
               break;
             }
             case 18: {
+
+              recepientId_ = input.readBytes();
+              break;
+            }
+            case 26: {
+
+              receiptData_ = input.readBytes();
+              break;
+            }
+            case 34: {
               serialization.MptSerialization.MerklePrefixTrie.Builder subBuilder = null;
               if (authenticationProof_ != null) {
                 subBuilder = authenticationProof_.toBuilder();
@@ -3144,31 +3166,49 @@ public final class BVerifyAPIMessageSerialization {
               serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove.class, serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove.Builder.class);
     }
 
-    public static final int RECEIPT_DATA_FIELD_NUMBER = 1;
+    public static final int ISSUER_ID_FIELD_NUMBER = 1;
+    private com.google.protobuf.ByteString issuerId_;
+    /**
+     * <code>bytes issuer_id = 1;</code>
+     */
+    public com.google.protobuf.ByteString getIssuerId() {
+      return issuerId_;
+    }
+
+    public static final int RECEPIENT_ID_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString recepientId_;
+    /**
+     * <code>bytes recepient_id = 2;</code>
+     */
+    public com.google.protobuf.ByteString getRecepientId() {
+      return recepientId_;
+    }
+
+    public static final int RECEIPT_DATA_FIELD_NUMBER = 3;
     private com.google.protobuf.ByteString receiptData_;
     /**
-     * <code>bytes receipt_data = 1;</code>
+     * <code>bytes receipt_data = 3;</code>
      */
     public com.google.protobuf.ByteString getReceiptData() {
       return receiptData_;
     }
 
-    public static final int AUTHENTICATION_PROOF_FIELD_NUMBER = 2;
+    public static final int AUTHENTICATION_PROOF_FIELD_NUMBER = 4;
     private serialization.MptSerialization.MerklePrefixTrie authenticationProof_;
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
      */
     public boolean hasAuthenticationProof() {
       return authenticationProof_ != null;
     }
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
      */
     public serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof() {
       return authenticationProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : authenticationProof_;
     }
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
      */
     public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder() {
       return getAuthenticationProof();
@@ -3186,11 +3226,17 @@ public final class BVerifyAPIMessageSerialization {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (!issuerId_.isEmpty()) {
+        output.writeBytes(1, issuerId_);
+      }
+      if (!recepientId_.isEmpty()) {
+        output.writeBytes(2, recepientId_);
+      }
       if (!receiptData_.isEmpty()) {
-        output.writeBytes(1, receiptData_);
+        output.writeBytes(3, receiptData_);
       }
       if (authenticationProof_ != null) {
-        output.writeMessage(2, getAuthenticationProof());
+        output.writeMessage(4, getAuthenticationProof());
       }
       unknownFields.writeTo(output);
     }
@@ -3200,13 +3246,21 @@ public final class BVerifyAPIMessageSerialization {
       if (size != -1) return size;
 
       size = 0;
+      if (!issuerId_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, issuerId_);
+      }
+      if (!recepientId_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, recepientId_);
+      }
       if (!receiptData_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, receiptData_);
+          .computeBytesSize(3, receiptData_);
       }
       if (authenticationProof_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getAuthenticationProof());
+          .computeMessageSize(4, getAuthenticationProof());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3224,6 +3278,10 @@ public final class BVerifyAPIMessageSerialization {
       serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove other = (serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove) obj;
 
       boolean result = true;
+      result = result && getIssuerId()
+          .equals(other.getIssuerId());
+      result = result && getRecepientId()
+          .equals(other.getRecepientId());
       result = result && getReceiptData()
           .equals(other.getReceiptData());
       result = result && (hasAuthenticationProof() == other.hasAuthenticationProof());
@@ -3242,6 +3300,10 @@ public final class BVerifyAPIMessageSerialization {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ISSUER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getIssuerId().hashCode();
+      hash = (37 * hash) + RECEPIENT_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getRecepientId().hashCode();
       hash = (37 * hash) + RECEIPT_DATA_FIELD_NUMBER;
       hash = (53 * hash) + getReceiptData().hashCode();
       if (hasAuthenticationProof()) {
@@ -3382,6 +3444,10 @@ public final class BVerifyAPIMessageSerialization {
       }
       public Builder clear() {
         super.clear();
+        issuerId_ = com.google.protobuf.ByteString.EMPTY;
+
+        recepientId_ = com.google.protobuf.ByteString.EMPTY;
+
         receiptData_ = com.google.protobuf.ByteString.EMPTY;
 
         if (authenticationProofBuilder_ == null) {
@@ -3412,6 +3478,8 @@ public final class BVerifyAPIMessageSerialization {
 
       public serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove buildPartial() {
         serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove result = new serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove(this);
+        result.issuerId_ = issuerId_;
+        result.recepientId_ = recepientId_;
         result.receiptData_ = receiptData_;
         if (authenticationProofBuilder_ == null) {
           result.authenticationProof_ = authenticationProof_;
@@ -3459,6 +3527,12 @@ public final class BVerifyAPIMessageSerialization {
 
       public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove other) {
         if (other == serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove.getDefaultInstance()) return this;
+        if (other.getIssuerId() != com.google.protobuf.ByteString.EMPTY) {
+          setIssuerId(other.getIssuerId());
+        }
+        if (other.getRecepientId() != com.google.protobuf.ByteString.EMPTY) {
+          setRecepientId(other.getRecepientId());
+        }
         if (other.getReceiptData() != com.google.protobuf.ByteString.EMPTY) {
           setReceiptData(other.getReceiptData());
         }
@@ -3492,15 +3566,73 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
 
+      private com.google.protobuf.ByteString issuerId_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes issuer_id = 1;</code>
+       */
+      public com.google.protobuf.ByteString getIssuerId() {
+        return issuerId_;
+      }
+      /**
+       * <code>bytes issuer_id = 1;</code>
+       */
+      public Builder setIssuerId(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        issuerId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes issuer_id = 1;</code>
+       */
+      public Builder clearIssuerId() {
+        
+        issuerId_ = getDefaultInstance().getIssuerId();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString recepientId_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes recepient_id = 2;</code>
+       */
+      public com.google.protobuf.ByteString getRecepientId() {
+        return recepientId_;
+      }
+      /**
+       * <code>bytes recepient_id = 2;</code>
+       */
+      public Builder setRecepientId(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        recepientId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes recepient_id = 2;</code>
+       */
+      public Builder clearRecepientId() {
+        
+        recepientId_ = getDefaultInstance().getRecepientId();
+        onChanged();
+        return this;
+      }
+
       private com.google.protobuf.ByteString receiptData_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>bytes receipt_data = 1;</code>
+       * <code>bytes receipt_data = 3;</code>
        */
       public com.google.protobuf.ByteString getReceiptData() {
         return receiptData_;
       }
       /**
-       * <code>bytes receipt_data = 1;</code>
+       * <code>bytes receipt_data = 3;</code>
        */
       public Builder setReceiptData(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -3512,7 +3644,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>bytes receipt_data = 1;</code>
+       * <code>bytes receipt_data = 3;</code>
        */
       public Builder clearReceiptData() {
         
@@ -3525,13 +3657,13 @@ public final class BVerifyAPIMessageSerialization {
       private com.google.protobuf.SingleFieldBuilderV3<
           serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> authenticationProofBuilder_;
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public boolean hasAuthenticationProof() {
         return authenticationProofBuilder_ != null || authenticationProof_ != null;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof() {
         if (authenticationProofBuilder_ == null) {
@@ -3541,7 +3673,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public Builder setAuthenticationProof(serialization.MptSerialization.MerklePrefixTrie value) {
         if (authenticationProofBuilder_ == null) {
@@ -3557,7 +3689,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public Builder setAuthenticationProof(
           serialization.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
@@ -3571,7 +3703,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public Builder mergeAuthenticationProof(serialization.MptSerialization.MerklePrefixTrie value) {
         if (authenticationProofBuilder_ == null) {
@@ -3589,7 +3721,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public Builder clearAuthenticationProof() {
         if (authenticationProofBuilder_ == null) {
@@ -3603,7 +3735,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrie.Builder getAuthenticationProofBuilder() {
         
@@ -3611,7 +3743,7 @@ public final class BVerifyAPIMessageSerialization {
         return getAuthenticationProofFieldBuilder().getBuilder();
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder() {
         if (authenticationProofBuilder_ != null) {
@@ -3622,7 +3754,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
@@ -3691,20 +3823,30 @@ public final class BVerifyAPIMessageSerialization {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>bytes receipt_hash = 1;</code>
+     * <code>bytes issuer_id = 1;</code>
+     */
+    com.google.protobuf.ByteString getIssuerId();
+
+    /**
+     * <code>bytes owner_id = 2;</code>
+     */
+    com.google.protobuf.ByteString getOwnerId();
+
+    /**
+     * <code>bytes receipt_hash = 3;</code>
      */
     com.google.protobuf.ByteString getReceiptHash();
 
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
      */
     boolean hasAuthenticationProof();
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
      */
     serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof();
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
      */
     serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder();
   }
@@ -3726,6 +3868,8 @@ public final class BVerifyAPIMessageSerialization {
       super(builder);
     }
     private ReceiptRedeemApprove() {
+      issuerId_ = com.google.protobuf.ByteString.EMPTY;
+      ownerId_ = com.google.protobuf.ByteString.EMPTY;
       receiptHash_ = com.google.protobuf.ByteString.EMPTY;
     }
 
@@ -3762,10 +3906,20 @@ public final class BVerifyAPIMessageSerialization {
             }
             case 10: {
 
-              receiptHash_ = input.readBytes();
+              issuerId_ = input.readBytes();
               break;
             }
             case 18: {
+
+              ownerId_ = input.readBytes();
+              break;
+            }
+            case 26: {
+
+              receiptHash_ = input.readBytes();
+              break;
+            }
+            case 34: {
               serialization.MptSerialization.MerklePrefixTrie.Builder subBuilder = null;
               if (authenticationProof_ != null) {
                 subBuilder = authenticationProof_.toBuilder();
@@ -3802,31 +3956,49 @@ public final class BVerifyAPIMessageSerialization {
               serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove.class, serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove.Builder.class);
     }
 
-    public static final int RECEIPT_HASH_FIELD_NUMBER = 1;
+    public static final int ISSUER_ID_FIELD_NUMBER = 1;
+    private com.google.protobuf.ByteString issuerId_;
+    /**
+     * <code>bytes issuer_id = 1;</code>
+     */
+    public com.google.protobuf.ByteString getIssuerId() {
+      return issuerId_;
+    }
+
+    public static final int OWNER_ID_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString ownerId_;
+    /**
+     * <code>bytes owner_id = 2;</code>
+     */
+    public com.google.protobuf.ByteString getOwnerId() {
+      return ownerId_;
+    }
+
+    public static final int RECEIPT_HASH_FIELD_NUMBER = 3;
     private com.google.protobuf.ByteString receiptHash_;
     /**
-     * <code>bytes receipt_hash = 1;</code>
+     * <code>bytes receipt_hash = 3;</code>
      */
     public com.google.protobuf.ByteString getReceiptHash() {
       return receiptHash_;
     }
 
-    public static final int AUTHENTICATION_PROOF_FIELD_NUMBER = 2;
+    public static final int AUTHENTICATION_PROOF_FIELD_NUMBER = 4;
     private serialization.MptSerialization.MerklePrefixTrie authenticationProof_;
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
      */
     public boolean hasAuthenticationProof() {
       return authenticationProof_ != null;
     }
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
      */
     public serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof() {
       return authenticationProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : authenticationProof_;
     }
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
      */
     public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder() {
       return getAuthenticationProof();
@@ -3844,11 +4016,17 @@ public final class BVerifyAPIMessageSerialization {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (!issuerId_.isEmpty()) {
+        output.writeBytes(1, issuerId_);
+      }
+      if (!ownerId_.isEmpty()) {
+        output.writeBytes(2, ownerId_);
+      }
       if (!receiptHash_.isEmpty()) {
-        output.writeBytes(1, receiptHash_);
+        output.writeBytes(3, receiptHash_);
       }
       if (authenticationProof_ != null) {
-        output.writeMessage(2, getAuthenticationProof());
+        output.writeMessage(4, getAuthenticationProof());
       }
       unknownFields.writeTo(output);
     }
@@ -3858,13 +4036,21 @@ public final class BVerifyAPIMessageSerialization {
       if (size != -1) return size;
 
       size = 0;
+      if (!issuerId_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, issuerId_);
+      }
+      if (!ownerId_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, ownerId_);
+      }
       if (!receiptHash_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, receiptHash_);
+          .computeBytesSize(3, receiptHash_);
       }
       if (authenticationProof_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getAuthenticationProof());
+          .computeMessageSize(4, getAuthenticationProof());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3882,6 +4068,10 @@ public final class BVerifyAPIMessageSerialization {
       serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove other = (serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove) obj;
 
       boolean result = true;
+      result = result && getIssuerId()
+          .equals(other.getIssuerId());
+      result = result && getOwnerId()
+          .equals(other.getOwnerId());
       result = result && getReceiptHash()
           .equals(other.getReceiptHash());
       result = result && (hasAuthenticationProof() == other.hasAuthenticationProof());
@@ -3900,6 +4090,10 @@ public final class BVerifyAPIMessageSerialization {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ISSUER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getIssuerId().hashCode();
+      hash = (37 * hash) + OWNER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getOwnerId().hashCode();
       hash = (37 * hash) + RECEIPT_HASH_FIELD_NUMBER;
       hash = (53 * hash) + getReceiptHash().hashCode();
       if (hasAuthenticationProof()) {
@@ -4040,6 +4234,10 @@ public final class BVerifyAPIMessageSerialization {
       }
       public Builder clear() {
         super.clear();
+        issuerId_ = com.google.protobuf.ByteString.EMPTY;
+
+        ownerId_ = com.google.protobuf.ByteString.EMPTY;
+
         receiptHash_ = com.google.protobuf.ByteString.EMPTY;
 
         if (authenticationProofBuilder_ == null) {
@@ -4070,6 +4268,8 @@ public final class BVerifyAPIMessageSerialization {
 
       public serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove buildPartial() {
         serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove result = new serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove(this);
+        result.issuerId_ = issuerId_;
+        result.ownerId_ = ownerId_;
         result.receiptHash_ = receiptHash_;
         if (authenticationProofBuilder_ == null) {
           result.authenticationProof_ = authenticationProof_;
@@ -4117,6 +4317,12 @@ public final class BVerifyAPIMessageSerialization {
 
       public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove other) {
         if (other == serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove.getDefaultInstance()) return this;
+        if (other.getIssuerId() != com.google.protobuf.ByteString.EMPTY) {
+          setIssuerId(other.getIssuerId());
+        }
+        if (other.getOwnerId() != com.google.protobuf.ByteString.EMPTY) {
+          setOwnerId(other.getOwnerId());
+        }
         if (other.getReceiptHash() != com.google.protobuf.ByteString.EMPTY) {
           setReceiptHash(other.getReceiptHash());
         }
@@ -4150,15 +4356,73 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
 
+      private com.google.protobuf.ByteString issuerId_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes issuer_id = 1;</code>
+       */
+      public com.google.protobuf.ByteString getIssuerId() {
+        return issuerId_;
+      }
+      /**
+       * <code>bytes issuer_id = 1;</code>
+       */
+      public Builder setIssuerId(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        issuerId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes issuer_id = 1;</code>
+       */
+      public Builder clearIssuerId() {
+        
+        issuerId_ = getDefaultInstance().getIssuerId();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString ownerId_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes owner_id = 2;</code>
+       */
+      public com.google.protobuf.ByteString getOwnerId() {
+        return ownerId_;
+      }
+      /**
+       * <code>bytes owner_id = 2;</code>
+       */
+      public Builder setOwnerId(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        ownerId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes owner_id = 2;</code>
+       */
+      public Builder clearOwnerId() {
+        
+        ownerId_ = getDefaultInstance().getOwnerId();
+        onChanged();
+        return this;
+      }
+
       private com.google.protobuf.ByteString receiptHash_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>bytes receipt_hash = 1;</code>
+       * <code>bytes receipt_hash = 3;</code>
        */
       public com.google.protobuf.ByteString getReceiptHash() {
         return receiptHash_;
       }
       /**
-       * <code>bytes receipt_hash = 1;</code>
+       * <code>bytes receipt_hash = 3;</code>
        */
       public Builder setReceiptHash(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -4170,7 +4434,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>bytes receipt_hash = 1;</code>
+       * <code>bytes receipt_hash = 3;</code>
        */
       public Builder clearReceiptHash() {
         
@@ -4183,13 +4447,13 @@ public final class BVerifyAPIMessageSerialization {
       private com.google.protobuf.SingleFieldBuilderV3<
           serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> authenticationProofBuilder_;
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public boolean hasAuthenticationProof() {
         return authenticationProofBuilder_ != null || authenticationProof_ != null;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof() {
         if (authenticationProofBuilder_ == null) {
@@ -4199,7 +4463,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public Builder setAuthenticationProof(serialization.MptSerialization.MerklePrefixTrie value) {
         if (authenticationProofBuilder_ == null) {
@@ -4215,7 +4479,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public Builder setAuthenticationProof(
           serialization.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
@@ -4229,7 +4493,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public Builder mergeAuthenticationProof(serialization.MptSerialization.MerklePrefixTrie value) {
         if (authenticationProofBuilder_ == null) {
@@ -4247,7 +4511,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public Builder clearAuthenticationProof() {
         if (authenticationProofBuilder_ == null) {
@@ -4261,7 +4525,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrie.Builder getAuthenticationProofBuilder() {
         
@@ -4269,7 +4533,7 @@ public final class BVerifyAPIMessageSerialization {
         return getAuthenticationProofFieldBuilder().getBuilder();
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder() {
         if (authenticationProofBuilder_ != null) {
@@ -4280,7 +4544,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 2;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
@@ -4369,41 +4633,54 @@ public final class BVerifyAPIMessageSerialization {
     com.google.protobuf.ByteString getReceiptHash();
 
     /**
-     * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+     * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+     */
+    boolean hasOriginProof();
+    /**
+     * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+     */
+    serialization.MptSerialization.MerklePrefixTrie getOriginProof();
+    /**
+     * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+     */
+    serialization.MptSerialization.MerklePrefixTrieOrBuilder getOriginProofOrBuilder();
+
+    /**
+     * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
      */
     boolean hasAddedProof();
     /**
-     * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+     * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
      */
     serialization.MptSerialization.MerklePrefixTrie getAddedProof();
     /**
-     * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+     * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
      */
     serialization.MptSerialization.MerklePrefixTrieOrBuilder getAddedProofOrBuilder();
 
     /**
-     * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+     * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
      */
     boolean hasRemovedProof();
     /**
-     * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+     * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
      */
     serialization.MptSerialization.MerklePrefixTrie getRemovedProof();
     /**
-     * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+     * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
      */
     serialization.MptSerialization.MerklePrefixTrieOrBuilder getRemovedProofOrBuilder();
 
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
      */
     boolean hasAuthenticationProof();
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
      */
     serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof();
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
      */
     serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder();
   }
@@ -4484,6 +4761,19 @@ public final class BVerifyAPIMessageSerialization {
             }
             case 42: {
               serialization.MptSerialization.MerklePrefixTrie.Builder subBuilder = null;
+              if (originProof_ != null) {
+                subBuilder = originProof_.toBuilder();
+              }
+              originProof_ = input.readMessage(serialization.MptSerialization.MerklePrefixTrie.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(originProof_);
+                originProof_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 50: {
+              serialization.MptSerialization.MerklePrefixTrie.Builder subBuilder = null;
               if (addedProof_ != null) {
                 subBuilder = addedProof_.toBuilder();
               }
@@ -4495,7 +4785,7 @@ public final class BVerifyAPIMessageSerialization {
 
               break;
             }
-            case 50: {
+            case 58: {
               serialization.MptSerialization.MerklePrefixTrie.Builder subBuilder = null;
               if (removedProof_ != null) {
                 subBuilder = removedProof_.toBuilder();
@@ -4508,7 +4798,7 @@ public final class BVerifyAPIMessageSerialization {
 
               break;
             }
-            case 58: {
+            case 66: {
               serialization.MptSerialization.MerklePrefixTrie.Builder subBuilder = null;
               if (authenticationProof_ != null) {
                 subBuilder = authenticationProof_.toBuilder();
@@ -4581,64 +4871,85 @@ public final class BVerifyAPIMessageSerialization {
       return receiptHash_;
     }
 
-    public static final int ADDED_PROOF_FIELD_NUMBER = 5;
+    public static final int ORIGIN_PROOF_FIELD_NUMBER = 5;
+    private serialization.MptSerialization.MerklePrefixTrie originProof_;
+    /**
+     * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+     */
+    public boolean hasOriginProof() {
+      return originProof_ != null;
+    }
+    /**
+     * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+     */
+    public serialization.MptSerialization.MerklePrefixTrie getOriginProof() {
+      return originProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : originProof_;
+    }
+    /**
+     * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+     */
+    public serialization.MptSerialization.MerklePrefixTrieOrBuilder getOriginProofOrBuilder() {
+      return getOriginProof();
+    }
+
+    public static final int ADDED_PROOF_FIELD_NUMBER = 6;
     private serialization.MptSerialization.MerklePrefixTrie addedProof_;
     /**
-     * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+     * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
      */
     public boolean hasAddedProof() {
       return addedProof_ != null;
     }
     /**
-     * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+     * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
      */
     public serialization.MptSerialization.MerklePrefixTrie getAddedProof() {
       return addedProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : addedProof_;
     }
     /**
-     * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+     * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
      */
     public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAddedProofOrBuilder() {
       return getAddedProof();
     }
 
-    public static final int REMOVED_PROOF_FIELD_NUMBER = 6;
+    public static final int REMOVED_PROOF_FIELD_NUMBER = 7;
     private serialization.MptSerialization.MerklePrefixTrie removedProof_;
     /**
-     * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+     * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
      */
     public boolean hasRemovedProof() {
       return removedProof_ != null;
     }
     /**
-     * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+     * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
      */
     public serialization.MptSerialization.MerklePrefixTrie getRemovedProof() {
       return removedProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : removedProof_;
     }
     /**
-     * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+     * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
      */
     public serialization.MptSerialization.MerklePrefixTrieOrBuilder getRemovedProofOrBuilder() {
       return getRemovedProof();
     }
 
-    public static final int AUTHENTICATION_PROOF_FIELD_NUMBER = 7;
+    public static final int AUTHENTICATION_PROOF_FIELD_NUMBER = 8;
     private serialization.MptSerialization.MerklePrefixTrie authenticationProof_;
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
      */
     public boolean hasAuthenticationProof() {
       return authenticationProof_ != null;
     }
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
      */
     public serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof() {
       return authenticationProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : authenticationProof_;
     }
     /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+     * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
      */
     public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder() {
       return getAuthenticationProof();
@@ -4668,14 +4979,17 @@ public final class BVerifyAPIMessageSerialization {
       if (!receiptHash_.isEmpty()) {
         output.writeBytes(4, receiptHash_);
       }
+      if (originProof_ != null) {
+        output.writeMessage(5, getOriginProof());
+      }
       if (addedProof_ != null) {
-        output.writeMessage(5, getAddedProof());
+        output.writeMessage(6, getAddedProof());
       }
       if (removedProof_ != null) {
-        output.writeMessage(6, getRemovedProof());
+        output.writeMessage(7, getRemovedProof());
       }
       if (authenticationProof_ != null) {
-        output.writeMessage(7, getAuthenticationProof());
+        output.writeMessage(8, getAuthenticationProof());
       }
       unknownFields.writeTo(output);
     }
@@ -4701,17 +5015,21 @@ public final class BVerifyAPIMessageSerialization {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(4, receiptHash_);
       }
+      if (originProof_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, getOriginProof());
+      }
       if (addedProof_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getAddedProof());
+          .computeMessageSize(6, getAddedProof());
       }
       if (removedProof_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, getRemovedProof());
+          .computeMessageSize(7, getRemovedProof());
       }
       if (authenticationProof_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, getAuthenticationProof());
+          .computeMessageSize(8, getAuthenticationProof());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4737,6 +5055,11 @@ public final class BVerifyAPIMessageSerialization {
           .equals(other.getNewOwnerId());
       result = result && getReceiptHash()
           .equals(other.getReceiptHash());
+      result = result && (hasOriginProof() == other.hasOriginProof());
+      if (hasOriginProof()) {
+        result = result && getOriginProof()
+            .equals(other.getOriginProof());
+      }
       result = result && (hasAddedProof() == other.hasAddedProof());
       if (hasAddedProof()) {
         result = result && getAddedProof()
@@ -4771,6 +5094,10 @@ public final class BVerifyAPIMessageSerialization {
       hash = (53 * hash) + getNewOwnerId().hashCode();
       hash = (37 * hash) + RECEIPT_HASH_FIELD_NUMBER;
       hash = (53 * hash) + getReceiptHash().hashCode();
+      if (hasOriginProof()) {
+        hash = (37 * hash) + ORIGIN_PROOF_FIELD_NUMBER;
+        hash = (53 * hash) + getOriginProof().hashCode();
+      }
       if (hasAddedProof()) {
         hash = (37 * hash) + ADDED_PROOF_FIELD_NUMBER;
         hash = (53 * hash) + getAddedProof().hashCode();
@@ -4925,6 +5252,12 @@ public final class BVerifyAPIMessageSerialization {
 
         receiptHash_ = com.google.protobuf.ByteString.EMPTY;
 
+        if (originProofBuilder_ == null) {
+          originProof_ = null;
+        } else {
+          originProof_ = null;
+          originProofBuilder_ = null;
+        }
         if (addedProofBuilder_ == null) {
           addedProof_ = null;
         } else {
@@ -4969,6 +5302,11 @@ public final class BVerifyAPIMessageSerialization {
         result.currentOwnerId_ = currentOwnerId_;
         result.newOwnerId_ = newOwnerId_;
         result.receiptHash_ = receiptHash_;
+        if (originProofBuilder_ == null) {
+          result.originProof_ = originProof_;
+        } else {
+          result.originProof_ = originProofBuilder_.build();
+        }
         if (addedProofBuilder_ == null) {
           result.addedProof_ = addedProof_;
         } else {
@@ -5036,6 +5374,9 @@ public final class BVerifyAPIMessageSerialization {
         }
         if (other.getReceiptHash() != com.google.protobuf.ByteString.EMPTY) {
           setReceiptHash(other.getReceiptHash());
+        }
+        if (other.hasOriginProof()) {
+          mergeOriginProof(other.getOriginProof());
         }
         if (other.hasAddedProof()) {
           mergeAddedProof(other.getAddedProof());
@@ -5189,17 +5530,134 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
 
+      private serialization.MptSerialization.MerklePrefixTrie originProof_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> originProofBuilder_;
+      /**
+       * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+       */
+      public boolean hasOriginProof() {
+        return originProofBuilder_ != null || originProof_ != null;
+      }
+      /**
+       * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+       */
+      public serialization.MptSerialization.MerklePrefixTrie getOriginProof() {
+        if (originProofBuilder_ == null) {
+          return originProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : originProof_;
+        } else {
+          return originProofBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+       */
+      public Builder setOriginProof(serialization.MptSerialization.MerklePrefixTrie value) {
+        if (originProofBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          originProof_ = value;
+          onChanged();
+        } else {
+          originProofBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+       */
+      public Builder setOriginProof(
+          serialization.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
+        if (originProofBuilder_ == null) {
+          originProof_ = builderForValue.build();
+          onChanged();
+        } else {
+          originProofBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+       */
+      public Builder mergeOriginProof(serialization.MptSerialization.MerklePrefixTrie value) {
+        if (originProofBuilder_ == null) {
+          if (originProof_ != null) {
+            originProof_ =
+              serialization.MptSerialization.MerklePrefixTrie.newBuilder(originProof_).mergeFrom(value).buildPartial();
+          } else {
+            originProof_ = value;
+          }
+          onChanged();
+        } else {
+          originProofBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+       */
+      public Builder clearOriginProof() {
+        if (originProofBuilder_ == null) {
+          originProof_ = null;
+          onChanged();
+        } else {
+          originProof_ = null;
+          originProofBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+       */
+      public serialization.MptSerialization.MerklePrefixTrie.Builder getOriginProofBuilder() {
+        
+        onChanged();
+        return getOriginProofFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+       */
+      public serialization.MptSerialization.MerklePrefixTrieOrBuilder getOriginProofOrBuilder() {
+        if (originProofBuilder_ != null) {
+          return originProofBuilder_.getMessageOrBuilder();
+        } else {
+          return originProof_ == null ?
+              serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : originProof_;
+        }
+      }
+      /**
+       * <code>.serialization.MerklePrefixTrie origin_proof = 5;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
+          getOriginProofFieldBuilder() {
+        if (originProofBuilder_ == null) {
+          originProofBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder>(
+                  getOriginProof(),
+                  getParentForChildren(),
+                  isClean());
+          originProof_ = null;
+        }
+        return originProofBuilder_;
+      }
+
       private serialization.MptSerialization.MerklePrefixTrie addedProof_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
           serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> addedProofBuilder_;
       /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+       * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
        */
       public boolean hasAddedProof() {
         return addedProofBuilder_ != null || addedProof_ != null;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+       * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrie getAddedProof() {
         if (addedProofBuilder_ == null) {
@@ -5209,7 +5667,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+       * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
        */
       public Builder setAddedProof(serialization.MptSerialization.MerklePrefixTrie value) {
         if (addedProofBuilder_ == null) {
@@ -5225,7 +5683,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+       * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
        */
       public Builder setAddedProof(
           serialization.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
@@ -5239,7 +5697,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+       * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
        */
       public Builder mergeAddedProof(serialization.MptSerialization.MerklePrefixTrie value) {
         if (addedProofBuilder_ == null) {
@@ -5257,7 +5715,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+       * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
        */
       public Builder clearAddedProof() {
         if (addedProofBuilder_ == null) {
@@ -5271,7 +5729,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+       * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrie.Builder getAddedProofBuilder() {
         
@@ -5279,7 +5737,7 @@ public final class BVerifyAPIMessageSerialization {
         return getAddedProofFieldBuilder().getBuilder();
       }
       /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+       * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAddedProofOrBuilder() {
         if (addedProofBuilder_ != null) {
@@ -5290,7 +5748,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
+       * <code>.serialization.MerklePrefixTrie added_proof = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
@@ -5310,13 +5768,13 @@ public final class BVerifyAPIMessageSerialization {
       private com.google.protobuf.SingleFieldBuilderV3<
           serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> removedProofBuilder_;
       /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+       * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
        */
       public boolean hasRemovedProof() {
         return removedProofBuilder_ != null || removedProof_ != null;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+       * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrie getRemovedProof() {
         if (removedProofBuilder_ == null) {
@@ -5326,7 +5784,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+       * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
        */
       public Builder setRemovedProof(serialization.MptSerialization.MerklePrefixTrie value) {
         if (removedProofBuilder_ == null) {
@@ -5342,7 +5800,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+       * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
        */
       public Builder setRemovedProof(
           serialization.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
@@ -5356,7 +5814,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+       * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
        */
       public Builder mergeRemovedProof(serialization.MptSerialization.MerklePrefixTrie value) {
         if (removedProofBuilder_ == null) {
@@ -5374,7 +5832,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+       * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
        */
       public Builder clearRemovedProof() {
         if (removedProofBuilder_ == null) {
@@ -5388,7 +5846,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+       * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrie.Builder getRemovedProofBuilder() {
         
@@ -5396,7 +5854,7 @@ public final class BVerifyAPIMessageSerialization {
         return getRemovedProofFieldBuilder().getBuilder();
       }
       /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+       * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrieOrBuilder getRemovedProofOrBuilder() {
         if (removedProofBuilder_ != null) {
@@ -5407,7 +5865,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
+       * <code>.serialization.MerklePrefixTrie removed_proof = 7;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
@@ -5427,13 +5885,13 @@ public final class BVerifyAPIMessageSerialization {
       private com.google.protobuf.SingleFieldBuilderV3<
           serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> authenticationProofBuilder_;
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
        */
       public boolean hasAuthenticationProof() {
         return authenticationProofBuilder_ != null || authenticationProof_ != null;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof() {
         if (authenticationProofBuilder_ == null) {
@@ -5443,7 +5901,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
        */
       public Builder setAuthenticationProof(serialization.MptSerialization.MerklePrefixTrie value) {
         if (authenticationProofBuilder_ == null) {
@@ -5459,7 +5917,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
        */
       public Builder setAuthenticationProof(
           serialization.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
@@ -5473,7 +5931,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
        */
       public Builder mergeAuthenticationProof(serialization.MptSerialization.MerklePrefixTrie value) {
         if (authenticationProofBuilder_ == null) {
@@ -5491,7 +5949,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
        */
       public Builder clearAuthenticationProof() {
         if (authenticationProofBuilder_ == null) {
@@ -5505,7 +5963,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrie.Builder getAuthenticationProofBuilder() {
         
@@ -5513,7 +5971,7 @@ public final class BVerifyAPIMessageSerialization {
         return getAuthenticationProofFieldBuilder().getBuilder();
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
        */
       public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder() {
         if (authenticationProofBuilder_ != null) {
@@ -5524,7 +5982,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
+       * <code>.serialization.MerklePrefixTrie authentication_proof = 8;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
@@ -6420,22 +6878,26 @@ public final class BVerifyAPIMessageSerialization {
       "id\030\003 \001(\014\022\024\n\014receipt_hash\030\004 \001(\014\"=\n\021GetUpd" +
       "atesRequest\022\032\n\022from_commit_number\030\001 \001(\005\022" +
       "\014\n\004keys\030\002 \003(\014\"1\n\tSignature\022\021\n\tsigner_id\030" +
-      "\001 \001(\014\022\021\n\tsignature\030\002 \001(\014\"j\n\023ReceiptIssue" +
-      "Approve\022\024\n\014receipt_data\030\001 \001(\014\022=\n\024authent" +
-      "ication_proof\030\002 \001(\0132\037.serialization.Merk" +
-      "lePrefixTrie\"k\n\024ReceiptRedeemApprove\022\024\n\014" +
-      "receipt_hash\030\001 \001(\014\022=\n\024authentication_pro" +
-      "of\030\002 \001(\0132\037.serialization.MerklePrefixTri" +
-      "e\"\236\002\n\026ReceiptTransferApprove\022\021\n\tissuer_i" +
+      "\001 \001(\014\022\021\n\tsignature\030\002 \001(\014\"\223\001\n\023ReceiptIssu" +
+      "eApprove\022\021\n\tissuer_id\030\001 \001(\014\022\024\n\014recepient" +
+      "_id\030\002 \001(\014\022\024\n\014receipt_data\030\003 \001(\014\022=\n\024authe" +
+      "ntication_proof\030\004 \001(\0132\037.serialization.Me" +
+      "rklePrefixTrie\"\220\001\n\024ReceiptRedeemApprove\022" +
+      "\021\n\tissuer_id\030\001 \001(\014\022\020\n\010owner_id\030\002 \001(\014\022\024\n\014" +
+      "receipt_hash\030\003 \001(\014\022=\n\024authentication_pro" +
+      "of\030\004 \001(\0132\037.serialization.MerklePrefixTri" +
+      "e\"\325\002\n\026ReceiptTransferApprove\022\021\n\tissuer_i" +
       "d\030\001 \001(\014\022\030\n\020current_owner_id\030\002 \001(\014\022\024\n\014new" +
-      "_owner_id\030\003 \001(\014\022\024\n\014receipt_hash\030\004 \001(\014\0224\n" +
-      "\013added_proof\030\005 \001(\0132\037.serialization.Merkl" +
-      "ePrefixTrie\0226\n\rremoved_proof\030\006 \001(\0132\037.ser" +
-      "ialization.MerklePrefixTrie\022=\n\024authentic" +
-      "ation_proof\030\007 \001(\0132\037.serialization.Merkle" +
-      "PrefixTrie\":\n\007Updates\022/\n\006update\030\001 \003(\0132\037." +
-      "serialization.MerklePrefixTrieB B\036BVerif" +
-      "yAPIMessageSerializationb\006proto3"
+      "_owner_id\030\003 \001(\014\022\024\n\014receipt_hash\030\004 \001(\014\0225\n" +
+      "\014origin_proof\030\005 \001(\0132\037.serialization.Merk" +
+      "lePrefixTrie\0224\n\013added_proof\030\006 \001(\0132\037.seri" +
+      "alization.MerklePrefixTrie\0226\n\rremoved_pr" +
+      "oof\030\007 \001(\0132\037.serialization.MerklePrefixTr" +
+      "ie\022=\n\024authentication_proof\030\010 \001(\0132\037.seria" +
+      "lization.MerklePrefixTrie\":\n\007Updates\022/\n\006" +
+      "update\030\001 \003(\0132\037.serialization.MerklePrefi" +
+      "xTrieB B\036BVerifyAPIMessageSerializationb" +
+      "\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -6485,19 +6947,19 @@ public final class BVerifyAPIMessageSerialization {
     internal_static_serialization_ReceiptIssueApprove_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_serialization_ReceiptIssueApprove_descriptor,
-        new java.lang.String[] { "ReceiptData", "AuthenticationProof", });
+        new java.lang.String[] { "IssuerId", "RecepientId", "ReceiptData", "AuthenticationProof", });
     internal_static_serialization_ReceiptRedeemApprove_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_serialization_ReceiptRedeemApprove_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_serialization_ReceiptRedeemApprove_descriptor,
-        new java.lang.String[] { "ReceiptHash", "AuthenticationProof", });
+        new java.lang.String[] { "IssuerId", "OwnerId", "ReceiptHash", "AuthenticationProof", });
     internal_static_serialization_ReceiptTransferApprove_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_serialization_ReceiptTransferApprove_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_serialization_ReceiptTransferApprove_descriptor,
-        new java.lang.String[] { "IssuerId", "CurrentOwnerId", "NewOwnerId", "ReceiptHash", "AddedProof", "RemovedProof", "AuthenticationProof", });
+        new java.lang.String[] { "IssuerId", "CurrentOwnerId", "NewOwnerId", "ReceiptHash", "OriginProof", "AddedProof", "RemovedProof", "AuthenticationProof", });
     internal_static_serialization_Updates_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_serialization_Updates_fieldAccessorTable = new

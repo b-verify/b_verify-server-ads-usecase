@@ -1,6 +1,10 @@
 package server;
 
+import com.google.protobuf.ByteString;
+
 import pki.Account;
+import serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove;
+import serialization.MptSerialization.MerklePrefixTrie;
 
 public class RedeemRequest {
 	
@@ -10,6 +14,8 @@ public class RedeemRequest {
 	private final byte[] adsKey;
 	private final byte[] currentValue;
 	private final byte[] newValue;
+	
+	private MerklePrefixTrie authProof;
 	
 	public RedeemRequest(Account issuer, Account owner,
 			byte[] receiptHash, byte[] adsKey, byte[] currentValue,
@@ -44,6 +50,26 @@ public class RedeemRequest {
 	
 	public byte[] getNewValue() {
 		return this.newValue;
+	}
+	
+	public void setAuthenticationProof(MerklePrefixTrie authProof) {
+		this.authProof = authProof;
+	}
+	
+	public MerklePrefixTrie getAuthenticationProof() {
+		return this.authProof;
+	}
+	
+	public ReceiptRedeemApprove serialize() {
+		ReceiptRedeemApprove.Builder builder = ReceiptRedeemApprove.newBuilder();
+		builder.setIssuerId(ByteString.copyFrom(this.issuer.getIdAsBytes()));
+		builder.setOwnerId(ByteString.copyFrom(this.owner.getIdAsBytes()));
+		builder.setReceiptHash(ByteString.copyFrom(this.receiptHash));
+		if(this.authProof == null) {
+			throw new RuntimeException("cannot serialize this request without an authentication proof");
+		}
+		builder.setAuthenticationProof(this.authProof);
+		return builder.build();
 	}
 	
 }

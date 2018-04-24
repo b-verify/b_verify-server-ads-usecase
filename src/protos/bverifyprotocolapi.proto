@@ -65,16 +65,20 @@ message Signature {
 * A proof showing an issued receipt
 */
 message ReceiptIssueApprove {
-	bytes receipt_data = 1;
-	MerklePrefixTrie authentication_proof = 2;
+	bytes issuer_id = 1;
+	bytes recepient_id = 2;
+	bytes receipt_data = 3;
+	MerklePrefixTrie authentication_proof = 4;
 }
 
 /**
 * A proof showing a redeemed receipt
 */
 message ReceiptRedeemApprove {
-	bytes receipt_hash = 1;
-	MerklePrefixTrie authentication_proof = 2;
+	bytes issuer_id = 1;
+	bytes owner_id = 2;
+	bytes receipt_hash = 3;
+	MerklePrefixTrie authentication_proof = 4;
 }
 
 /**
@@ -85,9 +89,10 @@ message ReceiptTransferApprove {
 	bytes current_owner_id = 2;
 	bytes new_owner_id = 3;
 	bytes receipt_hash = 4;
-	MerklePrefixTrie added_proof = 5;
-	MerklePrefixTrie removed_proof = 6;
-	MerklePrefixTrie authentication_proof = 7;
+	MerklePrefixTrie origin_proof = 5;
+	MerklePrefixTrie added_proof = 6;
+	MerklePrefixTrie removed_proof = 7;
+	MerklePrefixTrie authentication_proof = 8;
 }
 
 /**
