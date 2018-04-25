@@ -10,7 +10,8 @@ import pki.Account;
 
 /**
  * This class contains the various cryptographic 
- * commitments used by the rest of the library
+ * commitments and mappings used by the 
+ * b_verify protocol
  * @author henryaspegren
  *
  */
@@ -33,6 +34,15 @@ public class CryptographicUtils {
 		return witness;
 	}
 	
+	/**
+	 * This method provides a deterministic mapping from a set of accounts 
+	 * to an ADS, returning a unique identifier for that ADS
+	 * 
+	 * @param accounts - the set of accounts 
+	 * @return a fixed-length unique identifier for the ADS (the "ADS Key"). 
+	 * This can be used to lookup the ADS and as a cryptographic 
+	 * commitment to that ADS.
+	 */
 	public static byte[] setOfAccountsToADSKey(Set<Account> accounts) {
 		List<UUID> uuids = new ArrayList<>();
 		for(Account a : accounts) {
@@ -50,9 +60,6 @@ public class CryptographicUtils {
 		
 		// and take the sha256 hash of it all to get the key
 		byte[] adsKey = CryptographicDigest.hash(preimage);
-		
 		return adsKey;
-		
 	}
-
 }

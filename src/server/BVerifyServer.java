@@ -26,6 +26,7 @@ import mpt.set.MPTSetFull;
 import mpt.set.MPTSetPartial;
 import pki.Account;
 import pki.PKIDirectory;
+import rmi.ClientProvider;
 import serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest;
 import serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest;
 import serialization.BVerifyAPIMessageSerialization.Receipt;
@@ -41,6 +42,11 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 	 */
 	protected final PKIDirectory pki;
 
+	/**
+	 * RMI (or other RPC framework) for sending requests
+	 */
+	protected final ClientProvider provider;
+	
 	/**
 	 * Client ADSes - stored on disk
 	 */
@@ -62,6 +68,7 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 	
 	public BVerifyServer(String base) {
 		this.pki = new PKIDirectory(base + "/pki/");
+		this.provider = new ClientProvider();
 		this.clientadsManager = new ClientADSManager(base + "/client-ads/");
 		this.serveradsManager = new ServerADSManager(base + "/server-ads/");
 		
@@ -279,12 +286,14 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 		}
 		
 		// now time to collect the approvals
+		byte[] commitmentToBeSigned = this.serveradsManager.commitment();
 		Collection<Callable<Boolean>> approvals = new ArrayList<Callable<Boolean>>();
 		
 		for (Request r : this.requests) {
 			byte[] message = r.serialize();
 			for (Account a : r.sendRequestTo()) {
-				MakeRequestCallback mr = new MakeRequestCallback(message, a);
+				MakeRequestVerifyResponseCallback mr = new MakeRequestVerifyResponseCallback(
+						message, a, commitmentToBeSigned, r, this.provider);
 				approvals.add(mr);
 			}
 		}

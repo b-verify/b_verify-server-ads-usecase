@@ -91,6 +91,10 @@ public class ServerADSManager {
 		return this.ads.get(key);
 	}
 	
+	public byte[] commitment() {
+		return this.ads.commitment();
+	}
+	
 	public MerklePrefixTrie getProof(List<byte[]> keys) {
 		MPTDictionaryPartial partial = new MPTDictionaryPartial(this.ads, keys);
 		return partial.serialize();
