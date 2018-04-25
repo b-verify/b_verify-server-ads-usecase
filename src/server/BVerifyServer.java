@@ -1,7 +1,6 @@
 package server;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +12,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 import com.google.protobuf.ByteString;
@@ -56,13 +57,23 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 	 * Server (Authentication) ADSes - stored in memory
 	 */
 	protected final ServerADSManager serveradsManager;
-
+	
 	/**
 	 * Changes to be applied. We batch changes for efficiency we keep track of all
 	 * requests and try to apply them all at once.
 	 */
 	private Set<Request> requests;
 	
+	/**
+	 * We use read-write locks to handle concurrent client requests 
+	 * from the server
+	 */
+	protected final ReadWriteLock rwLock = new ReentrantReadWriteLock();
+	
+	/**
+	 * Also we may need to make requests to multiple clients 
+	 * and these requests should be done in parallel
+	 */
 	private static final ExecutorService WORKERS = Executors.newCachedThreadPool();
 	private static final int TIMEOUT = 60;
 	
@@ -70,14 +81,14 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 		this.pki = new PKIDirectory(base + "/pki/");
 		this.provider = new ClientProvider();
 		this.clientadsManager = new ClientADSManager(base + "/client-ads/");
-		this.serveradsManager = new ServerADSManager(base + "/server-ads/");
-		
+		this.serveradsManager = new ServerADSManager(base + "/server-ads/");	
 		this.requests = new HashSet<>();
 	}
 
 	@Override
 	public boolean startIssueReceipt(byte[] requestIssueMessage) {
 		try {
+			this.rwLock.readLock().lock();
 			// parse the request message
 			IssueReceiptRequest request = IssueReceiptRequest.parseFrom(requestIssueMessage);
 			String issuerUUID = request.getIssuerId();
@@ -94,9 +105,6 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			
 			// calculate the client ads key
 			byte[] adsKey = CryptographicUtils.setOfAccountsToADSKey(accounts);
-			
-			// and look up the current ads commitment 
-			byte[] currentADSCommitment = this.serveradsManager.get(adsKey);
 
 			// now load the client ads
 			AuthenticatedSetServer ads = this.clientadsManager.getADS(adsKey);
@@ -108,23 +116,30 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			
 			// get the new commitment 
 			byte[] newADSCommitment = ads.commitment();
-			assert !Arrays.equals(newADSCommitment, currentADSCommitment);
 			
 			// stage the updated client ads for a commit
 			boolean success = this.clientadsManager.preCommit(ads, adsKey);
 			
 			if(!success) {
+				this.rwLock.readLock().unlock();
 				return false;
 			}
 			
 			// schedule the overall request to try and commit later
 			IssueRequest ir = new IssueRequest(issuer, recepient, receipt, adsKey,
 					newADSCommitment);
-			this.requests.add(ir);
-
+			
+			// the request set is not threadsafe so we need to gaurd access to it
+			synchronized(this) {
+				this.requests.add(ir);	
+			}
+			
+			this.rwLock.readLock().unlock();
 			return true;
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
+			
+			this.rwLock.readLock().unlock();
 			return false;
 		}
 	}
@@ -132,6 +147,7 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 	@Override
 	public boolean startRedeemReceipt(byte[] requestRedeemMessage) {
 		try {
+			this.rwLock.readLock().lock();
 			// parse the request message
 			RedeemReceiptRequest request = RedeemReceiptRequest.parseFrom(requestRedeemMessage);
 			String issuerUUID = request.getIssuerId(); 
@@ -148,9 +164,6 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			// calculate the client ads key
 			byte[] adsKey = CryptographicUtils.setOfAccountsToADSKey(accounts);
 			
-			// and look up the current ads commitment 
-			byte[] currentADSCommitment = this.serveradsManager.get(adsKey);
-
 			// now load the client ads
 			AuthenticatedSetServer ads = this.clientadsManager.getADS(adsKey);
 						
@@ -160,22 +173,28 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			
 			// get the new commitment 
 			byte[] newADSCommitment = ads.commitment();
-			assert !Arrays.equals(newADSCommitment, currentADSCommitment);
 			
 			// stage the updated client ads for a commit
 			boolean success = this.clientadsManager.preCommit(ads, adsKey);
 			
 			if(!success) {
+				this.rwLock.readLock().unlock();
 				return false;
 			}
 			
 			// schedule the overall request to try and commit later
 			RedeemRequest rr = new RedeemRequest(issuer, owner, receiptHash, adsKey,
 					newADSCommitment);
-			this.requests.add(rr);
+			
+			synchronized(this) {
+				this.requests.add(rr);				
+			}
+			
+			this.rwLock.readLock().unlock();
 			return true;
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
+			this.rwLock.readLock().unlock();
 			return false;
 		}
 	}
@@ -183,6 +202,7 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 	@Override
 	public boolean startTransferReceipt(byte[] requestTransferMessage) {
 		try {
+			this.rwLock.readLock().lock();
 			TransferReceiptRequest request = TransferReceiptRequest.parseFrom(requestTransferMessage);
 			String issuerUUID = request.getIssuerId();
 			String currentOwnerUUID = request.getCurrentOwnerId();
@@ -194,8 +214,8 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			Account currentOwner = this.pki.getAccount(currentOwnerUUID);
 			Account newOwner = this.pki.getAccount(newOwnerUUID);
 
-			// calculate the corresponding  ads keys
-			// and look up the adses
+			// calculate the corresponding ADSkeys
+			// and look up the ADSes
 			
 			Set<Account> ads1accounts = new HashSet<>();
 			ads1accounts.add(issuer);
@@ -213,6 +233,7 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			byte[] ads2Key = CryptographicUtils.setOfAccountsToADSKey(ads2accounts);
 			MPTSetFull ads2 = (MPTSetFull) this.clientadsManager.getADS(ads2Key);
 			if(ads2.inSet(receiptHash)) {
+				this.rwLock.readLock().unlock();
 				return false;
 			}
 			
@@ -239,11 +260,15 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 					proofCurrentOwnerAdsNew,
 					newOwnerAdsValueNew,
 					proofNewOwnerAdsNew);
-			this.requests.add(tr);
+			synchronized(this) {
+				this.requests.add(tr);
+			}
+			this.rwLock.readLock().unlock();
 			return true;
 			// move the receipt from one ads to another 
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
+			this.rwLock.readLock().unlock();
 			return false;
 		}
 	}
@@ -251,6 +276,7 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 	@Override
 	public byte[] getUpdates(byte[] updateRequest) {
 		try {
+			this.rwLock.readLock().lock();
 			GetUpdatesRequest request = GetUpdatesRequest.parseFrom(updateRequest);
 
 			// parse the keys
@@ -260,18 +286,20 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 				keys.add(key.toByteArray());
 			}
 			int from = request.getFromCommitNumber();
+			this.rwLock.readLock().unlock();
 			return this.serveradsManager.getUpdate(from, keys);
 
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
+			this.rwLock.readLock().unlock();
+			return null;
 		}
-		return null;
 	}
 
-	
-	private boolean attemptCommit() {
+	public boolean attemptCommit() {
 		// pre-commit all the updates
-		// to update the authentication information 
+		// to update the authentication information
+		this.rwLock.writeLock().lock();
 		for (Request r : this.requests) {
 			for(Map.Entry<byte[], byte[]> kvUpdate : r.getUpdatedKeyValues()) {
 				this.serveradsManager.preCommit(kvUpdate.getKey(), kvUpdate.getValue());
@@ -313,10 +341,12 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 		if(commit) {
 			this.serveradsManager.commit();
 			this.clientadsManager.commit();
+			this.rwLock.writeLock().unlock();
 			return true;
 		}
 		this.serveradsManager.abort();
 		this.clientadsManager.abort();
+		this.rwLock.writeLock().lock();
 		return false;
 	}
 

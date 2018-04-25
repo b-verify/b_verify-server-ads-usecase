@@ -1,5 +1,7 @@
 package server;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,9 @@ import serialization.BVerifyAPIMessageSerialization.Updates;
 import serialization.MptSerialization.MerklePrefixTrie;
 
 /**
+ * THIS CLASS IS NOT THREADSAFE
+ * ONLY concurrent getUpdate() are SAFE.
+ * 
  * The server ads is a key, value store
  * that maps "adsKeys" (identifies an 
  * ads) to "adsValues" (commitments).
@@ -114,6 +119,18 @@ public class ServerADSManager {
 			updates.addUpdate(update);
 		}
 		return updates.build().toByteArray();
+	}
+	
+	public void save() {
+		byte[] asBytes = this.ads.serialize();
+		try {
+			File f = new File(base+"-"+this.ads.commitment());
+			FileOutputStream fos = new FileOutputStream(f);
+			fos.write(asBytes);
+			fos.close();
+		}catch(Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 	
 }

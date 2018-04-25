@@ -13,8 +13,12 @@ import mpt.core.Utils;
 import mpt.set.AuthenticatedSetServer;
 import mpt.set.MPTSetFull;
 
-/**
- * Client adses can be arbitrary 
+/** 
+ * [SAFE for concurrent calls 
+ * to preCommit() and getADS()
+ * for distinct ADSes]
+ * 
+ * Client ADSes can be arbitrary 
  * authenticated data structures. 
  * 
  * For this example clients use authenticated
@@ -46,7 +50,11 @@ public class ClientADSManager {
 	/**
 	 * Return the authenticated set identified by  
 	 * adsKey if it exists or an empty authenticated set 
-	 * if it does not
+	 * if it does not. 
+	 * 
+	 * This method is safe for concurrent access
+	 * to different adsKeys
+	 * 
 	 * @param adsKey - the identifying id for the ads 
 	 * @return the authenticated set if it exists or an 
 	 * empty set
@@ -88,6 +96,13 @@ public class ClientADSManager {
 		}
 	}
 	
+	/**
+	 * This method is safe for concurrently 
+	 * preCommitting DISTINCT ADSes
+	 * @param ads
+	 * @param adsKey
+	 * @return
+	 */
 	public boolean preCommit(final AuthenticatedSetServer ads, final byte[] adsKey) {
 		String fileName = base+Utils.byteArrayAsHexString(adsKey)+TMP;
 		byte[] serialized = ads.serialize().toByteArray();
@@ -99,8 +114,10 @@ public class ClientADSManager {
 			FileOutputStream fos = new FileOutputStream(f);
 			fos.write(serialized);
 			fos.close();
-			// add the key to the list
-			this.adsToCommit.add(adsKey);
+			synchronized(this){
+				// add the key to the list
+				this.adsToCommit.add(adsKey);
+			}
 			return true;
 		}catch(Exception e) {
 			return false;
