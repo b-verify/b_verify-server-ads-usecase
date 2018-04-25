@@ -1,12 +1,17 @@
 package server;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import com.google.protobuf.ByteString;
 
 import pki.Account;
 import serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove;
 import serialization.MptSerialization.MerklePrefixTrie;
 
-public class TransferRequest {
+public class TransferRequest implements Request {
 	
 	private final Account issuer;
 	private final Account currentOwner;
@@ -15,12 +20,9 @@ public class TransferRequest {
 	private final byte[] currentOwnerAdsKey;
 	private final byte[] newOwnerAdsKey;
 	
-	private final byte[] currentOwnerAdsValueOld;
 	private final MerklePrefixTrie proofCurrentOwnerAdsOld;
 	private final byte[] currentOwnerAdsValueNew;
 	private final MerklePrefixTrie proofCurrentOwnerAdsNew;
-	private final byte[] newOwnerAdsValueOld;
-	private final MerklePrefixTrie proofNewOwnerAdsOld;
 	private final byte[] newOwnerAdsValueNew;
 	private final MerklePrefixTrie proofNewOwnerAdsNew;
 	
@@ -30,12 +32,9 @@ public class TransferRequest {
 	public TransferRequest(Account issuer, Account currentOwner,
 			Account newOwner, byte[] receiptHash, 
 			byte[] currentOwnerAdsKey, byte[] newOwnerAdsKey,
-			byte[] currentOwnerAdsValueOld,
 			MerklePrefixTrie proofCurrentOwnerAdsOld,
 			byte[] currentOwnerAdsValueNew,
 			MerklePrefixTrie proofCurrentOwnerAdsNew,
-			byte[] newOwnerAdsValueOld,
-			MerklePrefixTrie proofNewOwnerAdsOld,
 			byte[] newOwnerAdsValueNew,
 			MerklePrefixTrie proofNewOwnerAdsNew) {
 		
@@ -46,97 +45,32 @@ public class TransferRequest {
 		this.currentOwnerAdsKey = currentOwnerAdsKey;
 		this.newOwnerAdsKey = newOwnerAdsKey;
 		
-		this.currentOwnerAdsValueOld = currentOwnerAdsValueOld;
 		this.proofCurrentOwnerAdsOld = proofCurrentOwnerAdsOld;
 		this.currentOwnerAdsValueNew = currentOwnerAdsValueNew;
 		this.proofCurrentOwnerAdsNew = proofCurrentOwnerAdsNew;
 		
-		this.newOwnerAdsValueOld = newOwnerAdsValueOld;
-		this.proofNewOwnerAdsOld = proofNewOwnerAdsOld;
 		this.newOwnerAdsValueNew = newOwnerAdsValueNew;
 		this.proofNewOwnerAdsNew = proofNewOwnerAdsNew;
 		
 	}
-
-
-	public Account getIssuer() {
-		return issuer;
-	}
-
-
-	public Account getCurrentOwner() {
-		return currentOwner;
-	}
-
-
-	public Account getNewOwner() {
-		return newOwner;
-	}
-
-
-	public byte[] getReceiptHash() {
-		return receiptHash;
-	}
-
-
-	public byte[] getNewOwnerAdsKey() {
-		return newOwnerAdsKey;
-	}
-
-
-	public byte[] getCurrentOwnerAdsKey() {
-		return currentOwnerAdsKey;
-	}
-
-
-	public byte[] getCurrentOwnerAdsValueOld() {
-		return currentOwnerAdsValueOld;
-	}
-
-
-	public MerklePrefixTrie getProofCurrentOwnerAdsOld() {
-		return proofCurrentOwnerAdsOld;
-	}
-
-
-	public byte[] getCurrentOwnerAdsValueNew() {
-		return currentOwnerAdsValueNew;
-	}
-
-
-	public MerklePrefixTrie getProofCurrentOwnerAdsNew() {
-		return proofCurrentOwnerAdsNew;
-	}
-
-
-	public byte[] getNewOwnerAdsValueOld() {
-		return newOwnerAdsValueOld;
-	}
-
-
-	public MerklePrefixTrie getProofNewOwnerAdsOld() {
-		return proofNewOwnerAdsOld;
-	}
-
-
-	public byte[] getNewOwnerAdsValueNew() {
-		return newOwnerAdsValueNew;
-	}
-
-
-	public MerklePrefixTrie getProofNewOwnerAdsNew() {
-		return proofNewOwnerAdsNew;
-	}
 	
+	@Override
 	public void setAuthenticationProof(MerklePrefixTrie authProof) {
 		this.authProof = authProof;
 	}
 	
-	public MerklePrefixTrie getAuthenticationProof() {
-		return this.authProof;
+	@Override
+	public List<Account> sendRequestTo(){
+		List<Account> sendRequestTo = new ArrayList<Account>();
+		sendRequestTo.add(this.issuer);
+		sendRequestTo.add(this.currentOwner);
+		sendRequestTo.add(this.newOwner);
+		return sendRequestTo;
+		
 	}
 	
-	public ReceiptTransferApprove serialize() {
+	@Override
+	public byte[] serialize() {
 		ReceiptTransferApprove.Builder request = ReceiptTransferApprove.newBuilder();
 		request.setIssuerId(this.issuer.getIdAsString());
 		request.setCurrentOwnerId(this.currentOwner.getIdAsString());
@@ -150,7 +84,17 @@ public class TransferRequest {
 					+ "request without the authentication proof");
 		}
 		request.setAuthenticationProof(this.authProof);
-		return request.build();
+		return request.build().toByteArray();
 	}
+
+	@Override
+	public List<Entry<byte[], byte[]>> getUpdatedKeyValues() {
+		List<Entry<byte[], byte[]>> updates = new ArrayList<>();
+		updates.add(Map.entry(this.currentOwnerAdsKey, this.currentOwnerAdsValueNew));
+		updates.add(Map.entry(this.newOwnerAdsKey, this.newOwnerAdsValueNew));
+		return updates;
+	}
+
+	
 	
 }

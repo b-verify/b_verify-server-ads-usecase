@@ -10,6 +10,21 @@ import mpt.dictionary.MPTDictionaryPartial;
 import serialization.BVerifyAPIMessageSerialization.Updates;
 import serialization.MptSerialization.MerklePrefixTrie;
 
+/**
+ * The server ads is a key, value store
+ * that maps "adsKeys" (identifies an 
+ * ads) to "adsValues" (commitments).
+ * 
+ * This class is responsible for managing 
+ * the server authentication ads 
+ * 
+ * Currently this implementation 
+ * keeps the entire server ads in memory
+ * for speed.
+ * 
+ * @author henryaspegren
+ *
+ */
 public class ServerADSManager {
 	
 	private final String base;
@@ -34,7 +49,7 @@ public class ServerADSManager {
 		this.undoLog = new ArrayList<>();
 	}
 	
-	public void preCommitChange(byte[] key, byte[] value) {
+	public void preCommit(byte[] key, byte[] value) {
 		byte[] currentValue = this.ads.get(value);
 		// save the old mapping in the undo log
 		this.undoLog.add(Map.entry(key, currentValue));
@@ -42,26 +57,29 @@ public class ServerADSManager {
 		this.ads.insert(key, value);
 	}
 	
-	public boolean commitChanges() {
+	public boolean commit() {
 		// save delta
 		MPTDictionaryDelta delta = new MPTDictionaryDelta(this.ads);
 		this.deltas.add(delta);
 		// clear the changes
 		this.ads.reset();
 		this.undoLog.clear();
+		// TODO: save the authenticated dictionary?
 		return true;
 	}
 	
-	public boolean abortChanges() {
+	public boolean abort() {
 		for(Map.Entry<byte[], byte[]> oldkv : this.undoLog) {
 			byte[] key = oldkv.getKey();
 			byte[] oldvalue = oldkv.getValue();
-			this.undoChange(key, oldvalue);
+			this.abortChange(key, oldvalue);
 		}
 		return true;
 	}
 	
-	private void undoChange(byte[] key, byte[] prevValue) {
+	private void abortChange(byte[] key, byte[] prevValue) {
+		// if prev value was null it means that the 
+		// key was not previously in the dictionary
 		if(prevValue == null) {
 			this.ads.delete(key);
 		}else {

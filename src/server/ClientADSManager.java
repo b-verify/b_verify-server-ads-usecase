@@ -14,8 +14,16 @@ import mpt.set.AuthenticatedSetServer;
 import mpt.set.MPTSetFull;
 
 /**
- * This class is responsible for managing 
- * client ads stored on the server. 
+ * Client adses can be arbitrary 
+ * authenticated data structures. 
+ * 
+ * For this example clients use authenticated
+ * sets. 
+ * 
+ * This class is responsible updating 
+ * these datastructures on the server side 
+ * and returning them, or views
+ * of them to clients.
  * 
  * Currently this implementation just 
  * loads and saves the ADSes from disk. 
@@ -80,7 +88,7 @@ public class ClientADSManager {
 		}
 	}
 	
-	public boolean preCommitADS(final AuthenticatedSetServer ads, final byte[] adsKey) {
+	public boolean preCommit(final AuthenticatedSetServer ads, final byte[] adsKey) {
 		String fileName = base+Utils.byteArrayAsHexString(adsKey)+TMP;
 		byte[] serialized = ads.serialize().toByteArray();
 		try {
@@ -99,7 +107,7 @@ public class ClientADSManager {
 		}
 	}
 	
-	public void commitADS(final byte[] adsKey) {
+	private void commitADS(final byte[] adsKey) {
 		String currentFile = base+Utils.byteArrayAsHexString(adsKey);
 		String newFile = base+Utils.byteArrayAsHexString(adsKey)+TMP;
 		File currentf = new File(currentFile);
@@ -110,7 +118,7 @@ public class ClientADSManager {
 		newf.renameTo(currentf);
 	}
 	
-	public void abortADS(final byte[] adsKey) {
+	private void abortADS(final byte[] adsKey) {
 		String newFile = base+Utils.byteArrayAsHexString(adsKey)+TMP;
 		File newf = new File(newFile);
 		newf.delete();
@@ -130,8 +138,6 @@ public class ClientADSManager {
 		this.adsToCommit.clear();
 	}
 	
-	
-	
 	public static void main(String[] args) {
 		ClientADSManager adsManager = new ClientADSManager("/home/henryaspegren/eclipse-workspace/b_verify-server/mock-data/client-ads/");
 		
@@ -144,9 +150,9 @@ public class ClientADSManager {
 		MPTSetFull b = Utils.makeMPTSetFull(100, "testb");
 		MPTSetFull c = Utils.makeMPTSetFull(100, "testc");
 
-		adsManager.preCommitADS(a, key1);
-		adsManager.preCommitADS(b, key2);
-		adsManager.preCommitADS(c, key3);
+		adsManager.preCommit(a, key1);
+		adsManager.preCommit(b, key2);
+		adsManager.preCommit(c, key3);
 		
 		adsManager.commit();
 		
@@ -161,14 +167,14 @@ public class ClientADSManager {
 
 		c.insert(Utils.getValue(1, "other"));
 		
-		adsManager.preCommitADS(c, key3);
+		adsManager.preCommit(c, key3);
 		adsManager.commit();
 
 		cFromBytes = adsManager.getADS(key3);
 		System.out.println(Arrays.equals(cFromBytes.commitment(), c.commitment()));
 
 		c.delete(Utils.getValue(1, "other"));
-		adsManager.preCommitADS(c, key3);
+		adsManager.preCommit(c, key3);
 		adsManager.abort();
 		
 		cFromBytes = adsManager.getADS(key3);
