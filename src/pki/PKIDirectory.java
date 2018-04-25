@@ -5,6 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * This is class is responsible for providing 
+ * the public keys of the various participants
+ * 
+ * Participants are identified and 
+ * looked up their unique user ids 
+ * (UUIDs). 
+ * 
+ * @author henryaspegren
+ *
+ */
 public class PKIDirectory {
 	
 	private final String base;
