@@ -78,8 +78,7 @@ message GetUpdatesRequest {
 *	signer id
 */
 message Signature {
-	string signer_id = 1;
-	bytes signature = 2;
+	bytes signature = 1;
 }
 
 /** 
@@ -114,10 +113,9 @@ message ReceiptTransferApprove {
 	string current_owner_id = 2;
 	string new_owner_id = 3;
 	bytes receipt_hash = 4;
-	MerklePrefixTrie origin_proof = 5;
-	MerklePrefixTrie added_proof = 6;
-	MerklePrefixTrie removed_proof = 7;
-	MerklePrefixTrie authentication_proof = 8;
+	MerklePrefixTrie added_proof = 5;
+	MerklePrefixTrie removed_proof = 6;
+	MerklePrefixTrie authentication_proof = 7;
 }
 
 /**

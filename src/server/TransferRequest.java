@@ -20,7 +20,6 @@ public class TransferRequest implements Request {
 	private final byte[] currentOwnerAdsKey;
 	private final byte[] newOwnerAdsKey;
 	
-	private final MerklePrefixTrie proofCurrentOwnerAdsOld;
 	private final byte[] currentOwnerAdsValueNew;
 	private final MerklePrefixTrie proofCurrentOwnerAdsNew;
 	private final byte[] newOwnerAdsValueNew;
@@ -32,7 +31,6 @@ public class TransferRequest implements Request {
 	public TransferRequest(Account issuer, Account currentOwner,
 			Account newOwner, byte[] receiptHash, 
 			byte[] currentOwnerAdsKey, byte[] newOwnerAdsKey,
-			MerklePrefixTrie proofCurrentOwnerAdsOld,
 			byte[] currentOwnerAdsValueNew,
 			MerklePrefixTrie proofCurrentOwnerAdsNew,
 			byte[] newOwnerAdsValueNew,
@@ -45,7 +43,6 @@ public class TransferRequest implements Request {
 		this.currentOwnerAdsKey = currentOwnerAdsKey;
 		this.newOwnerAdsKey = newOwnerAdsKey;
 		
-		this.proofCurrentOwnerAdsOld = proofCurrentOwnerAdsOld;
 		this.currentOwnerAdsValueNew = currentOwnerAdsValueNew;
 		this.proofCurrentOwnerAdsNew = proofCurrentOwnerAdsNew;
 		
@@ -76,7 +73,6 @@ public class TransferRequest implements Request {
 		request.setCurrentOwnerId(this.currentOwner.getIdAsString());
 		request.setNewOwnerId(this.newOwner.getIdAsString());
 		request.setReceiptHash(ByteString.copyFrom(this.receiptHash));
-		request.setOriginProof(this.proofCurrentOwnerAdsOld);
 		request.setAddedProof(this.proofNewOwnerAdsNew);
 		request.setRemovedProof(this.proofCurrentOwnerAdsNew);
 		if(this.authProof == null) {

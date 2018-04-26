@@ -99,12 +99,12 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			// lookup the accounts
 			Account issuer = this.pki.getAccount(issuerUUID);
 			Account recepient = this.pki.getAccount(recepientUUID);
-			Set<Account> accounts = new HashSet<>();
+			List<Account> accounts = new ArrayList<>();
 			accounts.add(issuer);
 			accounts.add(recepient);
 			
 			// calculate the client ads key
-			byte[] adsKey = CryptographicUtils.setOfAccountsToADSKey(accounts);
+			byte[] adsKey = CryptographicUtils.listOfAccountsToADSKey(accounts);
 
 			// now load the client ads
 			AuthenticatedSetServer ads = this.clientadsManager.getADS(adsKey);
@@ -157,12 +157,12 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			// lookup the accounts
 			Account issuer = this.pki.getAccount(issuerUUID);
 			Account owner = this.pki.getAccount(ownerUUID);
-			Set<Account> accounts = new HashSet<>();
+			List<Account> accounts = new ArrayList<>();
 			accounts.add(issuer);
 			accounts.add(owner);
 			
 			// calculate the client ads key
-			byte[] adsKey = CryptographicUtils.setOfAccountsToADSKey(accounts);
+			byte[] adsKey = CryptographicUtils.listOfAccountsToADSKey(accounts);
 			
 			// now load the client ads
 			AuthenticatedSetServer ads = this.clientadsManager.getADS(adsKey);
@@ -217,20 +217,19 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			// calculate the corresponding ADSkeys
 			// and look up the ADSes
 			
-			Set<Account> ads1accounts = new HashSet<>();
+			List<Account> ads1accounts = new ArrayList<>();
 			ads1accounts.add(issuer);
 			ads1accounts.add(currentOwner);
-			byte[] ads1Key = CryptographicUtils.setOfAccountsToADSKey(ads1accounts);
+			byte[] ads1Key = CryptographicUtils.listOfAccountsToADSKey(ads1accounts);
 			MPTSetFull ads1 = (MPTSetFull) this.clientadsManager.getADS(ads1Key);
 			if(!ads1.inSet(receiptHash)) {
 				return false;
 			}	
-			MerklePrefixTrie proofCurrentOwnerAdsOld = (new MPTSetPartial(ads1, receiptHash)).serialize();
 			
-			Set<Account> ads2accounts = new HashSet<>();
+			List<Account> ads2accounts = new ArrayList<>();
 			ads2accounts.add(issuer);
 			ads2accounts.add(newOwner);
-			byte[] ads2Key = CryptographicUtils.setOfAccountsToADSKey(ads2accounts);
+			byte[] ads2Key = CryptographicUtils.listOfAccountsToADSKey(ads2accounts);
 			MPTSetFull ads2 = (MPTSetFull) this.clientadsManager.getADS(ads2Key);
 			if(ads2.inSet(receiptHash)) {
 				this.rwLock.readLock().unlock();
@@ -255,7 +254,6 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			TransferRequest tr = new TransferRequest(
 					issuer, currentOwner, newOwner, receiptHash,
 					ads1Key, ads2Key,
-					proofCurrentOwnerAdsOld,
 					currentOwnerAdsValueNew,
 					proofCurrentOwnerAdsNew,
 					newOwnerAdsValueNew,
