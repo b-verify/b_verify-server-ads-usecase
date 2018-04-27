@@ -1,9 +1,12 @@
 package client;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -19,6 +22,8 @@ import mpt.set.AuthenticatedSetClient;
 import mpt.set.AuthenticatedSetServer;
 import mpt.set.MPTSetPartial;
 import pki.Account;
+import pki.PKIDirectory;
+import rmi.ClientProvider;
 import serialization.BVerifyAPIMessageSerialization.Receipt;
 import serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove;
 import serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove;
@@ -46,6 +51,7 @@ import serialization.MptSerialization.MerklePrefixTrie;
  */
 public class MockClient implements BVerifyProtocolClientAPI{
 	
+	private final ClientProvider rmi;
 	private final Account account;
 	
 	// stores server authentication information
@@ -55,8 +61,18 @@ public class MockClient implements BVerifyProtocolClientAPI{
 	// these the ADSes that hold the client receipts 
 	private Map<byte[], AuthenticatedSetServer> clientReceipts;
 	
-	public MockClient(Account a) {
+	public MockClient(Account a, String registryHost, int registryPort) {
 		this.account = a;
+		this.rmi = new ClientProvider(registryHost, registryPort);
+		// bind this object
+		BVerifyProtocolClientAPI clientAPI;
+		try {
+			clientAPI = (BVerifyProtocolClientAPI) UnicastRemoteObject.exportObject(this, 0);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		this.rmi.bind(this.account.getIdAsString(), clientAPI);
 	}
 
 	@Override
@@ -279,5 +295,37 @@ public class MockClient implements BVerifyProtocolClientAPI{
 		}
 		return sig.build().toByteArray();
 	}
+
+	@Override
+	public boolean approveEchoBenchmark(boolean response) {
+		System.out.println("Client "+this.account+ " echo request recieved, responding");
+		return response;
+	}
+	
+	@Override 
+	public byte[] approveSigEchoBenchmark(byte[] toSign) {
+		System.out.println("Client "+this.account+ " sig echo request recieved, responding");
+		byte[] sigBytes = CryptographicSignature.sign(toSign, this.account.getPrivateKey());
+		Signature.Builder sig = Signature.newBuilder();
+		sig.setSignature(ByteString.copyFrom(sigBytes));
+		return sig.build().toByteArray();
+	}
+	
+	public static void main(String[] args) {
+		String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/mock-data/";
+		String host = null;
+		int port = 1099;
+		PKIDirectory pki = new PKIDirectory(base + "/pki/");
+		// create clients
+		for(Account a : pki.getAllAccounts()) {
+			new MockClient(a, host, port);
+		}
+		System.out.println("Press enter when test complete");
+		Scanner sc = new Scanner(System.in);
+		sc.nextLine();
+		sc.close();
+        System.out.println("Done!");
+	}
+	
 
 }

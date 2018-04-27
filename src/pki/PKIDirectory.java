@@ -2,8 +2,14 @@ package pki;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+
+import com.github.javafaker.Faker;
 
 /**
  * This is class is responsible for providing 
@@ -18,14 +24,27 @@ import java.util.UUID;
  */
 public class PKIDirectory {
 	
-	private final String base;
+	private final Map<UUID, Account> lookupTable;
+	private final List<UUID> uuids; 
 	
 	public PKIDirectory(String base) {
-		this.base = base;
+		this.lookupTable = new HashMap<>();
+		this.uuids = new ArrayList<>();
+		File folder = new File(base);
+		File[] listOfFiles = folder.listFiles();
+		for(File f : listOfFiles) {
+			if(f.isFile()) {
+				Account a = Account.loafFromFile(f);
+				if(a != null) {
+					this.uuids.add(a.getId());
+					this.lookupTable.put(a.getId(), a);
+				}
+			}
+		}
 	}
 	
 	public Account getAccount(UUID id) {
-		return Account.loadFromFile(base+id.toString());
+		return this.lookupTable.get(id);
 	}
 	
 	public Account getAccount(String uuidString) {
@@ -33,19 +52,35 @@ public class PKIDirectory {
 		return this.getAccount(uuid);
 	}
 	
-	public List<UUID> listAccounts(){
-		File[] files = new File(base).listFiles();
-		List<UUID> uuids = new ArrayList<>();
-		for (File file : files) {
-		    if (file.isFile()) {
-		    	uuids.add(UUID.fromString(file.getName()));
-		    }
+	public Set<Account> getAllAccounts(){
+		Set<Account> res = new HashSet<>();
+		for(Account a : this.lookupTable.values()) {
+			res.add(a);
 		}
-		return uuids;
+		return res;
 	}
 	
-	public static void main(String[] args) {
-		PKIDirectory pki = new PKIDirectory("/home/henryaspegren/eclipse-workspace/b_verify-server/mock-data/pki/");
-		System.out.println(pki.listAccounts());
+	public Account getAccount(int i) {
+		if(0 <= i && i < this.uuids.size()) {
+			return this.lookupTable.get(uuids.get(i));
+		}
+		return null;
 	}
+	
+	public Set<UUID> getAllAccountIDs(){
+		return this.lookupTable.keySet();
+	}
+	
+	public static void generateRandomAccounts(int numberOfAccounts, String base) {
+		for(int i = 0; i < numberOfAccounts; i++) {
+			Faker faker = new Faker();
+			String firstName = faker.name().firstName(); 
+			String lastName = faker.name().lastName(); 
+			Account account = new Account(firstName, lastName);
+			account.saveToFile(base);
+			System.out.println("generating account "+(i+1)+
+					" - of - "+numberOfAccounts+"("+faker.name().fullName()+")");
+		}
+	}
+	
 }

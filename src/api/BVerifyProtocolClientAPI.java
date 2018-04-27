@@ -1,6 +1,7 @@
 package api;
 
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 /**
  * The API exposed by b_verify clients to the b_verify server
@@ -20,7 +21,7 @@ public interface BVerifyProtocolClientAPI extends Remote {
 	 * @return a serialized witness and signature (see Signature in
 	 * bverifyprotocolapi.proto)
 	 */
-	public byte[] approveReceiptIssue(byte[] approveIssueMessage);
+	public byte[] approveReceiptIssue(byte[] approveIssueMessage) throws RemoteException;
 	
 	/**
 	 * Invoked remotely by the server to request that a client 
@@ -32,7 +33,7 @@ public interface BVerifyProtocolClientAPI extends Remote {
 	 * @return a serialized witness and signature (see Signature in
 	 * bverifyprotocolapi.proto)
 	 */
-	public byte[] approveReceiptRedeem(byte[] approveRedeemMessage);
+	public byte[] approveReceiptRedeem(byte[] approveRedeemMessage) throws RemoteException;
 	
 	/**
 	 * Invoked remotely by the server to request that a client 
@@ -44,6 +45,11 @@ public interface BVerifyProtocolClientAPI extends Remote {
 	 * @return a serialized witness and signature (see Signature in 
 	 * bverifyprotocolapi.proto)
 	 */
-	public byte[] approveReceiptTransfer(byte[] approveTransferMessage);
+	public byte[] approveReceiptTransfer(byte[] approveTransferMessage) throws RemoteException;
+	
+	
+	public boolean approveEchoBenchmark(boolean response) throws RemoteException;
+	
+	public byte[] approveSigEchoBenchmark(byte[] messageToSign) throws RemoteException;
 	
 }

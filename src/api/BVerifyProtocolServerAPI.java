@@ -1,6 +1,7 @@
 package api;
 
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 /**
  * The API exposed by the b_verify server to the b_verify clients
@@ -24,7 +25,7 @@ public interface BVerifyProtocolServerAPI extends Remote {
 	 * and the server will contact the client in the future 
 	 * with a proof
 	 */
-	public boolean startIssueReceipt(byte[] requestIssueMessage);
+	public boolean startIssueReceipt(byte[] requestIssueMessage)  throws RemoteException;
 	
 	/**
 	 * Invoked by a client remotely on the server to 
@@ -41,7 +42,7 @@ public interface BVerifyProtocolServerAPI extends Remote {
 	 * and the server will contact the client in the future with
 	 * a proof
 	*/
-	public boolean startRedeemReceipt(byte[] requestRedeemMessage);
+	public boolean startRedeemReceipt(byte[] requestRedeemMessage)  throws RemoteException;
 	
 	/**
 	 * Invoked by a client remotely on the server to 
@@ -56,7 +57,7 @@ public interface BVerifyProtocolServerAPI extends Remote {
 	 * and the server will contact the client in the future 
 	 * with a proof
 	*/
-	public boolean startTransferReceipt(byte[] requestTransferMessage);
+	public boolean startTransferReceipt(byte[] requestTransferMessage)  throws RemoteException;
 	
 	/**
 	 * Invoked by a client remotely on the server to request
@@ -67,6 +68,6 @@ public interface BVerifyProtocolServerAPI extends Remote {
 	 * @return a serialized response containing updates 
 	 * (see Updates in bverifyprotocol.proto)
 	 */
-	public byte[] getUpdates(byte[] updateRequest);
+	public byte[] getUpdates(byte[] updateRequest)  throws RemoteException;
 	
 }

@@ -30,15 +30,15 @@ public class MakeRequestVerifyResponseCallback implements Callable<Boolean> {
 	private final TYPE messageType;
 
 	private final Account sendTo;
-	private final ClientProvider provider;
+	private final ClientProvider rmi;
 
 	
 	public MakeRequestVerifyResponseCallback(final byte[] requestMessage, final Account sendTo, 
-			final byte[] commitmentToBeSigned, final Request r, final ClientProvider provider) {
+			final byte[] commitmentToBeSigned, final Request r, final ClientProvider rmi) {
 		this.requestMessage = requestMessage;
 		this.commitmentToBeSigned = commitmentToBeSigned;
 		this.sendTo = sendTo;
-		this.provider = provider;
+		this.rmi = rmi;
 		if(r instanceof TransferRequest) {
 			this.messageType = TYPE.TRANSFER;
 		}else if (r instanceof IssueRequest) {
@@ -53,7 +53,7 @@ public class MakeRequestVerifyResponseCallback implements Callable<Boolean> {
 	@Override
 	public Boolean call() throws Exception {
 		// lookup the client 
-		BVerifyProtocolClientAPI stub = this.provider.getClient(this.sendTo);
+		BVerifyProtocolClientAPI stub = this.rmi.getClient(this.sendTo);
 		byte[] resp = null;
 		// make the request
 		switch (this.messageType){

@@ -19,81 +19,91 @@ public final class BVerifyAPIMessageSerialization {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string accountant = 1;</code>
+     * <code>string warehouse_id = 1;</code>
+     */
+    java.lang.String getWarehouseId();
+    /**
+     * <code>string warehouse_id = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getWarehouseIdBytes();
+
+    /**
+     * <code>string depositor_id = 2;</code>
+     */
+    java.lang.String getDepositorId();
+    /**
+     * <code>string depositor_id = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getDepositorIdBytes();
+
+    /**
+     * <code>string accountant = 3;</code>
      */
     java.lang.String getAccountant();
     /**
-     * <code>string accountant = 1;</code>
+     * <code>string accountant = 3;</code>
      */
     com.google.protobuf.ByteString
         getAccountantBytes();
 
     /**
-     * <code>string depositor = 2;</code>
-     */
-    java.lang.String getDepositor();
-    /**
-     * <code>string depositor = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getDepositorBytes();
-
-    /**
-     * <code>string category = 3;</code>
+     * <code>string category = 4;</code>
      */
     java.lang.String getCategory();
     /**
-     * <code>string category = 3;</code>
+     * <code>string category = 4;</code>
      */
     com.google.protobuf.ByteString
         getCategoryBytes();
 
     /**
-     * <code>string date = 4;</code>
+     * <code>string date = 5;</code>
      */
     java.lang.String getDate();
     /**
-     * <code>string date = 4;</code>
+     * <code>string date = 5;</code>
      */
     com.google.protobuf.ByteString
         getDateBytes();
 
     /**
-     * <code>string insurance = 5;</code>
+     * <code>string insurance = 6;</code>
      */
     java.lang.String getInsurance();
     /**
-     * <code>string insurance = 5;</code>
+     * <code>string insurance = 6;</code>
      */
     com.google.protobuf.ByteString
         getInsuranceBytes();
 
     /**
-     * <code>int32 weight = 6;</code>
+     * <code>double weight = 7;</code>
      */
-    int getWeight();
+    double getWeight();
 
     /**
-     * <code>int32 volume = 7;</code>
+     * <code>double volume = 8;</code>
      */
-    int getVolume();
+    double getVolume();
 
     /**
-     * <code>int32 humidity = 8;</code>
+     * <code>double humidity = 9;</code>
      */
-    int getHumidity();
+    double getHumidity();
 
     /**
-     * <code>int32 price = 9;</code>
+     * <code>double price = 10;</code>
      */
-    int getPrice();
+    double getPrice();
 
     /**
-     * <code>string details = 10;</code>
+     * <code>string details = 11;</code>
      */
     java.lang.String getDetails();
     /**
-     * <code>string details = 10;</code>
+     * <code>string details = 11;</code>
      */
     com.google.protobuf.ByteString
         getDetailsBytes();
@@ -116,15 +126,16 @@ public final class BVerifyAPIMessageSerialization {
       super(builder);
     }
     private Receipt() {
+      warehouseId_ = "";
+      depositorId_ = "";
       accountant_ = "";
-      depositor_ = "";
       category_ = "";
       date_ = "";
       insurance_ = "";
-      weight_ = 0;
-      volume_ = 0;
-      humidity_ = 0;
-      price_ = 0;
+      weight_ = 0D;
+      volume_ = 0D;
+      humidity_ = 0D;
+      price_ = 0D;
       details_ = "";
     }
 
@@ -162,54 +173,60 @@ public final class BVerifyAPIMessageSerialization {
             case 10: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              accountant_ = s;
+              warehouseId_ = s;
               break;
             }
             case 18: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              depositor_ = s;
+              depositorId_ = s;
               break;
             }
             case 26: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              category_ = s;
+              accountant_ = s;
               break;
             }
             case 34: {
               java.lang.String s = input.readStringRequireUtf8();
 
-              date_ = s;
+              category_ = s;
               break;
             }
             case 42: {
               java.lang.String s = input.readStringRequireUtf8();
 
+              date_ = s;
+              break;
+            }
+            case 50: {
+              java.lang.String s = input.readStringRequireUtf8();
+
               insurance_ = s;
               break;
             }
-            case 48: {
+            case 57: {
 
-              weight_ = input.readInt32();
+              weight_ = input.readDouble();
               break;
             }
-            case 56: {
+            case 65: {
 
-              volume_ = input.readInt32();
+              volume_ = input.readDouble();
               break;
             }
-            case 64: {
+            case 73: {
 
-              humidity_ = input.readInt32();
+              humidity_ = input.readDouble();
               break;
             }
-            case 72: {
+            case 81: {
 
-              price_ = input.readInt32();
+              price_ = input.readDouble();
               break;
             }
-            case 82: {
+            case 90: {
               java.lang.String s = input.readStringRequireUtf8();
 
               details_ = s;
@@ -239,10 +256,78 @@ public final class BVerifyAPIMessageSerialization {
               serialization.BVerifyAPIMessageSerialization.Receipt.class, serialization.BVerifyAPIMessageSerialization.Receipt.Builder.class);
     }
 
-    public static final int ACCOUNTANT_FIELD_NUMBER = 1;
+    public static final int WAREHOUSE_ID_FIELD_NUMBER = 1;
+    private volatile java.lang.Object warehouseId_;
+    /**
+     * <code>string warehouse_id = 1;</code>
+     */
+    public java.lang.String getWarehouseId() {
+      java.lang.Object ref = warehouseId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        warehouseId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string warehouse_id = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getWarehouseIdBytes() {
+      java.lang.Object ref = warehouseId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        warehouseId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DEPOSITOR_ID_FIELD_NUMBER = 2;
+    private volatile java.lang.Object depositorId_;
+    /**
+     * <code>string depositor_id = 2;</code>
+     */
+    public java.lang.String getDepositorId() {
+      java.lang.Object ref = depositorId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        depositorId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string depositor_id = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getDepositorIdBytes() {
+      java.lang.Object ref = depositorId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        depositorId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ACCOUNTANT_FIELD_NUMBER = 3;
     private volatile java.lang.Object accountant_;
     /**
-     * <code>string accountant = 1;</code>
+     * <code>string accountant = 3;</code>
      */
     public java.lang.String getAccountant() {
       java.lang.Object ref = accountant_;
@@ -257,7 +342,7 @@ public final class BVerifyAPIMessageSerialization {
       }
     }
     /**
-     * <code>string accountant = 1;</code>
+     * <code>string accountant = 3;</code>
      */
     public com.google.protobuf.ByteString
         getAccountantBytes() {
@@ -273,44 +358,10 @@ public final class BVerifyAPIMessageSerialization {
       }
     }
 
-    public static final int DEPOSITOR_FIELD_NUMBER = 2;
-    private volatile java.lang.Object depositor_;
-    /**
-     * <code>string depositor = 2;</code>
-     */
-    public java.lang.String getDepositor() {
-      java.lang.Object ref = depositor_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        depositor_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string depositor = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getDepositorBytes() {
-      java.lang.Object ref = depositor_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        depositor_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int CATEGORY_FIELD_NUMBER = 3;
+    public static final int CATEGORY_FIELD_NUMBER = 4;
     private volatile java.lang.Object category_;
     /**
-     * <code>string category = 3;</code>
+     * <code>string category = 4;</code>
      */
     public java.lang.String getCategory() {
       java.lang.Object ref = category_;
@@ -325,7 +376,7 @@ public final class BVerifyAPIMessageSerialization {
       }
     }
     /**
-     * <code>string category = 3;</code>
+     * <code>string category = 4;</code>
      */
     public com.google.protobuf.ByteString
         getCategoryBytes() {
@@ -341,10 +392,10 @@ public final class BVerifyAPIMessageSerialization {
       }
     }
 
-    public static final int DATE_FIELD_NUMBER = 4;
+    public static final int DATE_FIELD_NUMBER = 5;
     private volatile java.lang.Object date_;
     /**
-     * <code>string date = 4;</code>
+     * <code>string date = 5;</code>
      */
     public java.lang.String getDate() {
       java.lang.Object ref = date_;
@@ -359,7 +410,7 @@ public final class BVerifyAPIMessageSerialization {
       }
     }
     /**
-     * <code>string date = 4;</code>
+     * <code>string date = 5;</code>
      */
     public com.google.protobuf.ByteString
         getDateBytes() {
@@ -375,10 +426,10 @@ public final class BVerifyAPIMessageSerialization {
       }
     }
 
-    public static final int INSURANCE_FIELD_NUMBER = 5;
+    public static final int INSURANCE_FIELD_NUMBER = 6;
     private volatile java.lang.Object insurance_;
     /**
-     * <code>string insurance = 5;</code>
+     * <code>string insurance = 6;</code>
      */
     public java.lang.String getInsurance() {
       java.lang.Object ref = insurance_;
@@ -393,7 +444,7 @@ public final class BVerifyAPIMessageSerialization {
       }
     }
     /**
-     * <code>string insurance = 5;</code>
+     * <code>string insurance = 6;</code>
      */
     public com.google.protobuf.ByteString
         getInsuranceBytes() {
@@ -409,46 +460,46 @@ public final class BVerifyAPIMessageSerialization {
       }
     }
 
-    public static final int WEIGHT_FIELD_NUMBER = 6;
-    private int weight_;
+    public static final int WEIGHT_FIELD_NUMBER = 7;
+    private double weight_;
     /**
-     * <code>int32 weight = 6;</code>
+     * <code>double weight = 7;</code>
      */
-    public int getWeight() {
+    public double getWeight() {
       return weight_;
     }
 
-    public static final int VOLUME_FIELD_NUMBER = 7;
-    private int volume_;
+    public static final int VOLUME_FIELD_NUMBER = 8;
+    private double volume_;
     /**
-     * <code>int32 volume = 7;</code>
+     * <code>double volume = 8;</code>
      */
-    public int getVolume() {
+    public double getVolume() {
       return volume_;
     }
 
-    public static final int HUMIDITY_FIELD_NUMBER = 8;
-    private int humidity_;
+    public static final int HUMIDITY_FIELD_NUMBER = 9;
+    private double humidity_;
     /**
-     * <code>int32 humidity = 8;</code>
+     * <code>double humidity = 9;</code>
      */
-    public int getHumidity() {
+    public double getHumidity() {
       return humidity_;
     }
 
-    public static final int PRICE_FIELD_NUMBER = 9;
-    private int price_;
+    public static final int PRICE_FIELD_NUMBER = 10;
+    private double price_;
     /**
-     * <code>int32 price = 9;</code>
+     * <code>double price = 10;</code>
      */
-    public int getPrice() {
+    public double getPrice() {
       return price_;
     }
 
-    public static final int DETAILS_FIELD_NUMBER = 10;
+    public static final int DETAILS_FIELD_NUMBER = 11;
     private volatile java.lang.Object details_;
     /**
-     * <code>string details = 10;</code>
+     * <code>string details = 11;</code>
      */
     public java.lang.String getDetails() {
       java.lang.Object ref = details_;
@@ -463,7 +514,7 @@ public final class BVerifyAPIMessageSerialization {
       }
     }
     /**
-     * <code>string details = 10;</code>
+     * <code>string details = 11;</code>
      */
     public com.google.protobuf.ByteString
         getDetailsBytes() {
@@ -491,35 +542,38 @@ public final class BVerifyAPIMessageSerialization {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getAccountantBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, accountant_);
+      if (!getWarehouseIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, warehouseId_);
       }
-      if (!getDepositorBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, depositor_);
+      if (!getDepositorIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, depositorId_);
+      }
+      if (!getAccountantBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, accountant_);
       }
       if (!getCategoryBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, category_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, category_);
       }
       if (!getDateBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, date_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, date_);
       }
       if (!getInsuranceBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, insurance_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, insurance_);
       }
-      if (weight_ != 0) {
-        output.writeInt32(6, weight_);
+      if (weight_ != 0D) {
+        output.writeDouble(7, weight_);
       }
-      if (volume_ != 0) {
-        output.writeInt32(7, volume_);
+      if (volume_ != 0D) {
+        output.writeDouble(8, volume_);
       }
-      if (humidity_ != 0) {
-        output.writeInt32(8, humidity_);
+      if (humidity_ != 0D) {
+        output.writeDouble(9, humidity_);
       }
-      if (price_ != 0) {
-        output.writeInt32(9, price_);
+      if (price_ != 0D) {
+        output.writeDouble(10, price_);
       }
       if (!getDetailsBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 10, details_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 11, details_);
       }
       unknownFields.writeTo(output);
     }
@@ -529,39 +583,42 @@ public final class BVerifyAPIMessageSerialization {
       if (size != -1) return size;
 
       size = 0;
-      if (!getAccountantBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, accountant_);
+      if (!getWarehouseIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, warehouseId_);
       }
-      if (!getDepositorBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, depositor_);
+      if (!getDepositorIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, depositorId_);
+      }
+      if (!getAccountantBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, accountant_);
       }
       if (!getCategoryBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, category_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, category_);
       }
       if (!getDateBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, date_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, date_);
       }
       if (!getInsuranceBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, insurance_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, insurance_);
       }
-      if (weight_ != 0) {
+      if (weight_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(6, weight_);
+          .computeDoubleSize(7, weight_);
       }
-      if (volume_ != 0) {
+      if (volume_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(7, volume_);
+          .computeDoubleSize(8, volume_);
       }
-      if (humidity_ != 0) {
+      if (humidity_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(8, humidity_);
+          .computeDoubleSize(9, humidity_);
       }
-      if (price_ != 0) {
+      if (price_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(9, price_);
+          .computeDoubleSize(10, price_);
       }
       if (!getDetailsBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, details_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, details_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -579,24 +636,34 @@ public final class BVerifyAPIMessageSerialization {
       serialization.BVerifyAPIMessageSerialization.Receipt other = (serialization.BVerifyAPIMessageSerialization.Receipt) obj;
 
       boolean result = true;
+      result = result && getWarehouseId()
+          .equals(other.getWarehouseId());
+      result = result && getDepositorId()
+          .equals(other.getDepositorId());
       result = result && getAccountant()
           .equals(other.getAccountant());
-      result = result && getDepositor()
-          .equals(other.getDepositor());
       result = result && getCategory()
           .equals(other.getCategory());
       result = result && getDate()
           .equals(other.getDate());
       result = result && getInsurance()
           .equals(other.getInsurance());
-      result = result && (getWeight()
-          == other.getWeight());
-      result = result && (getVolume()
-          == other.getVolume());
-      result = result && (getHumidity()
-          == other.getHumidity());
-      result = result && (getPrice()
-          == other.getPrice());
+      result = result && (
+          java.lang.Double.doubleToLongBits(getWeight())
+          == java.lang.Double.doubleToLongBits(
+              other.getWeight()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getVolume())
+          == java.lang.Double.doubleToLongBits(
+              other.getVolume()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getHumidity())
+          == java.lang.Double.doubleToLongBits(
+              other.getHumidity()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getPrice())
+          == java.lang.Double.doubleToLongBits(
+              other.getPrice()));
       result = result && getDetails()
           .equals(other.getDetails());
       result = result && unknownFields.equals(other.unknownFields);
@@ -610,10 +677,12 @@ public final class BVerifyAPIMessageSerialization {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + WAREHOUSE_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getWarehouseId().hashCode();
+      hash = (37 * hash) + DEPOSITOR_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getDepositorId().hashCode();
       hash = (37 * hash) + ACCOUNTANT_FIELD_NUMBER;
       hash = (53 * hash) + getAccountant().hashCode();
-      hash = (37 * hash) + DEPOSITOR_FIELD_NUMBER;
-      hash = (53 * hash) + getDepositor().hashCode();
       hash = (37 * hash) + CATEGORY_FIELD_NUMBER;
       hash = (53 * hash) + getCategory().hashCode();
       hash = (37 * hash) + DATE_FIELD_NUMBER;
@@ -621,13 +690,17 @@ public final class BVerifyAPIMessageSerialization {
       hash = (37 * hash) + INSURANCE_FIELD_NUMBER;
       hash = (53 * hash) + getInsurance().hashCode();
       hash = (37 * hash) + WEIGHT_FIELD_NUMBER;
-      hash = (53 * hash) + getWeight();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getWeight()));
       hash = (37 * hash) + VOLUME_FIELD_NUMBER;
-      hash = (53 * hash) + getVolume();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getVolume()));
       hash = (37 * hash) + HUMIDITY_FIELD_NUMBER;
-      hash = (53 * hash) + getHumidity();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getHumidity()));
       hash = (37 * hash) + PRICE_FIELD_NUMBER;
-      hash = (53 * hash) + getPrice();
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getPrice()));
       hash = (37 * hash) + DETAILS_FIELD_NUMBER;
       hash = (53 * hash) + getDetails().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -764,9 +837,11 @@ public final class BVerifyAPIMessageSerialization {
       }
       public Builder clear() {
         super.clear();
-        accountant_ = "";
+        warehouseId_ = "";
 
-        depositor_ = "";
+        depositorId_ = "";
+
+        accountant_ = "";
 
         category_ = "";
 
@@ -774,13 +849,13 @@ public final class BVerifyAPIMessageSerialization {
 
         insurance_ = "";
 
-        weight_ = 0;
+        weight_ = 0D;
 
-        volume_ = 0;
+        volume_ = 0D;
 
-        humidity_ = 0;
+        humidity_ = 0D;
 
-        price_ = 0;
+        price_ = 0D;
 
         details_ = "";
 
@@ -806,8 +881,9 @@ public final class BVerifyAPIMessageSerialization {
 
       public serialization.BVerifyAPIMessageSerialization.Receipt buildPartial() {
         serialization.BVerifyAPIMessageSerialization.Receipt result = new serialization.BVerifyAPIMessageSerialization.Receipt(this);
+        result.warehouseId_ = warehouseId_;
+        result.depositorId_ = depositorId_;
         result.accountant_ = accountant_;
-        result.depositor_ = depositor_;
         result.category_ = category_;
         result.date_ = date_;
         result.insurance_ = insurance_;
@@ -857,12 +933,16 @@ public final class BVerifyAPIMessageSerialization {
 
       public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.Receipt other) {
         if (other == serialization.BVerifyAPIMessageSerialization.Receipt.getDefaultInstance()) return this;
-        if (!other.getAccountant().isEmpty()) {
-          accountant_ = other.accountant_;
+        if (!other.getWarehouseId().isEmpty()) {
+          warehouseId_ = other.warehouseId_;
           onChanged();
         }
-        if (!other.getDepositor().isEmpty()) {
-          depositor_ = other.depositor_;
+        if (!other.getDepositorId().isEmpty()) {
+          depositorId_ = other.depositorId_;
+          onChanged();
+        }
+        if (!other.getAccountant().isEmpty()) {
+          accountant_ = other.accountant_;
           onChanged();
         }
         if (!other.getCategory().isEmpty()) {
@@ -877,16 +957,16 @@ public final class BVerifyAPIMessageSerialization {
           insurance_ = other.insurance_;
           onChanged();
         }
-        if (other.getWeight() != 0) {
+        if (other.getWeight() != 0D) {
           setWeight(other.getWeight());
         }
-        if (other.getVolume() != 0) {
+        if (other.getVolume() != 0D) {
           setVolume(other.getVolume());
         }
-        if (other.getHumidity() != 0) {
+        if (other.getHumidity() != 0D) {
           setHumidity(other.getHumidity());
         }
-        if (other.getPrice() != 0) {
+        if (other.getPrice() != 0D) {
           setPrice(other.getPrice());
         }
         if (!other.getDetails().isEmpty()) {
@@ -920,9 +1000,147 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
 
+      private java.lang.Object warehouseId_ = "";
+      /**
+       * <code>string warehouse_id = 1;</code>
+       */
+      public java.lang.String getWarehouseId() {
+        java.lang.Object ref = warehouseId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          warehouseId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string warehouse_id = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getWarehouseIdBytes() {
+        java.lang.Object ref = warehouseId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          warehouseId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string warehouse_id = 1;</code>
+       */
+      public Builder setWarehouseId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        warehouseId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string warehouse_id = 1;</code>
+       */
+      public Builder clearWarehouseId() {
+        
+        warehouseId_ = getDefaultInstance().getWarehouseId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string warehouse_id = 1;</code>
+       */
+      public Builder setWarehouseIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        warehouseId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object depositorId_ = "";
+      /**
+       * <code>string depositor_id = 2;</code>
+       */
+      public java.lang.String getDepositorId() {
+        java.lang.Object ref = depositorId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          depositorId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string depositor_id = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getDepositorIdBytes() {
+        java.lang.Object ref = depositorId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          depositorId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string depositor_id = 2;</code>
+       */
+      public Builder setDepositorId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        depositorId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string depositor_id = 2;</code>
+       */
+      public Builder clearDepositorId() {
+        
+        depositorId_ = getDefaultInstance().getDepositorId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string depositor_id = 2;</code>
+       */
+      public Builder setDepositorIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        depositorId_ = value;
+        onChanged();
+        return this;
+      }
+
       private java.lang.Object accountant_ = "";
       /**
-       * <code>string accountant = 1;</code>
+       * <code>string accountant = 3;</code>
        */
       public java.lang.String getAccountant() {
         java.lang.Object ref = accountant_;
@@ -937,7 +1155,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>string accountant = 1;</code>
+       * <code>string accountant = 3;</code>
        */
       public com.google.protobuf.ByteString
           getAccountantBytes() {
@@ -953,7 +1171,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>string accountant = 1;</code>
+       * <code>string accountant = 3;</code>
        */
       public Builder setAccountant(
           java.lang.String value) {
@@ -966,7 +1184,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>string accountant = 1;</code>
+       * <code>string accountant = 3;</code>
        */
       public Builder clearAccountant() {
         
@@ -975,7 +1193,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>string accountant = 1;</code>
+       * <code>string accountant = 3;</code>
        */
       public Builder setAccountantBytes(
           com.google.protobuf.ByteString value) {
@@ -989,78 +1207,9 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
 
-      private java.lang.Object depositor_ = "";
-      /**
-       * <code>string depositor = 2;</code>
-       */
-      public java.lang.String getDepositor() {
-        java.lang.Object ref = depositor_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          depositor_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string depositor = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getDepositorBytes() {
-        java.lang.Object ref = depositor_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          depositor_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string depositor = 2;</code>
-       */
-      public Builder setDepositor(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        depositor_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string depositor = 2;</code>
-       */
-      public Builder clearDepositor() {
-        
-        depositor_ = getDefaultInstance().getDepositor();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string depositor = 2;</code>
-       */
-      public Builder setDepositorBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        depositor_ = value;
-        onChanged();
-        return this;
-      }
-
       private java.lang.Object category_ = "";
       /**
-       * <code>string category = 3;</code>
+       * <code>string category = 4;</code>
        */
       public java.lang.String getCategory() {
         java.lang.Object ref = category_;
@@ -1075,7 +1224,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>string category = 3;</code>
+       * <code>string category = 4;</code>
        */
       public com.google.protobuf.ByteString
           getCategoryBytes() {
@@ -1091,7 +1240,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>string category = 3;</code>
+       * <code>string category = 4;</code>
        */
       public Builder setCategory(
           java.lang.String value) {
@@ -1104,7 +1253,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>string category = 3;</code>
+       * <code>string category = 4;</code>
        */
       public Builder clearCategory() {
         
@@ -1113,7 +1262,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>string category = 3;</code>
+       * <code>string category = 4;</code>
        */
       public Builder setCategoryBytes(
           com.google.protobuf.ByteString value) {
@@ -1129,7 +1278,7 @@ public final class BVerifyAPIMessageSerialization {
 
       private java.lang.Object date_ = "";
       /**
-       * <code>string date = 4;</code>
+       * <code>string date = 5;</code>
        */
       public java.lang.String getDate() {
         java.lang.Object ref = date_;
@@ -1144,7 +1293,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>string date = 4;</code>
+       * <code>string date = 5;</code>
        */
       public com.google.protobuf.ByteString
           getDateBytes() {
@@ -1160,7 +1309,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>string date = 4;</code>
+       * <code>string date = 5;</code>
        */
       public Builder setDate(
           java.lang.String value) {
@@ -1173,7 +1322,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>string date = 4;</code>
+       * <code>string date = 5;</code>
        */
       public Builder clearDate() {
         
@@ -1182,7 +1331,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>string date = 4;</code>
+       * <code>string date = 5;</code>
        */
       public Builder setDateBytes(
           com.google.protobuf.ByteString value) {
@@ -1198,7 +1347,7 @@ public final class BVerifyAPIMessageSerialization {
 
       private java.lang.Object insurance_ = "";
       /**
-       * <code>string insurance = 5;</code>
+       * <code>string insurance = 6;</code>
        */
       public java.lang.String getInsurance() {
         java.lang.Object ref = insurance_;
@@ -1213,7 +1362,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>string insurance = 5;</code>
+       * <code>string insurance = 6;</code>
        */
       public com.google.protobuf.ByteString
           getInsuranceBytes() {
@@ -1229,7 +1378,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>string insurance = 5;</code>
+       * <code>string insurance = 6;</code>
        */
       public Builder setInsurance(
           java.lang.String value) {
@@ -1242,7 +1391,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>string insurance = 5;</code>
+       * <code>string insurance = 6;</code>
        */
       public Builder clearInsurance() {
         
@@ -1251,7 +1400,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>string insurance = 5;</code>
+       * <code>string insurance = 6;</code>
        */
       public Builder setInsuranceBytes(
           com.google.protobuf.ByteString value) {
@@ -1265,113 +1414,113 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
 
-      private int weight_ ;
+      private double weight_ ;
       /**
-       * <code>int32 weight = 6;</code>
+       * <code>double weight = 7;</code>
        */
-      public int getWeight() {
+      public double getWeight() {
         return weight_;
       }
       /**
-       * <code>int32 weight = 6;</code>
+       * <code>double weight = 7;</code>
        */
-      public Builder setWeight(int value) {
+      public Builder setWeight(double value) {
         
         weight_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 weight = 6;</code>
+       * <code>double weight = 7;</code>
        */
       public Builder clearWeight() {
         
-        weight_ = 0;
+        weight_ = 0D;
         onChanged();
         return this;
       }
 
-      private int volume_ ;
+      private double volume_ ;
       /**
-       * <code>int32 volume = 7;</code>
+       * <code>double volume = 8;</code>
        */
-      public int getVolume() {
+      public double getVolume() {
         return volume_;
       }
       /**
-       * <code>int32 volume = 7;</code>
+       * <code>double volume = 8;</code>
        */
-      public Builder setVolume(int value) {
+      public Builder setVolume(double value) {
         
         volume_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 volume = 7;</code>
+       * <code>double volume = 8;</code>
        */
       public Builder clearVolume() {
         
-        volume_ = 0;
+        volume_ = 0D;
         onChanged();
         return this;
       }
 
-      private int humidity_ ;
+      private double humidity_ ;
       /**
-       * <code>int32 humidity = 8;</code>
+       * <code>double humidity = 9;</code>
        */
-      public int getHumidity() {
+      public double getHumidity() {
         return humidity_;
       }
       /**
-       * <code>int32 humidity = 8;</code>
+       * <code>double humidity = 9;</code>
        */
-      public Builder setHumidity(int value) {
+      public Builder setHumidity(double value) {
         
         humidity_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 humidity = 8;</code>
+       * <code>double humidity = 9;</code>
        */
       public Builder clearHumidity() {
         
-        humidity_ = 0;
+        humidity_ = 0D;
         onChanged();
         return this;
       }
 
-      private int price_ ;
+      private double price_ ;
       /**
-       * <code>int32 price = 9;</code>
+       * <code>double price = 10;</code>
        */
-      public int getPrice() {
+      public double getPrice() {
         return price_;
       }
       /**
-       * <code>int32 price = 9;</code>
+       * <code>double price = 10;</code>
        */
-      public Builder setPrice(int value) {
+      public Builder setPrice(double value) {
         
         price_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int32 price = 9;</code>
+       * <code>double price = 10;</code>
        */
       public Builder clearPrice() {
         
-        price_ = 0;
+        price_ = 0D;
         onChanged();
         return this;
       }
 
       private java.lang.Object details_ = "";
       /**
-       * <code>string details = 10;</code>
+       * <code>string details = 11;</code>
        */
       public java.lang.String getDetails() {
         java.lang.Object ref = details_;
@@ -1386,7 +1535,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>string details = 10;</code>
+       * <code>string details = 11;</code>
        */
       public com.google.protobuf.ByteString
           getDetailsBytes() {
@@ -1402,7 +1551,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>string details = 10;</code>
+       * <code>string details = 11;</code>
        */
       public Builder setDetails(
           java.lang.String value) {
@@ -1415,7 +1564,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>string details = 10;</code>
+       * <code>string details = 11;</code>
        */
       public Builder clearDetails() {
         
@@ -1424,7 +1573,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>string details = 10;</code>
+       * <code>string details = 11;</code>
        */
       public Builder setDetailsBytes(
           com.google.protobuf.ByteString value) {
@@ -9335,39 +9484,40 @@ public final class BVerifyAPIMessageSerialization {
   static {
     java.lang.String[] descriptorData = {
       "\n\037protos/bverifyprotocolapi.proto\022\rseria" +
-      "lization\032\020protos/mpt.proto\"\265\001\n\007Receipt\022\022" +
-      "\n\naccountant\030\001 \001(\t\022\021\n\tdepositor\030\002 \001(\t\022\020\n" +
-      "\010category\030\003 \001(\t\022\014\n\004date\030\004 \001(\t\022\021\n\tinsuran" +
-      "ce\030\005 \001(\t\022\016\n\006weight\030\006 \001(\005\022\016\n\006volume\030\007 \001(\005" +
-      "\022\020\n\010humidity\030\010 \001(\005\022\r\n\005price\030\t \001(\005\022\017\n\007det" +
-      "ails\030\n \001(\t\"g\n\023IssueReceiptRequest\022\021\n\tiss" +
-      "uer_id\030\001 \001(\t\022\024\n\014recepient_id\030\002 \001(\t\022\'\n\007re" +
-      "ceipt\030\003 \001(\0132\026.serialization.Receipt\"Q\n\024R" +
-      "edeemReceiptRequest\022\021\n\tissuer_id\030\001 \001(\t\022\020" +
-      "\n\010owner_id\030\002 \001(\t\022\024\n\014receipt_hash\030\003 \001(\014\"q" +
-      "\n\026TransferReceiptRequest\022\021\n\tissuer_id\030\001 " +
-      "\001(\t\022\030\n\020current_owner_id\030\002 \001(\t\022\024\n\014new_own" +
-      "er_id\030\003 \001(\t\022\024\n\014receipt_hash\030\004 \001(\014\"=\n\021Get" +
-      "UpdatesRequest\022\032\n\022from_commit_number\030\001 \001" +
-      "(\005\022\014\n\004keys\030\002 \003(\014\"\036\n\tSignature\022\021\n\tsignatu" +
-      "re\030\001 \001(\014\"\246\001\n\023ReceiptIssueApprove\022\021\n\tissu" +
-      "er_id\030\001 \001(\t\022\024\n\014recepient_id\030\002 \001(\t\022\'\n\007rec" +
-      "eipt\030\003 \001(\0132\026.serialization.Receipt\022=\n\024au" +
-      "thentication_proof\030\004 \001(\0132\037.serialization" +
-      ".MerklePrefixTrie\"\220\001\n\024ReceiptRedeemAppro" +
-      "ve\022\021\n\tissuer_id\030\001 \001(\t\022\020\n\010owner_id\030\002 \001(\t\022" +
-      "\024\n\014receipt_hash\030\003 \001(\014\022=\n\024authentication_" +
-      "proof\030\004 \001(\0132\037.serialization.MerklePrefix" +
-      "Trie\"\236\002\n\026ReceiptTransferApprove\022\021\n\tissue" +
-      "r_id\030\001 \001(\t\022\030\n\020current_owner_id\030\002 \001(\t\022\024\n\014" +
-      "new_owner_id\030\003 \001(\t\022\024\n\014receipt_hash\030\004 \001(\014" +
-      "\0224\n\013added_proof\030\005 \001(\0132\037.serialization.Me" +
-      "rklePrefixTrie\0226\n\rremoved_proof\030\006 \001(\0132\037." +
-      "serialization.MerklePrefixTrie\022=\n\024authen" +
-      "tication_proof\030\007 \001(\0132\037.serialization.Mer" +
-      "klePrefixTrie\":\n\007Updates\022/\n\006update\030\001 \003(\013" +
-      "2\037.serialization.MerklePrefixTrieB B\036BVe" +
-      "rifyAPIMessageSerializationb\006proto3"
+      "lization\032\020protos/mpt.proto\"\316\001\n\007Receipt\022\024" +
+      "\n\014warehouse_id\030\001 \001(\t\022\024\n\014depositor_id\030\002 \001" +
+      "(\t\022\022\n\naccountant\030\003 \001(\t\022\020\n\010category\030\004 \001(\t" +
+      "\022\014\n\004date\030\005 \001(\t\022\021\n\tinsurance\030\006 \001(\t\022\016\n\006wei" +
+      "ght\030\007 \001(\001\022\016\n\006volume\030\010 \001(\001\022\020\n\010humidity\030\t " +
+      "\001(\001\022\r\n\005price\030\n \001(\001\022\017\n\007details\030\013 \001(\t\"g\n\023I" +
+      "ssueReceiptRequest\022\021\n\tissuer_id\030\001 \001(\t\022\024\n" +
+      "\014recepient_id\030\002 \001(\t\022\'\n\007receipt\030\003 \001(\0132\026.s" +
+      "erialization.Receipt\"Q\n\024RedeemReceiptReq" +
+      "uest\022\021\n\tissuer_id\030\001 \001(\t\022\020\n\010owner_id\030\002 \001(" +
+      "\t\022\024\n\014receipt_hash\030\003 \001(\014\"q\n\026TransferRecei" +
+      "ptRequest\022\021\n\tissuer_id\030\001 \001(\t\022\030\n\020current_" +
+      "owner_id\030\002 \001(\t\022\024\n\014new_owner_id\030\003 \001(\t\022\024\n\014" +
+      "receipt_hash\030\004 \001(\014\"=\n\021GetUpdatesRequest\022" +
+      "\032\n\022from_commit_number\030\001 \001(\005\022\014\n\004keys\030\002 \003(" +
+      "\014\"\036\n\tSignature\022\021\n\tsignature\030\001 \001(\014\"\246\001\n\023Re" +
+      "ceiptIssueApprove\022\021\n\tissuer_id\030\001 \001(\t\022\024\n\014" +
+      "recepient_id\030\002 \001(\t\022\'\n\007receipt\030\003 \001(\0132\026.se" +
+      "rialization.Receipt\022=\n\024authentication_pr" +
+      "oof\030\004 \001(\0132\037.serialization.MerklePrefixTr" +
+      "ie\"\220\001\n\024ReceiptRedeemApprove\022\021\n\tissuer_id" +
+      "\030\001 \001(\t\022\020\n\010owner_id\030\002 \001(\t\022\024\n\014receipt_hash" +
+      "\030\003 \001(\014\022=\n\024authentication_proof\030\004 \001(\0132\037.s" +
+      "erialization.MerklePrefixTrie\"\236\002\n\026Receip" +
+      "tTransferApprove\022\021\n\tissuer_id\030\001 \001(\t\022\030\n\020c" +
+      "urrent_owner_id\030\002 \001(\t\022\024\n\014new_owner_id\030\003 " +
+      "\001(\t\022\024\n\014receipt_hash\030\004 \001(\014\0224\n\013added_proof" +
+      "\030\005 \001(\0132\037.serialization.MerklePrefixTrie\022" +
+      "6\n\rremoved_proof\030\006 \001(\0132\037.serialization.M" +
+      "erklePrefixTrie\022=\n\024authentication_proof\030" +
+      "\007 \001(\0132\037.serialization.MerklePrefixTrie\":" +
+      "\n\007Updates\022/\n\006update\030\001 \003(\0132\037.serializatio" +
+      "n.MerklePrefixTrieB B\036BVerifyAPIMessageS" +
+      "erializationb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -9387,7 +9537,7 @@ public final class BVerifyAPIMessageSerialization {
     internal_static_serialization_Receipt_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_serialization_Receipt_descriptor,
-        new java.lang.String[] { "Accountant", "Depositor", "Category", "Date", "Insurance", "Weight", "Volume", "Humidity", "Price", "Details", });
+        new java.lang.String[] { "WarehouseId", "DepositorId", "Accountant", "Category", "Date", "Insurance", "Weight", "Volume", "Humidity", "Price", "Details", });
     internal_static_serialization_IssueReceiptRequest_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_serialization_IssueReceiptRequest_fieldAccessorTable = new

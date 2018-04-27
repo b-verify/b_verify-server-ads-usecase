@@ -11,8 +11,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.UUID;
 
-import com.github.javafaker.Faker;
-
 import crpyto.CryptographicSignature;
 
 public class Account implements Serializable {
@@ -90,26 +88,27 @@ public class Account implements Serializable {
 			Account account = (Account) obj;
 			return account;
 		}catch(Exception e) {
-			throw new RuntimeException(e.getMessage());
+			return null;
 		}	
 	}
 	
-	public static void generateRandomAccounts(int numberOfAccounts, String base) {
-		for(int i = 0; i < numberOfAccounts; i++) {
-			Faker faker = new Faker();
-			String firstName = faker.name().firstName(); 
-			String lastName = faker.name().lastName(); 
-			Account account = new Account(firstName, lastName);
-			account.saveToFile(base);
-			System.out.println("generating account "+(i+1)+
-					" - of - "+numberOfAccounts+"("+faker.name().fullName()+")");
-		}
+	public static Account loafFromFile(File f) {
+		try {
+			FileInputStream fin = new FileInputStream(f);
+			ObjectInputStream ois = new ObjectInputStream(fin);
+			Object obj = ois.readObject();
+			ois.close();
+			fin.close();
+			Account account = (Account) obj;
+			return account;
+		}catch(Exception e) {
+			return null;
+		}	
 	}
 	
-	public static void main(String[] args) {
-		// generate 1k mock accounts
-		Account.generateRandomAccounts(1000, 
-				"/home/henryaspegren/eclipse-workspace/b_verify-server/mock-data/pki/");
+	@Override
+	public String toString() {
+		return "<"+this.id.toString()+">";
 	}
 	
 }
