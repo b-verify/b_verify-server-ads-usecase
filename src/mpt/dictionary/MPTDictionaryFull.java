@@ -62,6 +62,21 @@ public class MPTDictionaryFull implements AuthenticatedDictionaryServer {
 		MPTDictionaryFull.insertHelper(key, value, -1, this.root);
 	}
 
+	/**
+	 * 
+	 * path to currentNode = key[:currentBitIndex + 1]
+	 * 
+	 * key[i] *leads* to i'th node in path, not including root
+	 * 
+	 * so, if currentNode is not a leaf, 
+	 * we're trying to add a child node to currentNode, whose branch is key[currentBitIndex + 1]
+	 * 
+	 * @param key
+	 * @param value
+	 * @param currentBitIndex
+	 * @param currentNode the 
+	 * @return
+	 */
 	private static Node insertHelper(final byte[] key, final byte[] value, 
 			final int currentBitIndex, final Node currentNode) {
 		// when we hit a leaf we know where we need to insert
@@ -152,7 +167,7 @@ public class MPTDictionaryFull implements AuthenticatedDictionaryServer {
 		}
 		return MPTDictionaryFull.getHelper(currentNode.getLeftChild(), key, currentBitIndex + 1);
 	}
-
+	
 	@Override
 	public void delete(final byte[] key) {
 		assert key.length == CryptographicDigest.getSizeBytes();
@@ -284,11 +299,11 @@ public class MPTDictionaryFull implements AuthenticatedDictionaryServer {
 		return new MPTDictionaryFull(rootInt);
 	}
 
-	public byte[] serialize() {
+	public MptSerialization.MerklePrefixTrie serialize() {
 		MptSerialization.Node rootSerialization = this.root.serialize();
 		MptSerialization.MerklePrefixTrie.Builder builder = MptSerialization.MerklePrefixTrie.newBuilder();
 		builder.setRoot(rootSerialization);
-		return builder.build().toByteArray();
+		return builder.build();
 	}
 
 	/**

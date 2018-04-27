@@ -19,6 +19,11 @@ public class CryptographicDigest {
 	private static final int SIZE_BITS = 256;
 	private static final int SIZE_BYTES = SIZE_BITS / 8;
 	
+	/**
+	 * Calculates the cryptographic hash of the input
+	 * @param input
+	 * @return
+	 */
 	public static byte[] hash(byte[] input) {
 		try {
 			MessageDigest md = MessageDigest.getInstance(HASH_FUNCTION);

@@ -122,7 +122,7 @@ public class ServerADSManager {
 	}
 	
 	public void save() {
-		byte[] asBytes = this.ads.serialize();
+		byte[] asBytes = this.ads.serialize().toByteArray();
 		try {
 			File f = new File(base+"-"+this.ads.commitment());
 			FileOutputStream fos = new FileOutputStream(f);

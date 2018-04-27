@@ -30,7 +30,7 @@ import serialization.MptSerialization;
  */
 public class MPTDictionaryPartial implements AuthenticatedDictionaryClient {
 	
-	private InteriorNode root;
+	protected InteriorNode root;
 
 	/**
 	 * Create a partial MPT from the full MPT. Since no keys are provided 

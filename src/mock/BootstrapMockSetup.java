@@ -2,13 +2,10 @@ package mock;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.commons.io.FileUtils;
 
 import com.github.javafaker.Faker;
 
@@ -137,7 +134,7 @@ public class BootstrapMockSetup {
 	    }
 	    
 	    // save the server auth ads
-		BootstrapMockSetup.writeADSToFile(serverADSDirectoryFile, "starting-ads", serverADS.serialize());
+		BootstrapMockSetup.writeADSToFile(serverADSDirectoryFile, "starting-ads", serverADS.serialize().toByteArray());
 
 		return false;
 	}
