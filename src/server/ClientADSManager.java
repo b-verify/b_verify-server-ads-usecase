@@ -3,9 +3,8 @@ package server;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +12,8 @@ import mpt.core.InvalidSerializationException;
 import mpt.core.Utils;
 import mpt.set.AuthenticatedSetServer;
 import mpt.set.MPTSetFull;
+import pki.Account;
+import pki.PKIDirectory;
 
 /**
  * This class is THREAD SAFE
@@ -28,101 +29,52 @@ import mpt.set.MPTSetFull;
  */
 public class ClientADSManager {
 
-	private final String base;
+	private final String clientADSdir;
 
-	private final Map<String, AuthenticatedSetServer> clientADSes;
-	private final List<Map.Entry<String, AuthenticatedSetServer>> updates;
+	private final Map<byte[], ClientADS> adsIdToClientADS;
 
-	public ClientADSManager(String base) {
-		this.base = base;
-		this.updates = new ArrayList<>();
-		this.clientADSes = new HashMap<>();
+	public ClientADSManager(PKIDirectory pki, String clientADSdir) {
+		this.clientADSdir = clientADSdir;
+		this.adsIdToClientADS = new HashMap<>();
 		
-		// load the current ADSes into memory
-		File adsDirectory = new File(base);
-		File[] adsFiles = adsDirectory.listFiles();
-		for (File adsFile : adsFiles) {
-			if (!adsFile.isFile()) {
-				break;
-			}
-			String adsKey = adsFile.getName();
-			try {
-				FileInputStream fis = new FileInputStream(adsFile);
-				byte[] encodedAds = new byte[(int) adsFile.length()];
-				fis.read(encodedAds);
-				fis.close();
-				MPTSetFull mptSet = MPTSetFull.deserialize(encodedAds);
-				this.clientADSes.put(adsKey, mptSet);
-			} catch (InvalidSerializationException | IOException e) {
-				e.printStackTrace();
-				throw new RuntimeException("corrupted data");
+		// get the adskey and record which clients
+		// care about each adskey
+		Map<byte[], Set<Account>> adsIdToClients = new HashMap<>();
+		Set<Account> accounts = pki.getAllAccounts();
+		for(Account a : accounts) {
+			Set<byte[]> adsKeys = a.getADSKeys();
+			for(byte[] adsKey : adsKeys) {
+				Set<Account> accs = adsIdToClients.get(adsKey);
+				if(accs == null) {
+					accs = new HashSet<>();
+				}
+				accs.add(a);
+				adsIdToClients.put(adsKey, accs);
 			}
 		}
 		
+		// now load the actual adses into memory
+		for(byte[] adsKey : adsIdToClients.keySet()) {
+			AuthenticatedSetServer mptSet = 
+					ClientADSManager.loadADSFromFile(this.clientADSdir, adsKey);
+			ClientADS clientADS = new ClientADS(adsIdToClients.get(adsKey), adsKey, mptSet);
+			this.adsIdToClientADS.put(adsKey, clientADS);
+		}		
+	}
+
+	public synchronized Set<byte[]> getAdsKeys(){
+		// DANGER returning a mutable reference
+		return this.adsIdToClientADS.keySet();
 	}
 	
-	/**
-	 * Return the authenticated set identified by adsKey if it exists or an empty
-	 * authenticated set if it does not.
-	 * 
-	 * @param adsKey
-	 *            - the identifying id for the ads
-	 * @return the authenticated set if it exists or an empty set
-	 */
-	public synchronized AuthenticatedSetServer getADS(final byte[] adsKey) {
-		String key = Utils.byteArrayAsHexString(adsKey);
-		if(this.clientADSes.containsKey(key)) {
-			return this.clientADSes.get(key);
-		}
-		return new MPTSetFull();
+	public synchronized Set<Account> getRelevantClients(final byte[] adsKey){
+		// DANGER returning a mutable reference
+		return this.adsIdToClientADS.get(adsKey).getOwners();
 	}
 
-	/**
-	 * Save an authenticated set identified by adsKey.
-	 * 
-	 * @param ads
-	 *            - the authenticated set to save
-	 * @param adsKey
-	 *            - the id of the authenticated set to save.
-	 */
-	public synchronized void updateADS(final AuthenticatedSetServer ads, final byte[] adsKey) {
-		String key = Utils.byteArrayAsHexString(adsKey);
-		this.clientADSes.put(key, ads);
-	}
-
-	/**
-	 * Stage an update to an ADS to be comitted. If
-	 * commit() is called the update occurs and if abort() 
-	 * is called it is deleted.
-	 * 
-	 * @param ads
-	 * @param adsKey
-	 * @return
-	 */
-	public synchronized boolean preCommit(final AuthenticatedSetServer ads, final byte[] adsKey) {
-		String key = base + Utils.byteArrayAsHexString(adsKey);
-		this.updates.add(Map.entry(key, ads));
-		return true;
-	}
-	
-	public synchronized void commit() {
-		for(Map.Entry<String, AuthenticatedSetServer> update : this.updates) {
-			this.clientADSes.put(update.getKey(), update.getValue());
-		}
-		this.updates.clear();
-	}
-
-	public synchronized void abort() {
-		this.updates.clear();
-	}
-	
-	public synchronized Set<String> getAdsKeys(){
-		return this.clientADSes.keySet();
-	}
-
-	public static AuthenticatedSetServer loadADSFromFile(String base, 
+	public static AuthenticatedSetServer loadADSFromFile(String clientADSDir, 
 			final byte[] adsKey) {
-		File adsFile = new File(base+Utils.byteArrayAsHexString(adsKey));
+		File adsFile = new File(clientADSDir+Utils.byteArrayAsHexString(adsKey));
 		try {
 			FileInputStream fis = new FileInputStream(adsFile);
 			byte[] encodedAds = new byte[(int) adsFile.length()];
@@ -137,9 +89,7 @@ public class ClientADSManager {
 	}
 	
 	public static void main(String[] args) {
-		ClientADSManager adsManager = new ClientADSManager(
-				"/home/henryaspegren/eclipse-workspace/b_verify-server/mock-data/client-ads/");
-		System.out.println(adsManager.getAdsKeys().size());
+
 	}
 
 }

@@ -124,6 +124,15 @@ public class Account implements Serializable {
 	}
 	
 	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Account) {
+			Account a = (Account) obj;
+			return this.id.equals(a.id);
+		}
+		return super.equals(obj);
+	}
+	
+	@Override
 	public String toString() {
 		return "<"+this.id.toString()+">";
 	}

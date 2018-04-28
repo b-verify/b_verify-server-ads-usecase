@@ -63,6 +63,10 @@ public class ServerADSManager {
 		this.ads = new MPTDictionaryFull();
 		this.undoLog = new ArrayList<>();
 	}
+	
+	public void update(byte[] adsKey, byte[] adsValue) {
+		this.ads.insert(adsKey, adsValue);
+	}
 
 	public void preCommit(byte[] key, byte[] value) {
 		byte[] currentValue = this.ads.get(value);

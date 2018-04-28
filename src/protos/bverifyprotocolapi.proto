@@ -14,7 +14,7 @@ option java_outer_classname = "BVerifyAPIMessageSerialization";
 
 
 /**
-*   Receipt format
+*   Receipt (this is a stand in for arbitrary data)
 */
 message Receipt {
     string warehouse_id = 1;
@@ -30,93 +30,86 @@ message Receipt {
     string details = 11;
 }
 
-/** 
-*		Messages sent from the CLIENT to the SERVER 
-**/
-
 /**
-* Request for the server to issue a receipt (initiated 
-* by a client)
+* 	Generic ADS Update 
 */
-message IssueReceiptRequest {
-	string issuer_id = 1;
-	string recepient_id = 2;
-	Receipt receipt = 3;
-}
-
-/**
-* Request for the server to redeem a receipt (initiated
-* by a client)
-*/
-message RedeemReceiptRequest {
-	string issuer_id = 1;
-	string owner_id = 2;
-	bytes receipt_hash = 3;
-}
-
-/**
-* Request for the server to transfer a receiept (intiated
-* by a client)
-*/
-message TransferReceiptRequest {
-	string issuer_id = 1;
-	string current_owner_id = 2;
-	string new_owner_id = 3;
-	bytes receipt_hash = 4;
-}
-
-/**
-* Request for the server to send updates (initiated 
-* by a client)
-*/
-message GetUpdatesRequest {
-	int32 from_commit_number = 1;
-	repeated bytes keys = 2; 
+message ADSModification {
+	bytes ads_id = 1;
+	bytes new_value = 2;
+	// [signature is not always included]
+	// signature is only included when a client is 
+	// sending an request to the server to initiate
+	// an operation. It is not included 
+	// when a server is requesting approval for a change
+	// from a client
+	Signature signature = 3;
 }
 
 /**
 * 	Generic signature message along with the 
-*	signer id
+*	id of the signer
 */
 message Signature {
 	bytes signature = 1;
 }
 
 /** 
-*		Messages sent from SERVER to the CLIENT 
+*		Request messages are used to alter the ads 
+* 		commitments on the server. These are
+*	 	sent from the client to the server to intiate
+* 		change(s) to an ads(es) stored on the server.
+* 		The server also will forward these request messages
+* 		to other relevant clients to request approval
 **/
-
-/**
-* A proof showing an issued receipt
-*/
-message ReceiptIssueApprove {
-	string issuer_id = 1;
-	string recepient_id = 2;
-	Receipt receipt = 3;
-	MerklePrefixTrie authentication_proof = 4;
+message Request {
+	repeated ADSModification modifications = 1;
+	oneof change_request {
+		IssueReceipt issue = 3;
+		RedeemReceipt redeem = 4;
+		TransferReceipt transfer = 5;
+	}
+	string request_initiator_id = 6;
 }
 
 /**
-* A proof showing a redeemed receipt
+* Data required for a request issue a receipt
 */
-message ReceiptRedeemApprove {
-	string issuer_id = 1;
-	string owner_id = 2;
-	bytes receipt_hash = 3;
-	MerklePrefixTrie authentication_proof = 4;
+message IssueReceipt {
+	Receipt receipt = 1;
 }
 
 /**
-* A proof showing a transferred receipt
+* Data required for request to redeem a receipt
 */
-message ReceiptTransferApprove {
-	string issuer_id = 1;
-	string current_owner_id = 2;
-	string new_owner_id = 3;
-	bytes receipt_hash = 4;
-	MerklePrefixTrie added_proof = 5;
-	MerklePrefixTrie removed_proof = 6;
-	MerklePrefixTrie authentication_proof = 7;
+message RedeemReceipt{
+	bytes receipt_hash = 1;
+}
+
+/**
+* Data required for a request to transfer a receipt 
+*/
+message TransferReceipt {
+	bytes receipt_hash = 1;
+}
+
+
+/** 
+*		Response messages contain 
+*		signatures for ADS Updates
+*		sent from clients to the server
+**/
+message Response {
+	repeated Signature signatures = 1;
+}
+
+/** TO BE USED LATER **/
+
+/**
+* Request for the server to send updatess
+*/
+message GetUpdatesRequest {
+	int32 from_commit_number = 1;
+	repeated bytes keys = 2; 
 }
 
 /**

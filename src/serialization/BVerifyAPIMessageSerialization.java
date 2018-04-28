@@ -111,7 +111,7 @@ public final class BVerifyAPIMessageSerialization {
   /**
    * <pre>
    **
-   *   Receipt format
+   *   Receipt (this is a stand in for arbitrary data)
    * </pre>
    *
    * Protobuf type {@code serialization.Receipt}
@@ -799,7 +799,7 @@ public final class BVerifyAPIMessageSerialization {
     /**
      * <pre>
      **
-     *   Receipt format
+     *   Receipt (this is a stand in for arbitrary data)
      * </pre>
      *
      * Protobuf type {@code serialization.Receipt}
@@ -1635,64 +1635,80 @@ public final class BVerifyAPIMessageSerialization {
 
   }
 
-  public interface IssueReceiptRequestOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:serialization.IssueReceiptRequest)
+  public interface ADSModificationOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:serialization.ADSModification)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string issuer_id = 1;</code>
+     * <code>bytes ads_id = 1;</code>
      */
-    java.lang.String getIssuerId();
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getIssuerIdBytes();
+    com.google.protobuf.ByteString getAdsId();
 
     /**
-     * <code>string recepient_id = 2;</code>
+     * <code>bytes new_value = 2;</code>
      */
-    java.lang.String getRecepientId();
-    /**
-     * <code>string recepient_id = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getRecepientIdBytes();
+    com.google.protobuf.ByteString getNewValue();
 
     /**
-     * <code>.serialization.Receipt receipt = 3;</code>
+     * <pre>
+     * [signature is not always included]
+     * signature is only included when a client is 
+     * sending an request to the server to initiate
+     * an operation. It is not included 
+     * when a server is requesting approval for a change
+     * from a client
+     * </pre>
+     *
+     * <code>.serialization.Signature signature = 3;</code>
      */
-    boolean hasReceipt();
+    boolean hasSignature();
     /**
-     * <code>.serialization.Receipt receipt = 3;</code>
+     * <pre>
+     * [signature is not always included]
+     * signature is only included when a client is 
+     * sending an request to the server to initiate
+     * an operation. It is not included 
+     * when a server is requesting approval for a change
+     * from a client
+     * </pre>
+     *
+     * <code>.serialization.Signature signature = 3;</code>
      */
-    serialization.BVerifyAPIMessageSerialization.Receipt getReceipt();
+    serialization.BVerifyAPIMessageSerialization.Signature getSignature();
     /**
-     * <code>.serialization.Receipt receipt = 3;</code>
+     * <pre>
+     * [signature is not always included]
+     * signature is only included when a client is 
+     * sending an request to the server to initiate
+     * an operation. It is not included 
+     * when a server is requesting approval for a change
+     * from a client
+     * </pre>
+     *
+     * <code>.serialization.Signature signature = 3;</code>
      */
-    serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder getReceiptOrBuilder();
+    serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder getSignatureOrBuilder();
   }
   /**
    * <pre>
    **
-   * Request for the server to issue a receipt (initiated 
-   * by a client)
+   * 	Generic ADS Update 
    * </pre>
    *
-   * Protobuf type {@code serialization.IssueReceiptRequest}
+   * Protobuf type {@code serialization.ADSModification}
    */
-  public  static final class IssueReceiptRequest extends
+  public  static final class ADSModification extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:serialization.IssueReceiptRequest)
-      IssueReceiptRequestOrBuilder {
+      // @@protoc_insertion_point(message_implements:serialization.ADSModification)
+      ADSModificationOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use IssueReceiptRequest.newBuilder() to construct.
-    private IssueReceiptRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use ADSModification.newBuilder() to construct.
+    private ADSModification(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private IssueReceiptRequest() {
-      issuerId_ = "";
-      recepientId_ = "";
+    private ADSModification() {
+      adsId_ = com.google.protobuf.ByteString.EMPTY;
+      newValue_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -1700,7 +1716,7 @@ public final class BVerifyAPIMessageSerialization {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private IssueReceiptRequest(
+    private ADSModification(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1727,18 +1743,2930 @@ public final class BVerifyAPIMessageSerialization {
               break;
             }
             case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
 
-              issuerId_ = s;
+              adsId_ = input.readBytes();
               break;
             }
             case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
 
-              recepientId_ = s;
+              newValue_ = input.readBytes();
               break;
             }
             case 26: {
+              serialization.BVerifyAPIMessageSerialization.Signature.Builder subBuilder = null;
+              if (signature_ != null) {
+                subBuilder = signature_.toBuilder();
+              }
+              signature_ = input.readMessage(serialization.BVerifyAPIMessageSerialization.Signature.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(signature_);
+                signature_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ADSModification_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ADSModification_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              serialization.BVerifyAPIMessageSerialization.ADSModification.class, serialization.BVerifyAPIMessageSerialization.ADSModification.Builder.class);
+    }
+
+    public static final int ADS_ID_FIELD_NUMBER = 1;
+    private com.google.protobuf.ByteString adsId_;
+    /**
+     * <code>bytes ads_id = 1;</code>
+     */
+    public com.google.protobuf.ByteString getAdsId() {
+      return adsId_;
+    }
+
+    public static final int NEW_VALUE_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString newValue_;
+    /**
+     * <code>bytes new_value = 2;</code>
+     */
+    public com.google.protobuf.ByteString getNewValue() {
+      return newValue_;
+    }
+
+    public static final int SIGNATURE_FIELD_NUMBER = 3;
+    private serialization.BVerifyAPIMessageSerialization.Signature signature_;
+    /**
+     * <pre>
+     * [signature is not always included]
+     * signature is only included when a client is 
+     * sending an request to the server to initiate
+     * an operation. It is not included 
+     * when a server is requesting approval for a change
+     * from a client
+     * </pre>
+     *
+     * <code>.serialization.Signature signature = 3;</code>
+     */
+    public boolean hasSignature() {
+      return signature_ != null;
+    }
+    /**
+     * <pre>
+     * [signature is not always included]
+     * signature is only included when a client is 
+     * sending an request to the server to initiate
+     * an operation. It is not included 
+     * when a server is requesting approval for a change
+     * from a client
+     * </pre>
+     *
+     * <code>.serialization.Signature signature = 3;</code>
+     */
+    public serialization.BVerifyAPIMessageSerialization.Signature getSignature() {
+      return signature_ == null ? serialization.BVerifyAPIMessageSerialization.Signature.getDefaultInstance() : signature_;
+    }
+    /**
+     * <pre>
+     * [signature is not always included]
+     * signature is only included when a client is 
+     * sending an request to the server to initiate
+     * an operation. It is not included 
+     * when a server is requesting approval for a change
+     * from a client
+     * </pre>
+     *
+     * <code>.serialization.Signature signature = 3;</code>
+     */
+    public serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder getSignatureOrBuilder() {
+      return getSignature();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!adsId_.isEmpty()) {
+        output.writeBytes(1, adsId_);
+      }
+      if (!newValue_.isEmpty()) {
+        output.writeBytes(2, newValue_);
+      }
+      if (signature_ != null) {
+        output.writeMessage(3, getSignature());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!adsId_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, adsId_);
+      }
+      if (!newValue_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, newValue_);
+      }
+      if (signature_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getSignature());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.ADSModification)) {
+        return super.equals(obj);
+      }
+      serialization.BVerifyAPIMessageSerialization.ADSModification other = (serialization.BVerifyAPIMessageSerialization.ADSModification) obj;
+
+      boolean result = true;
+      result = result && getAdsId()
+          .equals(other.getAdsId());
+      result = result && getNewValue()
+          .equals(other.getNewValue());
+      result = result && (hasSignature() == other.hasSignature());
+      if (hasSignature()) {
+        result = result && getSignature()
+            .equals(other.getSignature());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ADS_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getAdsId().hashCode();
+      hash = (37 * hash) + NEW_VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getNewValue().hashCode();
+      if (hasSignature()) {
+        hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
+        hash = (53 * hash) + getSignature().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static serialization.BVerifyAPIMessageSerialization.ADSModification parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.ADSModification parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.ADSModification parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.ADSModification parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.ADSModification parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.ADSModification parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.ADSModification parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.ADSModification parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.ADSModification parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.ADSModification parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.ADSModification parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.ADSModification parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.ADSModification prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     **
+     * 	Generic ADS Update 
+     * </pre>
+     *
+     * Protobuf type {@code serialization.ADSModification}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:serialization.ADSModification)
+        serialization.BVerifyAPIMessageSerialization.ADSModificationOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ADSModification_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ADSModification_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                serialization.BVerifyAPIMessageSerialization.ADSModification.class, serialization.BVerifyAPIMessageSerialization.ADSModification.Builder.class);
+      }
+
+      // Construct using serialization.BVerifyAPIMessageSerialization.ADSModification.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        adsId_ = com.google.protobuf.ByteString.EMPTY;
+
+        newValue_ = com.google.protobuf.ByteString.EMPTY;
+
+        if (signatureBuilder_ == null) {
+          signature_ = null;
+        } else {
+          signature_ = null;
+          signatureBuilder_ = null;
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ADSModification_descriptor;
+      }
+
+      public serialization.BVerifyAPIMessageSerialization.ADSModification getDefaultInstanceForType() {
+        return serialization.BVerifyAPIMessageSerialization.ADSModification.getDefaultInstance();
+      }
+
+      public serialization.BVerifyAPIMessageSerialization.ADSModification build() {
+        serialization.BVerifyAPIMessageSerialization.ADSModification result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public serialization.BVerifyAPIMessageSerialization.ADSModification buildPartial() {
+        serialization.BVerifyAPIMessageSerialization.ADSModification result = new serialization.BVerifyAPIMessageSerialization.ADSModification(this);
+        result.adsId_ = adsId_;
+        result.newValue_ = newValue_;
+        if (signatureBuilder_ == null) {
+          result.signature_ = signature_;
+        } else {
+          result.signature_ = signatureBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof serialization.BVerifyAPIMessageSerialization.ADSModification) {
+          return mergeFrom((serialization.BVerifyAPIMessageSerialization.ADSModification)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.ADSModification other) {
+        if (other == serialization.BVerifyAPIMessageSerialization.ADSModification.getDefaultInstance()) return this;
+        if (other.getAdsId() != com.google.protobuf.ByteString.EMPTY) {
+          setAdsId(other.getAdsId());
+        }
+        if (other.getNewValue() != com.google.protobuf.ByteString.EMPTY) {
+          setNewValue(other.getNewValue());
+        }
+        if (other.hasSignature()) {
+          mergeSignature(other.getSignature());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        serialization.BVerifyAPIMessageSerialization.ADSModification parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (serialization.BVerifyAPIMessageSerialization.ADSModification) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private com.google.protobuf.ByteString adsId_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes ads_id = 1;</code>
+       */
+      public com.google.protobuf.ByteString getAdsId() {
+        return adsId_;
+      }
+      /**
+       * <code>bytes ads_id = 1;</code>
+       */
+      public Builder setAdsId(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        adsId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes ads_id = 1;</code>
+       */
+      public Builder clearAdsId() {
+        
+        adsId_ = getDefaultInstance().getAdsId();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString newValue_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes new_value = 2;</code>
+       */
+      public com.google.protobuf.ByteString getNewValue() {
+        return newValue_;
+      }
+      /**
+       * <code>bytes new_value = 2;</code>
+       */
+      public Builder setNewValue(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        newValue_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes new_value = 2;</code>
+       */
+      public Builder clearNewValue() {
+        
+        newValue_ = getDefaultInstance().getNewValue();
+        onChanged();
+        return this;
+      }
+
+      private serialization.BVerifyAPIMessageSerialization.Signature signature_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.BVerifyAPIMessageSerialization.Signature, serialization.BVerifyAPIMessageSerialization.Signature.Builder, serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder> signatureBuilder_;
+      /**
+       * <pre>
+       * [signature is not always included]
+       * signature is only included when a client is 
+       * sending an request to the server to initiate
+       * an operation. It is not included 
+       * when a server is requesting approval for a change
+       * from a client
+       * </pre>
+       *
+       * <code>.serialization.Signature signature = 3;</code>
+       */
+      public boolean hasSignature() {
+        return signatureBuilder_ != null || signature_ != null;
+      }
+      /**
+       * <pre>
+       * [signature is not always included]
+       * signature is only included when a client is 
+       * sending an request to the server to initiate
+       * an operation. It is not included 
+       * when a server is requesting approval for a change
+       * from a client
+       * </pre>
+       *
+       * <code>.serialization.Signature signature = 3;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.Signature getSignature() {
+        if (signatureBuilder_ == null) {
+          return signature_ == null ? serialization.BVerifyAPIMessageSerialization.Signature.getDefaultInstance() : signature_;
+        } else {
+          return signatureBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * [signature is not always included]
+       * signature is only included when a client is 
+       * sending an request to the server to initiate
+       * an operation. It is not included 
+       * when a server is requesting approval for a change
+       * from a client
+       * </pre>
+       *
+       * <code>.serialization.Signature signature = 3;</code>
+       */
+      public Builder setSignature(serialization.BVerifyAPIMessageSerialization.Signature value) {
+        if (signatureBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          signature_ = value;
+          onChanged();
+        } else {
+          signatureBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * [signature is not always included]
+       * signature is only included when a client is 
+       * sending an request to the server to initiate
+       * an operation. It is not included 
+       * when a server is requesting approval for a change
+       * from a client
+       * </pre>
+       *
+       * <code>.serialization.Signature signature = 3;</code>
+       */
+      public Builder setSignature(
+          serialization.BVerifyAPIMessageSerialization.Signature.Builder builderForValue) {
+        if (signatureBuilder_ == null) {
+          signature_ = builderForValue.build();
+          onChanged();
+        } else {
+          signatureBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * [signature is not always included]
+       * signature is only included when a client is 
+       * sending an request to the server to initiate
+       * an operation. It is not included 
+       * when a server is requesting approval for a change
+       * from a client
+       * </pre>
+       *
+       * <code>.serialization.Signature signature = 3;</code>
+       */
+      public Builder mergeSignature(serialization.BVerifyAPIMessageSerialization.Signature value) {
+        if (signatureBuilder_ == null) {
+          if (signature_ != null) {
+            signature_ =
+              serialization.BVerifyAPIMessageSerialization.Signature.newBuilder(signature_).mergeFrom(value).buildPartial();
+          } else {
+            signature_ = value;
+          }
+          onChanged();
+        } else {
+          signatureBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * [signature is not always included]
+       * signature is only included when a client is 
+       * sending an request to the server to initiate
+       * an operation. It is not included 
+       * when a server is requesting approval for a change
+       * from a client
+       * </pre>
+       *
+       * <code>.serialization.Signature signature = 3;</code>
+       */
+      public Builder clearSignature() {
+        if (signatureBuilder_ == null) {
+          signature_ = null;
+          onChanged();
+        } else {
+          signature_ = null;
+          signatureBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <pre>
+       * [signature is not always included]
+       * signature is only included when a client is 
+       * sending an request to the server to initiate
+       * an operation. It is not included 
+       * when a server is requesting approval for a change
+       * from a client
+       * </pre>
+       *
+       * <code>.serialization.Signature signature = 3;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.Signature.Builder getSignatureBuilder() {
+        
+        onChanged();
+        return getSignatureFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * [signature is not always included]
+       * signature is only included when a client is 
+       * sending an request to the server to initiate
+       * an operation. It is not included 
+       * when a server is requesting approval for a change
+       * from a client
+       * </pre>
+       *
+       * <code>.serialization.Signature signature = 3;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder getSignatureOrBuilder() {
+        if (signatureBuilder_ != null) {
+          return signatureBuilder_.getMessageOrBuilder();
+        } else {
+          return signature_ == null ?
+              serialization.BVerifyAPIMessageSerialization.Signature.getDefaultInstance() : signature_;
+        }
+      }
+      /**
+       * <pre>
+       * [signature is not always included]
+       * signature is only included when a client is 
+       * sending an request to the server to initiate
+       * an operation. It is not included 
+       * when a server is requesting approval for a change
+       * from a client
+       * </pre>
+       *
+       * <code>.serialization.Signature signature = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.BVerifyAPIMessageSerialization.Signature, serialization.BVerifyAPIMessageSerialization.Signature.Builder, serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder> 
+          getSignatureFieldBuilder() {
+        if (signatureBuilder_ == null) {
+          signatureBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              serialization.BVerifyAPIMessageSerialization.Signature, serialization.BVerifyAPIMessageSerialization.Signature.Builder, serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder>(
+                  getSignature(),
+                  getParentForChildren(),
+                  isClean());
+          signature_ = null;
+        }
+        return signatureBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:serialization.ADSModification)
+    }
+
+    // @@protoc_insertion_point(class_scope:serialization.ADSModification)
+    private static final serialization.BVerifyAPIMessageSerialization.ADSModification DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.ADSModification();
+    }
+
+    public static serialization.BVerifyAPIMessageSerialization.ADSModification getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ADSModification>
+        PARSER = new com.google.protobuf.AbstractParser<ADSModification>() {
+      public ADSModification parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ADSModification(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ADSModification> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ADSModification> getParserForType() {
+      return PARSER;
+    }
+
+    public serialization.BVerifyAPIMessageSerialization.ADSModification getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface SignatureOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:serialization.Signature)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bytes signature = 1;</code>
+     */
+    com.google.protobuf.ByteString getSignature();
+  }
+  /**
+   * <pre>
+   **
+   * 	Generic signature message along with the 
+   *	id of the signer
+   * </pre>
+   *
+   * Protobuf type {@code serialization.Signature}
+   */
+  public  static final class Signature extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:serialization.Signature)
+      SignatureOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Signature.newBuilder() to construct.
+    private Signature(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Signature() {
+      signature_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Signature(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+
+              signature_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Signature_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Signature_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              serialization.BVerifyAPIMessageSerialization.Signature.class, serialization.BVerifyAPIMessageSerialization.Signature.Builder.class);
+    }
+
+    public static final int SIGNATURE_FIELD_NUMBER = 1;
+    private com.google.protobuf.ByteString signature_;
+    /**
+     * <code>bytes signature = 1;</code>
+     */
+    public com.google.protobuf.ByteString getSignature() {
+      return signature_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!signature_.isEmpty()) {
+        output.writeBytes(1, signature_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!signature_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, signature_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.Signature)) {
+        return super.equals(obj);
+      }
+      serialization.BVerifyAPIMessageSerialization.Signature other = (serialization.BVerifyAPIMessageSerialization.Signature) obj;
+
+      boolean result = true;
+      result = result && getSignature()
+          .equals(other.getSignature());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
+      hash = (53 * hash) + getSignature().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Signature parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Signature parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.Signature prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     **
+     * 	Generic signature message along with the 
+     *	id of the signer
+     * </pre>
+     *
+     * Protobuf type {@code serialization.Signature}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:serialization.Signature)
+        serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Signature_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Signature_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                serialization.BVerifyAPIMessageSerialization.Signature.class, serialization.BVerifyAPIMessageSerialization.Signature.Builder.class);
+      }
+
+      // Construct using serialization.BVerifyAPIMessageSerialization.Signature.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        signature_ = com.google.protobuf.ByteString.EMPTY;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Signature_descriptor;
+      }
+
+      public serialization.BVerifyAPIMessageSerialization.Signature getDefaultInstanceForType() {
+        return serialization.BVerifyAPIMessageSerialization.Signature.getDefaultInstance();
+      }
+
+      public serialization.BVerifyAPIMessageSerialization.Signature build() {
+        serialization.BVerifyAPIMessageSerialization.Signature result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public serialization.BVerifyAPIMessageSerialization.Signature buildPartial() {
+        serialization.BVerifyAPIMessageSerialization.Signature result = new serialization.BVerifyAPIMessageSerialization.Signature(this);
+        result.signature_ = signature_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof serialization.BVerifyAPIMessageSerialization.Signature) {
+          return mergeFrom((serialization.BVerifyAPIMessageSerialization.Signature)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.Signature other) {
+        if (other == serialization.BVerifyAPIMessageSerialization.Signature.getDefaultInstance()) return this;
+        if (other.getSignature() != com.google.protobuf.ByteString.EMPTY) {
+          setSignature(other.getSignature());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        serialization.BVerifyAPIMessageSerialization.Signature parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (serialization.BVerifyAPIMessageSerialization.Signature) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes signature = 1;</code>
+       */
+      public com.google.protobuf.ByteString getSignature() {
+        return signature_;
+      }
+      /**
+       * <code>bytes signature = 1;</code>
+       */
+      public Builder setSignature(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        signature_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes signature = 1;</code>
+       */
+      public Builder clearSignature() {
+        
+        signature_ = getDefaultInstance().getSignature();
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:serialization.Signature)
+    }
+
+    // @@protoc_insertion_point(class_scope:serialization.Signature)
+    private static final serialization.BVerifyAPIMessageSerialization.Signature DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.Signature();
+    }
+
+    public static serialization.BVerifyAPIMessageSerialization.Signature getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Signature>
+        PARSER = new com.google.protobuf.AbstractParser<Signature>() {
+      public Signature parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Signature(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Signature> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Signature> getParserForType() {
+      return PARSER;
+    }
+
+    public serialization.BVerifyAPIMessageSerialization.Signature getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface RequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:serialization.Request)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .serialization.ADSModification modifications = 1;</code>
+     */
+    java.util.List<serialization.BVerifyAPIMessageSerialization.ADSModification> 
+        getModificationsList();
+    /**
+     * <code>repeated .serialization.ADSModification modifications = 1;</code>
+     */
+    serialization.BVerifyAPIMessageSerialization.ADSModification getModifications(int index);
+    /**
+     * <code>repeated .serialization.ADSModification modifications = 1;</code>
+     */
+    int getModificationsCount();
+    /**
+     * <code>repeated .serialization.ADSModification modifications = 1;</code>
+     */
+    java.util.List<? extends serialization.BVerifyAPIMessageSerialization.ADSModificationOrBuilder> 
+        getModificationsOrBuilderList();
+    /**
+     * <code>repeated .serialization.ADSModification modifications = 1;</code>
+     */
+    serialization.BVerifyAPIMessageSerialization.ADSModificationOrBuilder getModificationsOrBuilder(
+        int index);
+
+    /**
+     * <code>.serialization.IssueReceipt issue = 3;</code>
+     */
+    boolean hasIssue();
+    /**
+     * <code>.serialization.IssueReceipt issue = 3;</code>
+     */
+    serialization.BVerifyAPIMessageSerialization.IssueReceipt getIssue();
+    /**
+     * <code>.serialization.IssueReceipt issue = 3;</code>
+     */
+    serialization.BVerifyAPIMessageSerialization.IssueReceiptOrBuilder getIssueOrBuilder();
+
+    /**
+     * <code>.serialization.RedeemReceipt redeem = 4;</code>
+     */
+    boolean hasRedeem();
+    /**
+     * <code>.serialization.RedeemReceipt redeem = 4;</code>
+     */
+    serialization.BVerifyAPIMessageSerialization.RedeemReceipt getRedeem();
+    /**
+     * <code>.serialization.RedeemReceipt redeem = 4;</code>
+     */
+    serialization.BVerifyAPIMessageSerialization.RedeemReceiptOrBuilder getRedeemOrBuilder();
+
+    /**
+     * <code>.serialization.TransferReceipt transfer = 5;</code>
+     */
+    boolean hasTransfer();
+    /**
+     * <code>.serialization.TransferReceipt transfer = 5;</code>
+     */
+    serialization.BVerifyAPIMessageSerialization.TransferReceipt getTransfer();
+    /**
+     * <code>.serialization.TransferReceipt transfer = 5;</code>
+     */
+    serialization.BVerifyAPIMessageSerialization.TransferReceiptOrBuilder getTransferOrBuilder();
+
+    /**
+     * <code>string request_initiator_id = 6;</code>
+     */
+    java.lang.String getRequestInitiatorId();
+    /**
+     * <code>string request_initiator_id = 6;</code>
+     */
+    com.google.protobuf.ByteString
+        getRequestInitiatorIdBytes();
+
+    public serialization.BVerifyAPIMessageSerialization.Request.ChangeRequestCase getChangeRequestCase();
+  }
+  /**
+   * <pre>
+   ** 
+   *		Request messages are used to alter the ads 
+   * 		commitments on the server. These are
+   *	 	sent from the client to the server to intiate
+   * 		change(s) to an ads(es) stored on the server.
+   * 		The server also will forward these request messages
+   * 		to other relevant clients to request approval
+   * </pre>
+   *
+   * Protobuf type {@code serialization.Request}
+   */
+  public  static final class Request extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:serialization.Request)
+      RequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Request.newBuilder() to construct.
+    private Request(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Request() {
+      modifications_ = java.util.Collections.emptyList();
+      requestInitiatorId_ = "";
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Request(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                modifications_ = new java.util.ArrayList<serialization.BVerifyAPIMessageSerialization.ADSModification>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              modifications_.add(
+                  input.readMessage(serialization.BVerifyAPIMessageSerialization.ADSModification.parser(), extensionRegistry));
+              break;
+            }
+            case 26: {
+              serialization.BVerifyAPIMessageSerialization.IssueReceipt.Builder subBuilder = null;
+              if (changeRequestCase_ == 3) {
+                subBuilder = ((serialization.BVerifyAPIMessageSerialization.IssueReceipt) changeRequest_).toBuilder();
+              }
+              changeRequest_ =
+                  input.readMessage(serialization.BVerifyAPIMessageSerialization.IssueReceipt.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((serialization.BVerifyAPIMessageSerialization.IssueReceipt) changeRequest_);
+                changeRequest_ = subBuilder.buildPartial();
+              }
+              changeRequestCase_ = 3;
+              break;
+            }
+            case 34: {
+              serialization.BVerifyAPIMessageSerialization.RedeemReceipt.Builder subBuilder = null;
+              if (changeRequestCase_ == 4) {
+                subBuilder = ((serialization.BVerifyAPIMessageSerialization.RedeemReceipt) changeRequest_).toBuilder();
+              }
+              changeRequest_ =
+                  input.readMessage(serialization.BVerifyAPIMessageSerialization.RedeemReceipt.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((serialization.BVerifyAPIMessageSerialization.RedeemReceipt) changeRequest_);
+                changeRequest_ = subBuilder.buildPartial();
+              }
+              changeRequestCase_ = 4;
+              break;
+            }
+            case 42: {
+              serialization.BVerifyAPIMessageSerialization.TransferReceipt.Builder subBuilder = null;
+              if (changeRequestCase_ == 5) {
+                subBuilder = ((serialization.BVerifyAPIMessageSerialization.TransferReceipt) changeRequest_).toBuilder();
+              }
+              changeRequest_ =
+                  input.readMessage(serialization.BVerifyAPIMessageSerialization.TransferReceipt.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((serialization.BVerifyAPIMessageSerialization.TransferReceipt) changeRequest_);
+                changeRequest_ = subBuilder.buildPartial();
+              }
+              changeRequestCase_ = 5;
+              break;
+            }
+            case 50: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              requestInitiatorId_ = s;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          modifications_ = java.util.Collections.unmodifiableList(modifications_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Request_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Request_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              serialization.BVerifyAPIMessageSerialization.Request.class, serialization.BVerifyAPIMessageSerialization.Request.Builder.class);
+    }
+
+    private int bitField0_;
+    private int changeRequestCase_ = 0;
+    private java.lang.Object changeRequest_;
+    public enum ChangeRequestCase
+        implements com.google.protobuf.Internal.EnumLite {
+      ISSUE(3),
+      REDEEM(4),
+      TRANSFER(5),
+      CHANGEREQUEST_NOT_SET(0);
+      private final int value;
+      private ChangeRequestCase(int value) {
+        this.value = value;
+      }
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static ChangeRequestCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static ChangeRequestCase forNumber(int value) {
+        switch (value) {
+          case 3: return ISSUE;
+          case 4: return REDEEM;
+          case 5: return TRANSFER;
+          case 0: return CHANGEREQUEST_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public ChangeRequestCase
+    getChangeRequestCase() {
+      return ChangeRequestCase.forNumber(
+          changeRequestCase_);
+    }
+
+    public static final int MODIFICATIONS_FIELD_NUMBER = 1;
+    private java.util.List<serialization.BVerifyAPIMessageSerialization.ADSModification> modifications_;
+    /**
+     * <code>repeated .serialization.ADSModification modifications = 1;</code>
+     */
+    public java.util.List<serialization.BVerifyAPIMessageSerialization.ADSModification> getModificationsList() {
+      return modifications_;
+    }
+    /**
+     * <code>repeated .serialization.ADSModification modifications = 1;</code>
+     */
+    public java.util.List<? extends serialization.BVerifyAPIMessageSerialization.ADSModificationOrBuilder> 
+        getModificationsOrBuilderList() {
+      return modifications_;
+    }
+    /**
+     * <code>repeated .serialization.ADSModification modifications = 1;</code>
+     */
+    public int getModificationsCount() {
+      return modifications_.size();
+    }
+    /**
+     * <code>repeated .serialization.ADSModification modifications = 1;</code>
+     */
+    public serialization.BVerifyAPIMessageSerialization.ADSModification getModifications(int index) {
+      return modifications_.get(index);
+    }
+    /**
+     * <code>repeated .serialization.ADSModification modifications = 1;</code>
+     */
+    public serialization.BVerifyAPIMessageSerialization.ADSModificationOrBuilder getModificationsOrBuilder(
+        int index) {
+      return modifications_.get(index);
+    }
+
+    public static final int ISSUE_FIELD_NUMBER = 3;
+    /**
+     * <code>.serialization.IssueReceipt issue = 3;</code>
+     */
+    public boolean hasIssue() {
+      return changeRequestCase_ == 3;
+    }
+    /**
+     * <code>.serialization.IssueReceipt issue = 3;</code>
+     */
+    public serialization.BVerifyAPIMessageSerialization.IssueReceipt getIssue() {
+      if (changeRequestCase_ == 3) {
+         return (serialization.BVerifyAPIMessageSerialization.IssueReceipt) changeRequest_;
+      }
+      return serialization.BVerifyAPIMessageSerialization.IssueReceipt.getDefaultInstance();
+    }
+    /**
+     * <code>.serialization.IssueReceipt issue = 3;</code>
+     */
+    public serialization.BVerifyAPIMessageSerialization.IssueReceiptOrBuilder getIssueOrBuilder() {
+      if (changeRequestCase_ == 3) {
+         return (serialization.BVerifyAPIMessageSerialization.IssueReceipt) changeRequest_;
+      }
+      return serialization.BVerifyAPIMessageSerialization.IssueReceipt.getDefaultInstance();
+    }
+
+    public static final int REDEEM_FIELD_NUMBER = 4;
+    /**
+     * <code>.serialization.RedeemReceipt redeem = 4;</code>
+     */
+    public boolean hasRedeem() {
+      return changeRequestCase_ == 4;
+    }
+    /**
+     * <code>.serialization.RedeemReceipt redeem = 4;</code>
+     */
+    public serialization.BVerifyAPIMessageSerialization.RedeemReceipt getRedeem() {
+      if (changeRequestCase_ == 4) {
+         return (serialization.BVerifyAPIMessageSerialization.RedeemReceipt) changeRequest_;
+      }
+      return serialization.BVerifyAPIMessageSerialization.RedeemReceipt.getDefaultInstance();
+    }
+    /**
+     * <code>.serialization.RedeemReceipt redeem = 4;</code>
+     */
+    public serialization.BVerifyAPIMessageSerialization.RedeemReceiptOrBuilder getRedeemOrBuilder() {
+      if (changeRequestCase_ == 4) {
+         return (serialization.BVerifyAPIMessageSerialization.RedeemReceipt) changeRequest_;
+      }
+      return serialization.BVerifyAPIMessageSerialization.RedeemReceipt.getDefaultInstance();
+    }
+
+    public static final int TRANSFER_FIELD_NUMBER = 5;
+    /**
+     * <code>.serialization.TransferReceipt transfer = 5;</code>
+     */
+    public boolean hasTransfer() {
+      return changeRequestCase_ == 5;
+    }
+    /**
+     * <code>.serialization.TransferReceipt transfer = 5;</code>
+     */
+    public serialization.BVerifyAPIMessageSerialization.TransferReceipt getTransfer() {
+      if (changeRequestCase_ == 5) {
+         return (serialization.BVerifyAPIMessageSerialization.TransferReceipt) changeRequest_;
+      }
+      return serialization.BVerifyAPIMessageSerialization.TransferReceipt.getDefaultInstance();
+    }
+    /**
+     * <code>.serialization.TransferReceipt transfer = 5;</code>
+     */
+    public serialization.BVerifyAPIMessageSerialization.TransferReceiptOrBuilder getTransferOrBuilder() {
+      if (changeRequestCase_ == 5) {
+         return (serialization.BVerifyAPIMessageSerialization.TransferReceipt) changeRequest_;
+      }
+      return serialization.BVerifyAPIMessageSerialization.TransferReceipt.getDefaultInstance();
+    }
+
+    public static final int REQUEST_INITIATOR_ID_FIELD_NUMBER = 6;
+    private volatile java.lang.Object requestInitiatorId_;
+    /**
+     * <code>string request_initiator_id = 6;</code>
+     */
+    public java.lang.String getRequestInitiatorId() {
+      java.lang.Object ref = requestInitiatorId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        requestInitiatorId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string request_initiator_id = 6;</code>
+     */
+    public com.google.protobuf.ByteString
+        getRequestInitiatorIdBytes() {
+      java.lang.Object ref = requestInitiatorId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        requestInitiatorId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < modifications_.size(); i++) {
+        output.writeMessage(1, modifications_.get(i));
+      }
+      if (changeRequestCase_ == 3) {
+        output.writeMessage(3, (serialization.BVerifyAPIMessageSerialization.IssueReceipt) changeRequest_);
+      }
+      if (changeRequestCase_ == 4) {
+        output.writeMessage(4, (serialization.BVerifyAPIMessageSerialization.RedeemReceipt) changeRequest_);
+      }
+      if (changeRequestCase_ == 5) {
+        output.writeMessage(5, (serialization.BVerifyAPIMessageSerialization.TransferReceipt) changeRequest_);
+      }
+      if (!getRequestInitiatorIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, requestInitiatorId_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < modifications_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, modifications_.get(i));
+      }
+      if (changeRequestCase_ == 3) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, (serialization.BVerifyAPIMessageSerialization.IssueReceipt) changeRequest_);
+      }
+      if (changeRequestCase_ == 4) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, (serialization.BVerifyAPIMessageSerialization.RedeemReceipt) changeRequest_);
+      }
+      if (changeRequestCase_ == 5) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, (serialization.BVerifyAPIMessageSerialization.TransferReceipt) changeRequest_);
+      }
+      if (!getRequestInitiatorIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, requestInitiatorId_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.Request)) {
+        return super.equals(obj);
+      }
+      serialization.BVerifyAPIMessageSerialization.Request other = (serialization.BVerifyAPIMessageSerialization.Request) obj;
+
+      boolean result = true;
+      result = result && getModificationsList()
+          .equals(other.getModificationsList());
+      result = result && getRequestInitiatorId()
+          .equals(other.getRequestInitiatorId());
+      result = result && getChangeRequestCase().equals(
+          other.getChangeRequestCase());
+      if (!result) return false;
+      switch (changeRequestCase_) {
+        case 3:
+          result = result && getIssue()
+              .equals(other.getIssue());
+          break;
+        case 4:
+          result = result && getRedeem()
+              .equals(other.getRedeem());
+          break;
+        case 5:
+          result = result && getTransfer()
+              .equals(other.getTransfer());
+          break;
+        case 0:
+        default:
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getModificationsCount() > 0) {
+        hash = (37 * hash) + MODIFICATIONS_FIELD_NUMBER;
+        hash = (53 * hash) + getModificationsList().hashCode();
+      }
+      hash = (37 * hash) + REQUEST_INITIATOR_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getRequestInitiatorId().hashCode();
+      switch (changeRequestCase_) {
+        case 3:
+          hash = (37 * hash) + ISSUE_FIELD_NUMBER;
+          hash = (53 * hash) + getIssue().hashCode();
+          break;
+        case 4:
+          hash = (37 * hash) + REDEEM_FIELD_NUMBER;
+          hash = (53 * hash) + getRedeem().hashCode();
+          break;
+        case 5:
+          hash = (37 * hash) + TRANSFER_FIELD_NUMBER;
+          hash = (53 * hash) + getTransfer().hashCode();
+          break;
+        case 0:
+        default:
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static serialization.BVerifyAPIMessageSerialization.Request parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Request parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Request parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Request parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Request parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Request parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Request parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Request parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Request parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Request parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Request parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Request parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.Request prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     ** 
+     *		Request messages are used to alter the ads 
+     * 		commitments on the server. These are
+     *	 	sent from the client to the server to intiate
+     * 		change(s) to an ads(es) stored on the server.
+     * 		The server also will forward these request messages
+     * 		to other relevant clients to request approval
+     * </pre>
+     *
+     * Protobuf type {@code serialization.Request}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:serialization.Request)
+        serialization.BVerifyAPIMessageSerialization.RequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Request_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Request_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                serialization.BVerifyAPIMessageSerialization.Request.class, serialization.BVerifyAPIMessageSerialization.Request.Builder.class);
+      }
+
+      // Construct using serialization.BVerifyAPIMessageSerialization.Request.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getModificationsFieldBuilder();
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (modificationsBuilder_ == null) {
+          modifications_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          modificationsBuilder_.clear();
+        }
+        requestInitiatorId_ = "";
+
+        changeRequestCase_ = 0;
+        changeRequest_ = null;
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Request_descriptor;
+      }
+
+      public serialization.BVerifyAPIMessageSerialization.Request getDefaultInstanceForType() {
+        return serialization.BVerifyAPIMessageSerialization.Request.getDefaultInstance();
+      }
+
+      public serialization.BVerifyAPIMessageSerialization.Request build() {
+        serialization.BVerifyAPIMessageSerialization.Request result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public serialization.BVerifyAPIMessageSerialization.Request buildPartial() {
+        serialization.BVerifyAPIMessageSerialization.Request result = new serialization.BVerifyAPIMessageSerialization.Request(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (modificationsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            modifications_ = java.util.Collections.unmodifiableList(modifications_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.modifications_ = modifications_;
+        } else {
+          result.modifications_ = modificationsBuilder_.build();
+        }
+        if (changeRequestCase_ == 3) {
+          if (issueBuilder_ == null) {
+            result.changeRequest_ = changeRequest_;
+          } else {
+            result.changeRequest_ = issueBuilder_.build();
+          }
+        }
+        if (changeRequestCase_ == 4) {
+          if (redeemBuilder_ == null) {
+            result.changeRequest_ = changeRequest_;
+          } else {
+            result.changeRequest_ = redeemBuilder_.build();
+          }
+        }
+        if (changeRequestCase_ == 5) {
+          if (transferBuilder_ == null) {
+            result.changeRequest_ = changeRequest_;
+          } else {
+            result.changeRequest_ = transferBuilder_.build();
+          }
+        }
+        result.requestInitiatorId_ = requestInitiatorId_;
+        result.bitField0_ = to_bitField0_;
+        result.changeRequestCase_ = changeRequestCase_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof serialization.BVerifyAPIMessageSerialization.Request) {
+          return mergeFrom((serialization.BVerifyAPIMessageSerialization.Request)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.Request other) {
+        if (other == serialization.BVerifyAPIMessageSerialization.Request.getDefaultInstance()) return this;
+        if (modificationsBuilder_ == null) {
+          if (!other.modifications_.isEmpty()) {
+            if (modifications_.isEmpty()) {
+              modifications_ = other.modifications_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureModificationsIsMutable();
+              modifications_.addAll(other.modifications_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.modifications_.isEmpty()) {
+            if (modificationsBuilder_.isEmpty()) {
+              modificationsBuilder_.dispose();
+              modificationsBuilder_ = null;
+              modifications_ = other.modifications_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              modificationsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getModificationsFieldBuilder() : null;
+            } else {
+              modificationsBuilder_.addAllMessages(other.modifications_);
+            }
+          }
+        }
+        if (!other.getRequestInitiatorId().isEmpty()) {
+          requestInitiatorId_ = other.requestInitiatorId_;
+          onChanged();
+        }
+        switch (other.getChangeRequestCase()) {
+          case ISSUE: {
+            mergeIssue(other.getIssue());
+            break;
+          }
+          case REDEEM: {
+            mergeRedeem(other.getRedeem());
+            break;
+          }
+          case TRANSFER: {
+            mergeTransfer(other.getTransfer());
+            break;
+          }
+          case CHANGEREQUEST_NOT_SET: {
+            break;
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        serialization.BVerifyAPIMessageSerialization.Request parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (serialization.BVerifyAPIMessageSerialization.Request) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int changeRequestCase_ = 0;
+      private java.lang.Object changeRequest_;
+      public ChangeRequestCase
+          getChangeRequestCase() {
+        return ChangeRequestCase.forNumber(
+            changeRequestCase_);
+      }
+
+      public Builder clearChangeRequest() {
+        changeRequestCase_ = 0;
+        changeRequest_ = null;
+        onChanged();
+        return this;
+      }
+
+      private int bitField0_;
+
+      private java.util.List<serialization.BVerifyAPIMessageSerialization.ADSModification> modifications_ =
+        java.util.Collections.emptyList();
+      private void ensureModificationsIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          modifications_ = new java.util.ArrayList<serialization.BVerifyAPIMessageSerialization.ADSModification>(modifications_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          serialization.BVerifyAPIMessageSerialization.ADSModification, serialization.BVerifyAPIMessageSerialization.ADSModification.Builder, serialization.BVerifyAPIMessageSerialization.ADSModificationOrBuilder> modificationsBuilder_;
+
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public java.util.List<serialization.BVerifyAPIMessageSerialization.ADSModification> getModificationsList() {
+        if (modificationsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(modifications_);
+        } else {
+          return modificationsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public int getModificationsCount() {
+        if (modificationsBuilder_ == null) {
+          return modifications_.size();
+        } else {
+          return modificationsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.ADSModification getModifications(int index) {
+        if (modificationsBuilder_ == null) {
+          return modifications_.get(index);
+        } else {
+          return modificationsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public Builder setModifications(
+          int index, serialization.BVerifyAPIMessageSerialization.ADSModification value) {
+        if (modificationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureModificationsIsMutable();
+          modifications_.set(index, value);
+          onChanged();
+        } else {
+          modificationsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public Builder setModifications(
+          int index, serialization.BVerifyAPIMessageSerialization.ADSModification.Builder builderForValue) {
+        if (modificationsBuilder_ == null) {
+          ensureModificationsIsMutable();
+          modifications_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          modificationsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public Builder addModifications(serialization.BVerifyAPIMessageSerialization.ADSModification value) {
+        if (modificationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureModificationsIsMutable();
+          modifications_.add(value);
+          onChanged();
+        } else {
+          modificationsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public Builder addModifications(
+          int index, serialization.BVerifyAPIMessageSerialization.ADSModification value) {
+        if (modificationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureModificationsIsMutable();
+          modifications_.add(index, value);
+          onChanged();
+        } else {
+          modificationsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public Builder addModifications(
+          serialization.BVerifyAPIMessageSerialization.ADSModification.Builder builderForValue) {
+        if (modificationsBuilder_ == null) {
+          ensureModificationsIsMutable();
+          modifications_.add(builderForValue.build());
+          onChanged();
+        } else {
+          modificationsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public Builder addModifications(
+          int index, serialization.BVerifyAPIMessageSerialization.ADSModification.Builder builderForValue) {
+        if (modificationsBuilder_ == null) {
+          ensureModificationsIsMutable();
+          modifications_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          modificationsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public Builder addAllModifications(
+          java.lang.Iterable<? extends serialization.BVerifyAPIMessageSerialization.ADSModification> values) {
+        if (modificationsBuilder_ == null) {
+          ensureModificationsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, modifications_);
+          onChanged();
+        } else {
+          modificationsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public Builder clearModifications() {
+        if (modificationsBuilder_ == null) {
+          modifications_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          modificationsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public Builder removeModifications(int index) {
+        if (modificationsBuilder_ == null) {
+          ensureModificationsIsMutable();
+          modifications_.remove(index);
+          onChanged();
+        } else {
+          modificationsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.ADSModification.Builder getModificationsBuilder(
+          int index) {
+        return getModificationsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.ADSModificationOrBuilder getModificationsOrBuilder(
+          int index) {
+        if (modificationsBuilder_ == null) {
+          return modifications_.get(index);  } else {
+          return modificationsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public java.util.List<? extends serialization.BVerifyAPIMessageSerialization.ADSModificationOrBuilder> 
+           getModificationsOrBuilderList() {
+        if (modificationsBuilder_ != null) {
+          return modificationsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(modifications_);
+        }
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.ADSModification.Builder addModificationsBuilder() {
+        return getModificationsFieldBuilder().addBuilder(
+            serialization.BVerifyAPIMessageSerialization.ADSModification.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.ADSModification.Builder addModificationsBuilder(
+          int index) {
+        return getModificationsFieldBuilder().addBuilder(
+            index, serialization.BVerifyAPIMessageSerialization.ADSModification.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .serialization.ADSModification modifications = 1;</code>
+       */
+      public java.util.List<serialization.BVerifyAPIMessageSerialization.ADSModification.Builder> 
+           getModificationsBuilderList() {
+        return getModificationsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          serialization.BVerifyAPIMessageSerialization.ADSModification, serialization.BVerifyAPIMessageSerialization.ADSModification.Builder, serialization.BVerifyAPIMessageSerialization.ADSModificationOrBuilder> 
+          getModificationsFieldBuilder() {
+        if (modificationsBuilder_ == null) {
+          modificationsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              serialization.BVerifyAPIMessageSerialization.ADSModification, serialization.BVerifyAPIMessageSerialization.ADSModification.Builder, serialization.BVerifyAPIMessageSerialization.ADSModificationOrBuilder>(
+                  modifications_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          modifications_ = null;
+        }
+        return modificationsBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.BVerifyAPIMessageSerialization.IssueReceipt, serialization.BVerifyAPIMessageSerialization.IssueReceipt.Builder, serialization.BVerifyAPIMessageSerialization.IssueReceiptOrBuilder> issueBuilder_;
+      /**
+       * <code>.serialization.IssueReceipt issue = 3;</code>
+       */
+      public boolean hasIssue() {
+        return changeRequestCase_ == 3;
+      }
+      /**
+       * <code>.serialization.IssueReceipt issue = 3;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.IssueReceipt getIssue() {
+        if (issueBuilder_ == null) {
+          if (changeRequestCase_ == 3) {
+            return (serialization.BVerifyAPIMessageSerialization.IssueReceipt) changeRequest_;
+          }
+          return serialization.BVerifyAPIMessageSerialization.IssueReceipt.getDefaultInstance();
+        } else {
+          if (changeRequestCase_ == 3) {
+            return issueBuilder_.getMessage();
+          }
+          return serialization.BVerifyAPIMessageSerialization.IssueReceipt.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.serialization.IssueReceipt issue = 3;</code>
+       */
+      public Builder setIssue(serialization.BVerifyAPIMessageSerialization.IssueReceipt value) {
+        if (issueBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          changeRequest_ = value;
+          onChanged();
+        } else {
+          issueBuilder_.setMessage(value);
+        }
+        changeRequestCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>.serialization.IssueReceipt issue = 3;</code>
+       */
+      public Builder setIssue(
+          serialization.BVerifyAPIMessageSerialization.IssueReceipt.Builder builderForValue) {
+        if (issueBuilder_ == null) {
+          changeRequest_ = builderForValue.build();
+          onChanged();
+        } else {
+          issueBuilder_.setMessage(builderForValue.build());
+        }
+        changeRequestCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>.serialization.IssueReceipt issue = 3;</code>
+       */
+      public Builder mergeIssue(serialization.BVerifyAPIMessageSerialization.IssueReceipt value) {
+        if (issueBuilder_ == null) {
+          if (changeRequestCase_ == 3 &&
+              changeRequest_ != serialization.BVerifyAPIMessageSerialization.IssueReceipt.getDefaultInstance()) {
+            changeRequest_ = serialization.BVerifyAPIMessageSerialization.IssueReceipt.newBuilder((serialization.BVerifyAPIMessageSerialization.IssueReceipt) changeRequest_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            changeRequest_ = value;
+          }
+          onChanged();
+        } else {
+          if (changeRequestCase_ == 3) {
+            issueBuilder_.mergeFrom(value);
+          }
+          issueBuilder_.setMessage(value);
+        }
+        changeRequestCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>.serialization.IssueReceipt issue = 3;</code>
+       */
+      public Builder clearIssue() {
+        if (issueBuilder_ == null) {
+          if (changeRequestCase_ == 3) {
+            changeRequestCase_ = 0;
+            changeRequest_ = null;
+            onChanged();
+          }
+        } else {
+          if (changeRequestCase_ == 3) {
+            changeRequestCase_ = 0;
+            changeRequest_ = null;
+          }
+          issueBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.serialization.IssueReceipt issue = 3;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.IssueReceipt.Builder getIssueBuilder() {
+        return getIssueFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.serialization.IssueReceipt issue = 3;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.IssueReceiptOrBuilder getIssueOrBuilder() {
+        if ((changeRequestCase_ == 3) && (issueBuilder_ != null)) {
+          return issueBuilder_.getMessageOrBuilder();
+        } else {
+          if (changeRequestCase_ == 3) {
+            return (serialization.BVerifyAPIMessageSerialization.IssueReceipt) changeRequest_;
+          }
+          return serialization.BVerifyAPIMessageSerialization.IssueReceipt.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.serialization.IssueReceipt issue = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.BVerifyAPIMessageSerialization.IssueReceipt, serialization.BVerifyAPIMessageSerialization.IssueReceipt.Builder, serialization.BVerifyAPIMessageSerialization.IssueReceiptOrBuilder> 
+          getIssueFieldBuilder() {
+        if (issueBuilder_ == null) {
+          if (!(changeRequestCase_ == 3)) {
+            changeRequest_ = serialization.BVerifyAPIMessageSerialization.IssueReceipt.getDefaultInstance();
+          }
+          issueBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              serialization.BVerifyAPIMessageSerialization.IssueReceipt, serialization.BVerifyAPIMessageSerialization.IssueReceipt.Builder, serialization.BVerifyAPIMessageSerialization.IssueReceiptOrBuilder>(
+                  (serialization.BVerifyAPIMessageSerialization.IssueReceipt) changeRequest_,
+                  getParentForChildren(),
+                  isClean());
+          changeRequest_ = null;
+        }
+        changeRequestCase_ = 3;
+        onChanged();;
+        return issueBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.BVerifyAPIMessageSerialization.RedeemReceipt, serialization.BVerifyAPIMessageSerialization.RedeemReceipt.Builder, serialization.BVerifyAPIMessageSerialization.RedeemReceiptOrBuilder> redeemBuilder_;
+      /**
+       * <code>.serialization.RedeemReceipt redeem = 4;</code>
+       */
+      public boolean hasRedeem() {
+        return changeRequestCase_ == 4;
+      }
+      /**
+       * <code>.serialization.RedeemReceipt redeem = 4;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.RedeemReceipt getRedeem() {
+        if (redeemBuilder_ == null) {
+          if (changeRequestCase_ == 4) {
+            return (serialization.BVerifyAPIMessageSerialization.RedeemReceipt) changeRequest_;
+          }
+          return serialization.BVerifyAPIMessageSerialization.RedeemReceipt.getDefaultInstance();
+        } else {
+          if (changeRequestCase_ == 4) {
+            return redeemBuilder_.getMessage();
+          }
+          return serialization.BVerifyAPIMessageSerialization.RedeemReceipt.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.serialization.RedeemReceipt redeem = 4;</code>
+       */
+      public Builder setRedeem(serialization.BVerifyAPIMessageSerialization.RedeemReceipt value) {
+        if (redeemBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          changeRequest_ = value;
+          onChanged();
+        } else {
+          redeemBuilder_.setMessage(value);
+        }
+        changeRequestCase_ = 4;
+        return this;
+      }
+      /**
+       * <code>.serialization.RedeemReceipt redeem = 4;</code>
+       */
+      public Builder setRedeem(
+          serialization.BVerifyAPIMessageSerialization.RedeemReceipt.Builder builderForValue) {
+        if (redeemBuilder_ == null) {
+          changeRequest_ = builderForValue.build();
+          onChanged();
+        } else {
+          redeemBuilder_.setMessage(builderForValue.build());
+        }
+        changeRequestCase_ = 4;
+        return this;
+      }
+      /**
+       * <code>.serialization.RedeemReceipt redeem = 4;</code>
+       */
+      public Builder mergeRedeem(serialization.BVerifyAPIMessageSerialization.RedeemReceipt value) {
+        if (redeemBuilder_ == null) {
+          if (changeRequestCase_ == 4 &&
+              changeRequest_ != serialization.BVerifyAPIMessageSerialization.RedeemReceipt.getDefaultInstance()) {
+            changeRequest_ = serialization.BVerifyAPIMessageSerialization.RedeemReceipt.newBuilder((serialization.BVerifyAPIMessageSerialization.RedeemReceipt) changeRequest_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            changeRequest_ = value;
+          }
+          onChanged();
+        } else {
+          if (changeRequestCase_ == 4) {
+            redeemBuilder_.mergeFrom(value);
+          }
+          redeemBuilder_.setMessage(value);
+        }
+        changeRequestCase_ = 4;
+        return this;
+      }
+      /**
+       * <code>.serialization.RedeemReceipt redeem = 4;</code>
+       */
+      public Builder clearRedeem() {
+        if (redeemBuilder_ == null) {
+          if (changeRequestCase_ == 4) {
+            changeRequestCase_ = 0;
+            changeRequest_ = null;
+            onChanged();
+          }
+        } else {
+          if (changeRequestCase_ == 4) {
+            changeRequestCase_ = 0;
+            changeRequest_ = null;
+          }
+          redeemBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.serialization.RedeemReceipt redeem = 4;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.RedeemReceipt.Builder getRedeemBuilder() {
+        return getRedeemFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.serialization.RedeemReceipt redeem = 4;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.RedeemReceiptOrBuilder getRedeemOrBuilder() {
+        if ((changeRequestCase_ == 4) && (redeemBuilder_ != null)) {
+          return redeemBuilder_.getMessageOrBuilder();
+        } else {
+          if (changeRequestCase_ == 4) {
+            return (serialization.BVerifyAPIMessageSerialization.RedeemReceipt) changeRequest_;
+          }
+          return serialization.BVerifyAPIMessageSerialization.RedeemReceipt.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.serialization.RedeemReceipt redeem = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.BVerifyAPIMessageSerialization.RedeemReceipt, serialization.BVerifyAPIMessageSerialization.RedeemReceipt.Builder, serialization.BVerifyAPIMessageSerialization.RedeemReceiptOrBuilder> 
+          getRedeemFieldBuilder() {
+        if (redeemBuilder_ == null) {
+          if (!(changeRequestCase_ == 4)) {
+            changeRequest_ = serialization.BVerifyAPIMessageSerialization.RedeemReceipt.getDefaultInstance();
+          }
+          redeemBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              serialization.BVerifyAPIMessageSerialization.RedeemReceipt, serialization.BVerifyAPIMessageSerialization.RedeemReceipt.Builder, serialization.BVerifyAPIMessageSerialization.RedeemReceiptOrBuilder>(
+                  (serialization.BVerifyAPIMessageSerialization.RedeemReceipt) changeRequest_,
+                  getParentForChildren(),
+                  isClean());
+          changeRequest_ = null;
+        }
+        changeRequestCase_ = 4;
+        onChanged();;
+        return redeemBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.BVerifyAPIMessageSerialization.TransferReceipt, serialization.BVerifyAPIMessageSerialization.TransferReceipt.Builder, serialization.BVerifyAPIMessageSerialization.TransferReceiptOrBuilder> transferBuilder_;
+      /**
+       * <code>.serialization.TransferReceipt transfer = 5;</code>
+       */
+      public boolean hasTransfer() {
+        return changeRequestCase_ == 5;
+      }
+      /**
+       * <code>.serialization.TransferReceipt transfer = 5;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.TransferReceipt getTransfer() {
+        if (transferBuilder_ == null) {
+          if (changeRequestCase_ == 5) {
+            return (serialization.BVerifyAPIMessageSerialization.TransferReceipt) changeRequest_;
+          }
+          return serialization.BVerifyAPIMessageSerialization.TransferReceipt.getDefaultInstance();
+        } else {
+          if (changeRequestCase_ == 5) {
+            return transferBuilder_.getMessage();
+          }
+          return serialization.BVerifyAPIMessageSerialization.TransferReceipt.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.serialization.TransferReceipt transfer = 5;</code>
+       */
+      public Builder setTransfer(serialization.BVerifyAPIMessageSerialization.TransferReceipt value) {
+        if (transferBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          changeRequest_ = value;
+          onChanged();
+        } else {
+          transferBuilder_.setMessage(value);
+        }
+        changeRequestCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>.serialization.TransferReceipt transfer = 5;</code>
+       */
+      public Builder setTransfer(
+          serialization.BVerifyAPIMessageSerialization.TransferReceipt.Builder builderForValue) {
+        if (transferBuilder_ == null) {
+          changeRequest_ = builderForValue.build();
+          onChanged();
+        } else {
+          transferBuilder_.setMessage(builderForValue.build());
+        }
+        changeRequestCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>.serialization.TransferReceipt transfer = 5;</code>
+       */
+      public Builder mergeTransfer(serialization.BVerifyAPIMessageSerialization.TransferReceipt value) {
+        if (transferBuilder_ == null) {
+          if (changeRequestCase_ == 5 &&
+              changeRequest_ != serialization.BVerifyAPIMessageSerialization.TransferReceipt.getDefaultInstance()) {
+            changeRequest_ = serialization.BVerifyAPIMessageSerialization.TransferReceipt.newBuilder((serialization.BVerifyAPIMessageSerialization.TransferReceipt) changeRequest_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            changeRequest_ = value;
+          }
+          onChanged();
+        } else {
+          if (changeRequestCase_ == 5) {
+            transferBuilder_.mergeFrom(value);
+          }
+          transferBuilder_.setMessage(value);
+        }
+        changeRequestCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>.serialization.TransferReceipt transfer = 5;</code>
+       */
+      public Builder clearTransfer() {
+        if (transferBuilder_ == null) {
+          if (changeRequestCase_ == 5) {
+            changeRequestCase_ = 0;
+            changeRequest_ = null;
+            onChanged();
+          }
+        } else {
+          if (changeRequestCase_ == 5) {
+            changeRequestCase_ = 0;
+            changeRequest_ = null;
+          }
+          transferBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.serialization.TransferReceipt transfer = 5;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.TransferReceipt.Builder getTransferBuilder() {
+        return getTransferFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.serialization.TransferReceipt transfer = 5;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.TransferReceiptOrBuilder getTransferOrBuilder() {
+        if ((changeRequestCase_ == 5) && (transferBuilder_ != null)) {
+          return transferBuilder_.getMessageOrBuilder();
+        } else {
+          if (changeRequestCase_ == 5) {
+            return (serialization.BVerifyAPIMessageSerialization.TransferReceipt) changeRequest_;
+          }
+          return serialization.BVerifyAPIMessageSerialization.TransferReceipt.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.serialization.TransferReceipt transfer = 5;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.BVerifyAPIMessageSerialization.TransferReceipt, serialization.BVerifyAPIMessageSerialization.TransferReceipt.Builder, serialization.BVerifyAPIMessageSerialization.TransferReceiptOrBuilder> 
+          getTransferFieldBuilder() {
+        if (transferBuilder_ == null) {
+          if (!(changeRequestCase_ == 5)) {
+            changeRequest_ = serialization.BVerifyAPIMessageSerialization.TransferReceipt.getDefaultInstance();
+          }
+          transferBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              serialization.BVerifyAPIMessageSerialization.TransferReceipt, serialization.BVerifyAPIMessageSerialization.TransferReceipt.Builder, serialization.BVerifyAPIMessageSerialization.TransferReceiptOrBuilder>(
+                  (serialization.BVerifyAPIMessageSerialization.TransferReceipt) changeRequest_,
+                  getParentForChildren(),
+                  isClean());
+          changeRequest_ = null;
+        }
+        changeRequestCase_ = 5;
+        onChanged();;
+        return transferBuilder_;
+      }
+
+      private java.lang.Object requestInitiatorId_ = "";
+      /**
+       * <code>string request_initiator_id = 6;</code>
+       */
+      public java.lang.String getRequestInitiatorId() {
+        java.lang.Object ref = requestInitiatorId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          requestInitiatorId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string request_initiator_id = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+          getRequestInitiatorIdBytes() {
+        java.lang.Object ref = requestInitiatorId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          requestInitiatorId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string request_initiator_id = 6;</code>
+       */
+      public Builder setRequestInitiatorId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        requestInitiatorId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string request_initiator_id = 6;</code>
+       */
+      public Builder clearRequestInitiatorId() {
+        
+        requestInitiatorId_ = getDefaultInstance().getRequestInitiatorId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string request_initiator_id = 6;</code>
+       */
+      public Builder setRequestInitiatorIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        requestInitiatorId_ = value;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:serialization.Request)
+    }
+
+    // @@protoc_insertion_point(class_scope:serialization.Request)
+    private static final serialization.BVerifyAPIMessageSerialization.Request DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.Request();
+    }
+
+    public static serialization.BVerifyAPIMessageSerialization.Request getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Request>
+        PARSER = new com.google.protobuf.AbstractParser<Request>() {
+      public Request parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Request(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Request> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Request> getParserForType() {
+      return PARSER;
+    }
+
+    public serialization.BVerifyAPIMessageSerialization.Request getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface IssueReceiptOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:serialization.IssueReceipt)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.serialization.Receipt receipt = 1;</code>
+     */
+    boolean hasReceipt();
+    /**
+     * <code>.serialization.Receipt receipt = 1;</code>
+     */
+    serialization.BVerifyAPIMessageSerialization.Receipt getReceipt();
+    /**
+     * <code>.serialization.Receipt receipt = 1;</code>
+     */
+    serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder getReceiptOrBuilder();
+  }
+  /**
+   * <pre>
+   **
+   * Data required for a request issue a receipt
+   * </pre>
+   *
+   * Protobuf type {@code serialization.IssueReceipt}
+   */
+  public  static final class IssueReceipt extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:serialization.IssueReceipt)
+      IssueReceiptOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use IssueReceipt.newBuilder() to construct.
+    private IssueReceipt(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private IssueReceipt() {
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private IssueReceipt(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
               serialization.BVerifyAPIMessageSerialization.Receipt.Builder subBuilder = null;
               if (receipt_ != null) {
                 subBuilder = receipt_.toBuilder();
@@ -1765,100 +4693,32 @@ public final class BVerifyAPIMessageSerialization {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_IssueReceiptRequest_descriptor;
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_IssueReceipt_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_IssueReceiptRequest_fieldAccessorTable
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_IssueReceipt_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest.class, serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest.Builder.class);
+              serialization.BVerifyAPIMessageSerialization.IssueReceipt.class, serialization.BVerifyAPIMessageSerialization.IssueReceipt.Builder.class);
     }
 
-    public static final int ISSUER_ID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object issuerId_;
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    public java.lang.String getIssuerId() {
-      java.lang.Object ref = issuerId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        issuerId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getIssuerIdBytes() {
-      java.lang.Object ref = issuerId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        issuerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int RECEPIENT_ID_FIELD_NUMBER = 2;
-    private volatile java.lang.Object recepientId_;
-    /**
-     * <code>string recepient_id = 2;</code>
-     */
-    public java.lang.String getRecepientId() {
-      java.lang.Object ref = recepientId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        recepientId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string recepient_id = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getRecepientIdBytes() {
-      java.lang.Object ref = recepientId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        recepientId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int RECEIPT_FIELD_NUMBER = 3;
+    public static final int RECEIPT_FIELD_NUMBER = 1;
     private serialization.BVerifyAPIMessageSerialization.Receipt receipt_;
     /**
-     * <code>.serialization.Receipt receipt = 3;</code>
+     * <code>.serialization.Receipt receipt = 1;</code>
      */
     public boolean hasReceipt() {
       return receipt_ != null;
     }
     /**
-     * <code>.serialization.Receipt receipt = 3;</code>
+     * <code>.serialization.Receipt receipt = 1;</code>
      */
     public serialization.BVerifyAPIMessageSerialization.Receipt getReceipt() {
       return receipt_ == null ? serialization.BVerifyAPIMessageSerialization.Receipt.getDefaultInstance() : receipt_;
     }
     /**
-     * <code>.serialization.Receipt receipt = 3;</code>
+     * <code>.serialization.Receipt receipt = 1;</code>
      */
     public serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder getReceiptOrBuilder() {
       return getReceipt();
@@ -1876,14 +4736,8 @@ public final class BVerifyAPIMessageSerialization {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getIssuerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, issuerId_);
-      }
-      if (!getRecepientIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, recepientId_);
-      }
       if (receipt_ != null) {
-        output.writeMessage(3, getReceipt());
+        output.writeMessage(1, getReceipt());
       }
       unknownFields.writeTo(output);
     }
@@ -1893,15 +4747,9 @@ public final class BVerifyAPIMessageSerialization {
       if (size != -1) return size;
 
       size = 0;
-      if (!getIssuerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, issuerId_);
-      }
-      if (!getRecepientIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, recepientId_);
-      }
       if (receipt_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, getReceipt());
+          .computeMessageSize(1, getReceipt());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1913,16 +4761,12 @@ public final class BVerifyAPIMessageSerialization {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest)) {
+      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.IssueReceipt)) {
         return super.equals(obj);
       }
-      serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest other = (serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest) obj;
+      serialization.BVerifyAPIMessageSerialization.IssueReceipt other = (serialization.BVerifyAPIMessageSerialization.IssueReceipt) obj;
 
       boolean result = true;
-      result = result && getIssuerId()
-          .equals(other.getIssuerId());
-      result = result && getRecepientId()
-          .equals(other.getRecepientId());
       result = result && (hasReceipt() == other.hasReceipt());
       if (hasReceipt()) {
         result = result && getReceipt()
@@ -1939,10 +4783,6 @@ public final class BVerifyAPIMessageSerialization {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ISSUER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getIssuerId().hashCode();
-      hash = (37 * hash) + RECEPIENT_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getRecepientId().hashCode();
       if (hasReceipt()) {
         hash = (37 * hash) + RECEIPT_FIELD_NUMBER;
         hash = (53 * hash) + getReceipt().hashCode();
@@ -1952,69 +4792,69 @@ public final class BVerifyAPIMessageSerialization {
       return hash;
     }
 
-    public static serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.IssueReceipt parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.IssueReceipt parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.IssueReceipt parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.IssueReceipt parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest parseFrom(byte[] data)
+    public static serialization.BVerifyAPIMessageSerialization.IssueReceipt parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.IssueReceipt parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest parseFrom(java.io.InputStream input)
+    public static serialization.BVerifyAPIMessageSerialization.IssueReceipt parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.IssueReceipt parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest parseDelimitedFrom(java.io.InputStream input)
+    public static serialization.BVerifyAPIMessageSerialization.IssueReceipt parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest parseDelimitedFrom(
+    public static serialization.BVerifyAPIMessageSerialization.IssueReceipt parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.IssueReceipt parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.IssueReceipt parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2026,7 +4866,7 @@ public final class BVerifyAPIMessageSerialization {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest prototype) {
+    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.IssueReceipt prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -2043,29 +4883,28 @@ public final class BVerifyAPIMessageSerialization {
     /**
      * <pre>
      **
-     * Request for the server to issue a receipt (initiated 
-     * by a client)
+     * Data required for a request issue a receipt
      * </pre>
      *
-     * Protobuf type {@code serialization.IssueReceiptRequest}
+     * Protobuf type {@code serialization.IssueReceipt}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:serialization.IssueReceiptRequest)
-        serialization.BVerifyAPIMessageSerialization.IssueReceiptRequestOrBuilder {
+        // @@protoc_insertion_point(builder_implements:serialization.IssueReceipt)
+        serialization.BVerifyAPIMessageSerialization.IssueReceiptOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_IssueReceiptRequest_descriptor;
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_IssueReceipt_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_IssueReceiptRequest_fieldAccessorTable
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_IssueReceipt_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest.class, serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest.Builder.class);
+                serialization.BVerifyAPIMessageSerialization.IssueReceipt.class, serialization.BVerifyAPIMessageSerialization.IssueReceipt.Builder.class);
       }
 
-      // Construct using serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest.newBuilder()
+      // Construct using serialization.BVerifyAPIMessageSerialization.IssueReceipt.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2082,10 +4921,6 @@ public final class BVerifyAPIMessageSerialization {
       }
       public Builder clear() {
         super.clear();
-        issuerId_ = "";
-
-        recepientId_ = "";
-
         if (receiptBuilder_ == null) {
           receipt_ = null;
         } else {
@@ -2097,25 +4932,23 @@ public final class BVerifyAPIMessageSerialization {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_IssueReceiptRequest_descriptor;
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_IssueReceipt_descriptor;
       }
 
-      public serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest getDefaultInstanceForType() {
-        return serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest.getDefaultInstance();
+      public serialization.BVerifyAPIMessageSerialization.IssueReceipt getDefaultInstanceForType() {
+        return serialization.BVerifyAPIMessageSerialization.IssueReceipt.getDefaultInstance();
       }
 
-      public serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest build() {
-        serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest result = buildPartial();
+      public serialization.BVerifyAPIMessageSerialization.IssueReceipt build() {
+        serialization.BVerifyAPIMessageSerialization.IssueReceipt result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest buildPartial() {
-        serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest result = new serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest(this);
-        result.issuerId_ = issuerId_;
-        result.recepientId_ = recepientId_;
+      public serialization.BVerifyAPIMessageSerialization.IssueReceipt buildPartial() {
+        serialization.BVerifyAPIMessageSerialization.IssueReceipt result = new serialization.BVerifyAPIMessageSerialization.IssueReceipt(this);
         if (receiptBuilder_ == null) {
           result.receipt_ = receipt_;
         } else {
@@ -2152,24 +4985,16 @@ public final class BVerifyAPIMessageSerialization {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest) {
-          return mergeFrom((serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest)other);
+        if (other instanceof serialization.BVerifyAPIMessageSerialization.IssueReceipt) {
+          return mergeFrom((serialization.BVerifyAPIMessageSerialization.IssueReceipt)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest other) {
-        if (other == serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest.getDefaultInstance()) return this;
-        if (!other.getIssuerId().isEmpty()) {
-          issuerId_ = other.issuerId_;
-          onChanged();
-        }
-        if (!other.getRecepientId().isEmpty()) {
-          recepientId_ = other.recepientId_;
-          onChanged();
-        }
+      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.IssueReceipt other) {
+        if (other == serialization.BVerifyAPIMessageSerialization.IssueReceipt.getDefaultInstance()) return this;
         if (other.hasReceipt()) {
           mergeReceipt(other.getReceipt());
         }
@@ -2186,11 +5011,11 @@ public final class BVerifyAPIMessageSerialization {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest parsedMessage = null;
+        serialization.BVerifyAPIMessageSerialization.IssueReceipt parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest) e.getUnfinishedMessage();
+          parsedMessage = (serialization.BVerifyAPIMessageSerialization.IssueReceipt) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -2200,155 +5025,17 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
 
-      private java.lang.Object issuerId_ = "";
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public java.lang.String getIssuerId() {
-        java.lang.Object ref = issuerId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          issuerId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getIssuerIdBytes() {
-        java.lang.Object ref = issuerId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          issuerId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder setIssuerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        issuerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder clearIssuerId() {
-        
-        issuerId_ = getDefaultInstance().getIssuerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder setIssuerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        issuerId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object recepientId_ = "";
-      /**
-       * <code>string recepient_id = 2;</code>
-       */
-      public java.lang.String getRecepientId() {
-        java.lang.Object ref = recepientId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          recepientId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string recepient_id = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getRecepientIdBytes() {
-        java.lang.Object ref = recepientId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          recepientId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string recepient_id = 2;</code>
-       */
-      public Builder setRecepientId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        recepientId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string recepient_id = 2;</code>
-       */
-      public Builder clearRecepientId() {
-        
-        recepientId_ = getDefaultInstance().getRecepientId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string recepient_id = 2;</code>
-       */
-      public Builder setRecepientIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        recepientId_ = value;
-        onChanged();
-        return this;
-      }
-
       private serialization.BVerifyAPIMessageSerialization.Receipt receipt_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
           serialization.BVerifyAPIMessageSerialization.Receipt, serialization.BVerifyAPIMessageSerialization.Receipt.Builder, serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder> receiptBuilder_;
       /**
-       * <code>.serialization.Receipt receipt = 3;</code>
+       * <code>.serialization.Receipt receipt = 1;</code>
        */
       public boolean hasReceipt() {
         return receiptBuilder_ != null || receipt_ != null;
       }
       /**
-       * <code>.serialization.Receipt receipt = 3;</code>
+       * <code>.serialization.Receipt receipt = 1;</code>
        */
       public serialization.BVerifyAPIMessageSerialization.Receipt getReceipt() {
         if (receiptBuilder_ == null) {
@@ -2358,7 +5045,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>.serialization.Receipt receipt = 3;</code>
+       * <code>.serialization.Receipt receipt = 1;</code>
        */
       public Builder setReceipt(serialization.BVerifyAPIMessageSerialization.Receipt value) {
         if (receiptBuilder_ == null) {
@@ -2374,7 +5061,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.Receipt receipt = 3;</code>
+       * <code>.serialization.Receipt receipt = 1;</code>
        */
       public Builder setReceipt(
           serialization.BVerifyAPIMessageSerialization.Receipt.Builder builderForValue) {
@@ -2388,7 +5075,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.Receipt receipt = 3;</code>
+       * <code>.serialization.Receipt receipt = 1;</code>
        */
       public Builder mergeReceipt(serialization.BVerifyAPIMessageSerialization.Receipt value) {
         if (receiptBuilder_ == null) {
@@ -2406,7 +5093,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.Receipt receipt = 3;</code>
+       * <code>.serialization.Receipt receipt = 1;</code>
        */
       public Builder clearReceipt() {
         if (receiptBuilder_ == null) {
@@ -2420,7 +5107,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>.serialization.Receipt receipt = 3;</code>
+       * <code>.serialization.Receipt receipt = 1;</code>
        */
       public serialization.BVerifyAPIMessageSerialization.Receipt.Builder getReceiptBuilder() {
         
@@ -2428,7 +5115,7 @@ public final class BVerifyAPIMessageSerialization {
         return getReceiptFieldBuilder().getBuilder();
       }
       /**
-       * <code>.serialization.Receipt receipt = 3;</code>
+       * <code>.serialization.Receipt receipt = 1;</code>
        */
       public serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder getReceiptOrBuilder() {
         if (receiptBuilder_ != null) {
@@ -2439,7 +5126,7 @@ public final class BVerifyAPIMessageSerialization {
         }
       }
       /**
-       * <code>.serialization.Receipt receipt = 3;</code>
+       * <code>.serialization.Receipt receipt = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           serialization.BVerifyAPIMessageSerialization.Receipt, serialization.BVerifyAPIMessageSerialization.Receipt.Builder, serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder> 
@@ -2465,94 +5152,71 @@ public final class BVerifyAPIMessageSerialization {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:serialization.IssueReceiptRequest)
+      // @@protoc_insertion_point(builder_scope:serialization.IssueReceipt)
     }
 
-    // @@protoc_insertion_point(class_scope:serialization.IssueReceiptRequest)
-    private static final serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:serialization.IssueReceipt)
+    private static final serialization.BVerifyAPIMessageSerialization.IssueReceipt DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest();
+      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.IssueReceipt();
     }
 
-    public static serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest getDefaultInstance() {
+    public static serialization.BVerifyAPIMessageSerialization.IssueReceipt getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<IssueReceiptRequest>
-        PARSER = new com.google.protobuf.AbstractParser<IssueReceiptRequest>() {
-      public IssueReceiptRequest parsePartialFrom(
+    private static final com.google.protobuf.Parser<IssueReceipt>
+        PARSER = new com.google.protobuf.AbstractParser<IssueReceipt>() {
+      public IssueReceipt parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new IssueReceiptRequest(input, extensionRegistry);
+        return new IssueReceipt(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<IssueReceiptRequest> parser() {
+    public static com.google.protobuf.Parser<IssueReceipt> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<IssueReceiptRequest> getParserForType() {
+    public com.google.protobuf.Parser<IssueReceipt> getParserForType() {
       return PARSER;
     }
 
-    public serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest getDefaultInstanceForType() {
+    public serialization.BVerifyAPIMessageSerialization.IssueReceipt getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface RedeemReceiptRequestOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:serialization.RedeemReceiptRequest)
+  public interface RedeemReceiptOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:serialization.RedeemReceipt)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string issuer_id = 1;</code>
-     */
-    java.lang.String getIssuerId();
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getIssuerIdBytes();
-
-    /**
-     * <code>string owner_id = 2;</code>
-     */
-    java.lang.String getOwnerId();
-    /**
-     * <code>string owner_id = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getOwnerIdBytes();
-
-    /**
-     * <code>bytes receipt_hash = 3;</code>
+     * <code>bytes receipt_hash = 1;</code>
      */
     com.google.protobuf.ByteString getReceiptHash();
   }
   /**
    * <pre>
    **
-   * Request for the server to redeem a receipt (initiated
-   * by a client)
+   * Data required for request to redeem a receipt
    * </pre>
    *
-   * Protobuf type {@code serialization.RedeemReceiptRequest}
+   * Protobuf type {@code serialization.RedeemReceipt}
    */
-  public  static final class RedeemReceiptRequest extends
+  public  static final class RedeemReceipt extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:serialization.RedeemReceiptRequest)
-      RedeemReceiptRequestOrBuilder {
+      // @@protoc_insertion_point(message_implements:serialization.RedeemReceipt)
+      RedeemReceiptOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use RedeemReceiptRequest.newBuilder() to construct.
-    private RedeemReceiptRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use RedeemReceipt.newBuilder() to construct.
+    private RedeemReceipt(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private RedeemReceiptRequest() {
-      issuerId_ = "";
-      ownerId_ = "";
+    private RedeemReceipt() {
       receiptHash_ = com.google.protobuf.ByteString.EMPTY;
     }
 
@@ -2561,7 +5225,7 @@ public final class BVerifyAPIMessageSerialization {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private RedeemReceiptRequest(
+    private RedeemReceipt(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2588,18 +5252,6 @@ public final class BVerifyAPIMessageSerialization {
               break;
             }
             case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              issuerId_ = s;
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              ownerId_ = s;
-              break;
-            }
-            case 26: {
 
               receiptHash_ = input.readBytes();
               break;
@@ -2618,88 +5270,20 @@ public final class BVerifyAPIMessageSerialization {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_RedeemReceiptRequest_descriptor;
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_RedeemReceipt_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_RedeemReceiptRequest_fieldAccessorTable
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_RedeemReceipt_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest.class, serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest.Builder.class);
+              serialization.BVerifyAPIMessageSerialization.RedeemReceipt.class, serialization.BVerifyAPIMessageSerialization.RedeemReceipt.Builder.class);
     }
 
-    public static final int ISSUER_ID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object issuerId_;
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    public java.lang.String getIssuerId() {
-      java.lang.Object ref = issuerId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        issuerId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getIssuerIdBytes() {
-      java.lang.Object ref = issuerId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        issuerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int OWNER_ID_FIELD_NUMBER = 2;
-    private volatile java.lang.Object ownerId_;
-    /**
-     * <code>string owner_id = 2;</code>
-     */
-    public java.lang.String getOwnerId() {
-      java.lang.Object ref = ownerId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        ownerId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string owner_id = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getOwnerIdBytes() {
-      java.lang.Object ref = ownerId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        ownerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int RECEIPT_HASH_FIELD_NUMBER = 3;
+    public static final int RECEIPT_HASH_FIELD_NUMBER = 1;
     private com.google.protobuf.ByteString receiptHash_;
     /**
-     * <code>bytes receipt_hash = 3;</code>
+     * <code>bytes receipt_hash = 1;</code>
      */
     public com.google.protobuf.ByteString getReceiptHash() {
       return receiptHash_;
@@ -2717,14 +5301,8 @@ public final class BVerifyAPIMessageSerialization {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getIssuerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, issuerId_);
-      }
-      if (!getOwnerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, ownerId_);
-      }
       if (!receiptHash_.isEmpty()) {
-        output.writeBytes(3, receiptHash_);
+        output.writeBytes(1, receiptHash_);
       }
       unknownFields.writeTo(output);
     }
@@ -2734,15 +5312,9 @@ public final class BVerifyAPIMessageSerialization {
       if (size != -1) return size;
 
       size = 0;
-      if (!getIssuerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, issuerId_);
-      }
-      if (!getOwnerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, ownerId_);
-      }
       if (!receiptHash_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, receiptHash_);
+          .computeBytesSize(1, receiptHash_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2754,16 +5326,12 @@ public final class BVerifyAPIMessageSerialization {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest)) {
+      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.RedeemReceipt)) {
         return super.equals(obj);
       }
-      serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest other = (serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest) obj;
+      serialization.BVerifyAPIMessageSerialization.RedeemReceipt other = (serialization.BVerifyAPIMessageSerialization.RedeemReceipt) obj;
 
       boolean result = true;
-      result = result && getIssuerId()
-          .equals(other.getIssuerId());
-      result = result && getOwnerId()
-          .equals(other.getOwnerId());
       result = result && getReceiptHash()
           .equals(other.getReceiptHash());
       result = result && unknownFields.equals(other.unknownFields);
@@ -2777,10 +5345,6 @@ public final class BVerifyAPIMessageSerialization {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ISSUER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getIssuerId().hashCode();
-      hash = (37 * hash) + OWNER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getOwnerId().hashCode();
       hash = (37 * hash) + RECEIPT_HASH_FIELD_NUMBER;
       hash = (53 * hash) + getReceiptHash().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -2788,69 +5352,69 @@ public final class BVerifyAPIMessageSerialization {
       return hash;
     }
 
-    public static serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.RedeemReceipt parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.RedeemReceipt parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.RedeemReceipt parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.RedeemReceipt parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest parseFrom(byte[] data)
+    public static serialization.BVerifyAPIMessageSerialization.RedeemReceipt parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.RedeemReceipt parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest parseFrom(java.io.InputStream input)
+    public static serialization.BVerifyAPIMessageSerialization.RedeemReceipt parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.RedeemReceipt parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest parseDelimitedFrom(java.io.InputStream input)
+    public static serialization.BVerifyAPIMessageSerialization.RedeemReceipt parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest parseDelimitedFrom(
+    public static serialization.BVerifyAPIMessageSerialization.RedeemReceipt parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.RedeemReceipt parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.RedeemReceipt parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2862,7 +5426,7 @@ public final class BVerifyAPIMessageSerialization {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest prototype) {
+    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.RedeemReceipt prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -2879,29 +5443,28 @@ public final class BVerifyAPIMessageSerialization {
     /**
      * <pre>
      **
-     * Request for the server to redeem a receipt (initiated
-     * by a client)
+     * Data required for request to redeem a receipt
      * </pre>
      *
-     * Protobuf type {@code serialization.RedeemReceiptRequest}
+     * Protobuf type {@code serialization.RedeemReceipt}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:serialization.RedeemReceiptRequest)
-        serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequestOrBuilder {
+        // @@protoc_insertion_point(builder_implements:serialization.RedeemReceipt)
+        serialization.BVerifyAPIMessageSerialization.RedeemReceiptOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_RedeemReceiptRequest_descriptor;
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_RedeemReceipt_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_RedeemReceiptRequest_fieldAccessorTable
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_RedeemReceipt_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest.class, serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest.Builder.class);
+                serialization.BVerifyAPIMessageSerialization.RedeemReceipt.class, serialization.BVerifyAPIMessageSerialization.RedeemReceipt.Builder.class);
       }
 
-      // Construct using serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest.newBuilder()
+      // Construct using serialization.BVerifyAPIMessageSerialization.RedeemReceipt.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2918,10 +5481,6 @@ public final class BVerifyAPIMessageSerialization {
       }
       public Builder clear() {
         super.clear();
-        issuerId_ = "";
-
-        ownerId_ = "";
-
         receiptHash_ = com.google.protobuf.ByteString.EMPTY;
 
         return this;
@@ -2929,25 +5488,23 @@ public final class BVerifyAPIMessageSerialization {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_RedeemReceiptRequest_descriptor;
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_RedeemReceipt_descriptor;
       }
 
-      public serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest getDefaultInstanceForType() {
-        return serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest.getDefaultInstance();
+      public serialization.BVerifyAPIMessageSerialization.RedeemReceipt getDefaultInstanceForType() {
+        return serialization.BVerifyAPIMessageSerialization.RedeemReceipt.getDefaultInstance();
       }
 
-      public serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest build() {
-        serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest result = buildPartial();
+      public serialization.BVerifyAPIMessageSerialization.RedeemReceipt build() {
+        serialization.BVerifyAPIMessageSerialization.RedeemReceipt result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest buildPartial() {
-        serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest result = new serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest(this);
-        result.issuerId_ = issuerId_;
-        result.ownerId_ = ownerId_;
+      public serialization.BVerifyAPIMessageSerialization.RedeemReceipt buildPartial() {
+        serialization.BVerifyAPIMessageSerialization.RedeemReceipt result = new serialization.BVerifyAPIMessageSerialization.RedeemReceipt(this);
         result.receiptHash_ = receiptHash_;
         onBuilt();
         return result;
@@ -2980,24 +5537,16 @@ public final class BVerifyAPIMessageSerialization {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest) {
-          return mergeFrom((serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest)other);
+        if (other instanceof serialization.BVerifyAPIMessageSerialization.RedeemReceipt) {
+          return mergeFrom((serialization.BVerifyAPIMessageSerialization.RedeemReceipt)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest other) {
-        if (other == serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest.getDefaultInstance()) return this;
-        if (!other.getIssuerId().isEmpty()) {
-          issuerId_ = other.issuerId_;
-          onChanged();
-        }
-        if (!other.getOwnerId().isEmpty()) {
-          ownerId_ = other.ownerId_;
-          onChanged();
-        }
+      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.RedeemReceipt other) {
+        if (other == serialization.BVerifyAPIMessageSerialization.RedeemReceipt.getDefaultInstance()) return this;
         if (other.getReceiptHash() != com.google.protobuf.ByteString.EMPTY) {
           setReceiptHash(other.getReceiptHash());
         }
@@ -3014,11 +5563,11 @@ public final class BVerifyAPIMessageSerialization {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest parsedMessage = null;
+        serialization.BVerifyAPIMessageSerialization.RedeemReceipt parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest) e.getUnfinishedMessage();
+          parsedMessage = (serialization.BVerifyAPIMessageSerialization.RedeemReceipt) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -3028,153 +5577,15 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
 
-      private java.lang.Object issuerId_ = "";
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public java.lang.String getIssuerId() {
-        java.lang.Object ref = issuerId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          issuerId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getIssuerIdBytes() {
-        java.lang.Object ref = issuerId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          issuerId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder setIssuerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        issuerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder clearIssuerId() {
-        
-        issuerId_ = getDefaultInstance().getIssuerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder setIssuerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        issuerId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object ownerId_ = "";
-      /**
-       * <code>string owner_id = 2;</code>
-       */
-      public java.lang.String getOwnerId() {
-        java.lang.Object ref = ownerId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          ownerId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string owner_id = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getOwnerIdBytes() {
-        java.lang.Object ref = ownerId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          ownerId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string owner_id = 2;</code>
-       */
-      public Builder setOwnerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        ownerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string owner_id = 2;</code>
-       */
-      public Builder clearOwnerId() {
-        
-        ownerId_ = getDefaultInstance().getOwnerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string owner_id = 2;</code>
-       */
-      public Builder setOwnerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        ownerId_ = value;
-        onChanged();
-        return this;
-      }
-
       private com.google.protobuf.ByteString receiptHash_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>bytes receipt_hash = 3;</code>
+       * <code>bytes receipt_hash = 1;</code>
        */
       public com.google.protobuf.ByteString getReceiptHash() {
         return receiptHash_;
       }
       /**
-       * <code>bytes receipt_hash = 3;</code>
+       * <code>bytes receipt_hash = 1;</code>
        */
       public Builder setReceiptHash(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -3186,7 +5597,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>bytes receipt_hash = 3;</code>
+       * <code>bytes receipt_hash = 1;</code>
        */
       public Builder clearReceiptHash() {
         
@@ -3205,105 +5616,71 @@ public final class BVerifyAPIMessageSerialization {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:serialization.RedeemReceiptRequest)
+      // @@protoc_insertion_point(builder_scope:serialization.RedeemReceipt)
     }
 
-    // @@protoc_insertion_point(class_scope:serialization.RedeemReceiptRequest)
-    private static final serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:serialization.RedeemReceipt)
+    private static final serialization.BVerifyAPIMessageSerialization.RedeemReceipt DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest();
+      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.RedeemReceipt();
     }
 
-    public static serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest getDefaultInstance() {
+    public static serialization.BVerifyAPIMessageSerialization.RedeemReceipt getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<RedeemReceiptRequest>
-        PARSER = new com.google.protobuf.AbstractParser<RedeemReceiptRequest>() {
-      public RedeemReceiptRequest parsePartialFrom(
+    private static final com.google.protobuf.Parser<RedeemReceipt>
+        PARSER = new com.google.protobuf.AbstractParser<RedeemReceipt>() {
+      public RedeemReceipt parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new RedeemReceiptRequest(input, extensionRegistry);
+        return new RedeemReceipt(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<RedeemReceiptRequest> parser() {
+    public static com.google.protobuf.Parser<RedeemReceipt> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<RedeemReceiptRequest> getParserForType() {
+    public com.google.protobuf.Parser<RedeemReceipt> getParserForType() {
       return PARSER;
     }
 
-    public serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest getDefaultInstanceForType() {
+    public serialization.BVerifyAPIMessageSerialization.RedeemReceipt getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
-  public interface TransferReceiptRequestOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:serialization.TransferReceiptRequest)
+  public interface TransferReceiptOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:serialization.TransferReceipt)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string issuer_id = 1;</code>
-     */
-    java.lang.String getIssuerId();
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getIssuerIdBytes();
-
-    /**
-     * <code>string current_owner_id = 2;</code>
-     */
-    java.lang.String getCurrentOwnerId();
-    /**
-     * <code>string current_owner_id = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getCurrentOwnerIdBytes();
-
-    /**
-     * <code>string new_owner_id = 3;</code>
-     */
-    java.lang.String getNewOwnerId();
-    /**
-     * <code>string new_owner_id = 3;</code>
-     */
-    com.google.protobuf.ByteString
-        getNewOwnerIdBytes();
-
-    /**
-     * <code>bytes receipt_hash = 4;</code>
+     * <code>bytes receipt_hash = 1;</code>
      */
     com.google.protobuf.ByteString getReceiptHash();
   }
   /**
    * <pre>
    **
-   * Request for the server to transfer a receiept (intiated
-   * by a client)
+   * Data required for a request to transfer a receipt 
    * </pre>
    *
-   * Protobuf type {@code serialization.TransferReceiptRequest}
+   * Protobuf type {@code serialization.TransferReceipt}
    */
-  public  static final class TransferReceiptRequest extends
+  public  static final class TransferReceipt extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:serialization.TransferReceiptRequest)
-      TransferReceiptRequestOrBuilder {
+      // @@protoc_insertion_point(message_implements:serialization.TransferReceipt)
+      TransferReceiptOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use TransferReceiptRequest.newBuilder() to construct.
-    private TransferReceiptRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use TransferReceipt.newBuilder() to construct.
+    private TransferReceipt(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private TransferReceiptRequest() {
-      issuerId_ = "";
-      currentOwnerId_ = "";
-      newOwnerId_ = "";
+    private TransferReceipt() {
       receiptHash_ = com.google.protobuf.ByteString.EMPTY;
     }
 
@@ -3312,7 +5689,7 @@ public final class BVerifyAPIMessageSerialization {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private TransferReceiptRequest(
+    private TransferReceipt(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -3339,24 +5716,6 @@ public final class BVerifyAPIMessageSerialization {
               break;
             }
             case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              issuerId_ = s;
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              currentOwnerId_ = s;
-              break;
-            }
-            case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              newOwnerId_ = s;
-              break;
-            }
-            case 34: {
 
               receiptHash_ = input.readBytes();
               break;
@@ -3375,122 +5734,20 @@ public final class BVerifyAPIMessageSerialization {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceiptRequest_descriptor;
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceipt_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceiptRequest_fieldAccessorTable
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceipt_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest.class, serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest.Builder.class);
+              serialization.BVerifyAPIMessageSerialization.TransferReceipt.class, serialization.BVerifyAPIMessageSerialization.TransferReceipt.Builder.class);
     }
 
-    public static final int ISSUER_ID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object issuerId_;
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    public java.lang.String getIssuerId() {
-      java.lang.Object ref = issuerId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        issuerId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getIssuerIdBytes() {
-      java.lang.Object ref = issuerId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        issuerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int CURRENT_OWNER_ID_FIELD_NUMBER = 2;
-    private volatile java.lang.Object currentOwnerId_;
-    /**
-     * <code>string current_owner_id = 2;</code>
-     */
-    public java.lang.String getCurrentOwnerId() {
-      java.lang.Object ref = currentOwnerId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        currentOwnerId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string current_owner_id = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getCurrentOwnerIdBytes() {
-      java.lang.Object ref = currentOwnerId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        currentOwnerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int NEW_OWNER_ID_FIELD_NUMBER = 3;
-    private volatile java.lang.Object newOwnerId_;
-    /**
-     * <code>string new_owner_id = 3;</code>
-     */
-    public java.lang.String getNewOwnerId() {
-      java.lang.Object ref = newOwnerId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        newOwnerId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string new_owner_id = 3;</code>
-     */
-    public com.google.protobuf.ByteString
-        getNewOwnerIdBytes() {
-      java.lang.Object ref = newOwnerId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        newOwnerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int RECEIPT_HASH_FIELD_NUMBER = 4;
+    public static final int RECEIPT_HASH_FIELD_NUMBER = 1;
     private com.google.protobuf.ByteString receiptHash_;
     /**
-     * <code>bytes receipt_hash = 4;</code>
+     * <code>bytes receipt_hash = 1;</code>
      */
     public com.google.protobuf.ByteString getReceiptHash() {
       return receiptHash_;
@@ -3508,17 +5765,8 @@ public final class BVerifyAPIMessageSerialization {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!getIssuerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, issuerId_);
-      }
-      if (!getCurrentOwnerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, currentOwnerId_);
-      }
-      if (!getNewOwnerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, newOwnerId_);
-      }
       if (!receiptHash_.isEmpty()) {
-        output.writeBytes(4, receiptHash_);
+        output.writeBytes(1, receiptHash_);
       }
       unknownFields.writeTo(output);
     }
@@ -3528,18 +5776,9 @@ public final class BVerifyAPIMessageSerialization {
       if (size != -1) return size;
 
       size = 0;
-      if (!getIssuerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, issuerId_);
-      }
-      if (!getCurrentOwnerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, currentOwnerId_);
-      }
-      if (!getNewOwnerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, newOwnerId_);
-      }
       if (!receiptHash_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, receiptHash_);
+          .computeBytesSize(1, receiptHash_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3551,18 +5790,12 @@ public final class BVerifyAPIMessageSerialization {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest)) {
+      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.TransferReceipt)) {
         return super.equals(obj);
       }
-      serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest other = (serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest) obj;
+      serialization.BVerifyAPIMessageSerialization.TransferReceipt other = (serialization.BVerifyAPIMessageSerialization.TransferReceipt) obj;
 
       boolean result = true;
-      result = result && getIssuerId()
-          .equals(other.getIssuerId());
-      result = result && getCurrentOwnerId()
-          .equals(other.getCurrentOwnerId());
-      result = result && getNewOwnerId()
-          .equals(other.getNewOwnerId());
       result = result && getReceiptHash()
           .equals(other.getReceiptHash());
       result = result && unknownFields.equals(other.unknownFields);
@@ -3576,12 +5809,6 @@ public final class BVerifyAPIMessageSerialization {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ISSUER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getIssuerId().hashCode();
-      hash = (37 * hash) + CURRENT_OWNER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getCurrentOwnerId().hashCode();
-      hash = (37 * hash) + NEW_OWNER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getNewOwnerId().hashCode();
       hash = (37 * hash) + RECEIPT_HASH_FIELD_NUMBER;
       hash = (53 * hash) + getReceiptHash().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -3589,69 +5816,69 @@ public final class BVerifyAPIMessageSerialization {
       return hash;
     }
 
-    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceipt parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceipt parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceipt parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceipt parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(byte[] data)
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceipt parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceipt parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(java.io.InputStream input)
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceipt parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceipt parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseDelimitedFrom(java.io.InputStream input)
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceipt parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseDelimitedFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceipt parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceipt parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parseFrom(
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceipt parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -3663,7 +5890,7 @@ public final class BVerifyAPIMessageSerialization {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest prototype) {
+    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.TransferReceipt prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -3680,29 +5907,28 @@ public final class BVerifyAPIMessageSerialization {
     /**
      * <pre>
      **
-     * Request for the server to transfer a receiept (intiated
-     * by a client)
+     * Data required for a request to transfer a receipt 
      * </pre>
      *
-     * Protobuf type {@code serialization.TransferReceiptRequest}
+     * Protobuf type {@code serialization.TransferReceipt}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:serialization.TransferReceiptRequest)
-        serialization.BVerifyAPIMessageSerialization.TransferReceiptRequestOrBuilder {
+        // @@protoc_insertion_point(builder_implements:serialization.TransferReceipt)
+        serialization.BVerifyAPIMessageSerialization.TransferReceiptOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceiptRequest_descriptor;
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceipt_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceiptRequest_fieldAccessorTable
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceipt_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest.class, serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest.Builder.class);
+                serialization.BVerifyAPIMessageSerialization.TransferReceipt.class, serialization.BVerifyAPIMessageSerialization.TransferReceipt.Builder.class);
       }
 
-      // Construct using serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest.newBuilder()
+      // Construct using serialization.BVerifyAPIMessageSerialization.TransferReceipt.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -3719,12 +5945,6 @@ public final class BVerifyAPIMessageSerialization {
       }
       public Builder clear() {
         super.clear();
-        issuerId_ = "";
-
-        currentOwnerId_ = "";
-
-        newOwnerId_ = "";
-
         receiptHash_ = com.google.protobuf.ByteString.EMPTY;
 
         return this;
@@ -3732,26 +5952,23 @@ public final class BVerifyAPIMessageSerialization {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceiptRequest_descriptor;
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_TransferReceipt_descriptor;
       }
 
-      public serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest getDefaultInstanceForType() {
-        return serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest.getDefaultInstance();
+      public serialization.BVerifyAPIMessageSerialization.TransferReceipt getDefaultInstanceForType() {
+        return serialization.BVerifyAPIMessageSerialization.TransferReceipt.getDefaultInstance();
       }
 
-      public serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest build() {
-        serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest result = buildPartial();
+      public serialization.BVerifyAPIMessageSerialization.TransferReceipt build() {
+        serialization.BVerifyAPIMessageSerialization.TransferReceipt result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest buildPartial() {
-        serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest result = new serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest(this);
-        result.issuerId_ = issuerId_;
-        result.currentOwnerId_ = currentOwnerId_;
-        result.newOwnerId_ = newOwnerId_;
+      public serialization.BVerifyAPIMessageSerialization.TransferReceipt buildPartial() {
+        serialization.BVerifyAPIMessageSerialization.TransferReceipt result = new serialization.BVerifyAPIMessageSerialization.TransferReceipt(this);
         result.receiptHash_ = receiptHash_;
         onBuilt();
         return result;
@@ -3784,28 +6001,16 @@ public final class BVerifyAPIMessageSerialization {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest) {
-          return mergeFrom((serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest)other);
+        if (other instanceof serialization.BVerifyAPIMessageSerialization.TransferReceipt) {
+          return mergeFrom((serialization.BVerifyAPIMessageSerialization.TransferReceipt)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest other) {
-        if (other == serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest.getDefaultInstance()) return this;
-        if (!other.getIssuerId().isEmpty()) {
-          issuerId_ = other.issuerId_;
-          onChanged();
-        }
-        if (!other.getCurrentOwnerId().isEmpty()) {
-          currentOwnerId_ = other.currentOwnerId_;
-          onChanged();
-        }
-        if (!other.getNewOwnerId().isEmpty()) {
-          newOwnerId_ = other.newOwnerId_;
-          onChanged();
-        }
+      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.TransferReceipt other) {
+        if (other == serialization.BVerifyAPIMessageSerialization.TransferReceipt.getDefaultInstance()) return this;
         if (other.getReceiptHash() != com.google.protobuf.ByteString.EMPTY) {
           setReceiptHash(other.getReceiptHash());
         }
@@ -3822,11 +6027,11 @@ public final class BVerifyAPIMessageSerialization {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest parsedMessage = null;
+        serialization.BVerifyAPIMessageSerialization.TransferReceipt parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest) e.getUnfinishedMessage();
+          parsedMessage = (serialization.BVerifyAPIMessageSerialization.TransferReceipt) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -3836,222 +6041,15 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
 
-      private java.lang.Object issuerId_ = "";
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public java.lang.String getIssuerId() {
-        java.lang.Object ref = issuerId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          issuerId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getIssuerIdBytes() {
-        java.lang.Object ref = issuerId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          issuerId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder setIssuerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        issuerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder clearIssuerId() {
-        
-        issuerId_ = getDefaultInstance().getIssuerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder setIssuerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        issuerId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object currentOwnerId_ = "";
-      /**
-       * <code>string current_owner_id = 2;</code>
-       */
-      public java.lang.String getCurrentOwnerId() {
-        java.lang.Object ref = currentOwnerId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          currentOwnerId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string current_owner_id = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getCurrentOwnerIdBytes() {
-        java.lang.Object ref = currentOwnerId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          currentOwnerId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string current_owner_id = 2;</code>
-       */
-      public Builder setCurrentOwnerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        currentOwnerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string current_owner_id = 2;</code>
-       */
-      public Builder clearCurrentOwnerId() {
-        
-        currentOwnerId_ = getDefaultInstance().getCurrentOwnerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string current_owner_id = 2;</code>
-       */
-      public Builder setCurrentOwnerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        currentOwnerId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object newOwnerId_ = "";
-      /**
-       * <code>string new_owner_id = 3;</code>
-       */
-      public java.lang.String getNewOwnerId() {
-        java.lang.Object ref = newOwnerId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          newOwnerId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string new_owner_id = 3;</code>
-       */
-      public com.google.protobuf.ByteString
-          getNewOwnerIdBytes() {
-        java.lang.Object ref = newOwnerId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          newOwnerId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string new_owner_id = 3;</code>
-       */
-      public Builder setNewOwnerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        newOwnerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string new_owner_id = 3;</code>
-       */
-      public Builder clearNewOwnerId() {
-        
-        newOwnerId_ = getDefaultInstance().getNewOwnerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string new_owner_id = 3;</code>
-       */
-      public Builder setNewOwnerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        newOwnerId_ = value;
-        onChanged();
-        return this;
-      }
-
       private com.google.protobuf.ByteString receiptHash_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>bytes receipt_hash = 4;</code>
+       * <code>bytes receipt_hash = 1;</code>
        */
       public com.google.protobuf.ByteString getReceiptHash() {
         return receiptHash_;
       }
       /**
-       * <code>bytes receipt_hash = 4;</code>
+       * <code>bytes receipt_hash = 1;</code>
        */
       public Builder setReceiptHash(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -4063,7 +6061,7 @@ public final class BVerifyAPIMessageSerialization {
         return this;
       }
       /**
-       * <code>bytes receipt_hash = 4;</code>
+       * <code>bytes receipt_hash = 1;</code>
        */
       public Builder clearReceiptHash() {
         
@@ -4082,39 +6080,810 @@ public final class BVerifyAPIMessageSerialization {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:serialization.TransferReceiptRequest)
+      // @@protoc_insertion_point(builder_scope:serialization.TransferReceipt)
     }
 
-    // @@protoc_insertion_point(class_scope:serialization.TransferReceiptRequest)
-    private static final serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:serialization.TransferReceipt)
+    private static final serialization.BVerifyAPIMessageSerialization.TransferReceipt DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest();
+      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.TransferReceipt();
     }
 
-    public static serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest getDefaultInstance() {
+    public static serialization.BVerifyAPIMessageSerialization.TransferReceipt getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<TransferReceiptRequest>
-        PARSER = new com.google.protobuf.AbstractParser<TransferReceiptRequest>() {
-      public TransferReceiptRequest parsePartialFrom(
+    private static final com.google.protobuf.Parser<TransferReceipt>
+        PARSER = new com.google.protobuf.AbstractParser<TransferReceipt>() {
+      public TransferReceipt parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new TransferReceiptRequest(input, extensionRegistry);
+        return new TransferReceipt(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<TransferReceiptRequest> parser() {
+    public static com.google.protobuf.Parser<TransferReceipt> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<TransferReceiptRequest> getParserForType() {
+    public com.google.protobuf.Parser<TransferReceipt> getParserForType() {
       return PARSER;
     }
 
-    public serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest getDefaultInstanceForType() {
+    public serialization.BVerifyAPIMessageSerialization.TransferReceipt getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:serialization.Response)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .serialization.Signature signatures = 1;</code>
+     */
+    java.util.List<serialization.BVerifyAPIMessageSerialization.Signature> 
+        getSignaturesList();
+    /**
+     * <code>repeated .serialization.Signature signatures = 1;</code>
+     */
+    serialization.BVerifyAPIMessageSerialization.Signature getSignatures(int index);
+    /**
+     * <code>repeated .serialization.Signature signatures = 1;</code>
+     */
+    int getSignaturesCount();
+    /**
+     * <code>repeated .serialization.Signature signatures = 1;</code>
+     */
+    java.util.List<? extends serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder> 
+        getSignaturesOrBuilderList();
+    /**
+     * <code>repeated .serialization.Signature signatures = 1;</code>
+     */
+    serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder getSignaturesOrBuilder(
+        int index);
+  }
+  /**
+   * <pre>
+   ** 
+   *		Response messages contain 
+   *		signatures for ADS Updates
+   *		sent from clients to the server
+   * </pre>
+   *
+   * Protobuf type {@code serialization.Response}
+   */
+  public  static final class Response extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:serialization.Response)
+      ResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use Response.newBuilder() to construct.
+    private Response(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Response() {
+      signatures_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Response(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                signatures_ = new java.util.ArrayList<serialization.BVerifyAPIMessageSerialization.Signature>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              signatures_.add(
+                  input.readMessage(serialization.BVerifyAPIMessageSerialization.Signature.parser(), extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          signatures_ = java.util.Collections.unmodifiableList(signatures_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Response_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Response_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              serialization.BVerifyAPIMessageSerialization.Response.class, serialization.BVerifyAPIMessageSerialization.Response.Builder.class);
+    }
+
+    public static final int SIGNATURES_FIELD_NUMBER = 1;
+    private java.util.List<serialization.BVerifyAPIMessageSerialization.Signature> signatures_;
+    /**
+     * <code>repeated .serialization.Signature signatures = 1;</code>
+     */
+    public java.util.List<serialization.BVerifyAPIMessageSerialization.Signature> getSignaturesList() {
+      return signatures_;
+    }
+    /**
+     * <code>repeated .serialization.Signature signatures = 1;</code>
+     */
+    public java.util.List<? extends serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder> 
+        getSignaturesOrBuilderList() {
+      return signatures_;
+    }
+    /**
+     * <code>repeated .serialization.Signature signatures = 1;</code>
+     */
+    public int getSignaturesCount() {
+      return signatures_.size();
+    }
+    /**
+     * <code>repeated .serialization.Signature signatures = 1;</code>
+     */
+    public serialization.BVerifyAPIMessageSerialization.Signature getSignatures(int index) {
+      return signatures_.get(index);
+    }
+    /**
+     * <code>repeated .serialization.Signature signatures = 1;</code>
+     */
+    public serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder getSignaturesOrBuilder(
+        int index) {
+      return signatures_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < signatures_.size(); i++) {
+        output.writeMessage(1, signatures_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < signatures_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, signatures_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.Response)) {
+        return super.equals(obj);
+      }
+      serialization.BVerifyAPIMessageSerialization.Response other = (serialization.BVerifyAPIMessageSerialization.Response) obj;
+
+      boolean result = true;
+      result = result && getSignaturesList()
+          .equals(other.getSignaturesList());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getSignaturesCount() > 0) {
+        hash = (37 * hash) + SIGNATURES_FIELD_NUMBER;
+        hash = (53 * hash) + getSignaturesList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static serialization.BVerifyAPIMessageSerialization.Response parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Response parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Response parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Response parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Response parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Response parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Response parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Response parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Response parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Response parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Response parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static serialization.BVerifyAPIMessageSerialization.Response parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.Response prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     ** 
+     *		Response messages contain 
+     *		signatures for ADS Updates
+     *		sent from clients to the server
+     * </pre>
+     *
+     * Protobuf type {@code serialization.Response}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:serialization.Response)
+        serialization.BVerifyAPIMessageSerialization.ResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Response_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Response_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                serialization.BVerifyAPIMessageSerialization.Response.class, serialization.BVerifyAPIMessageSerialization.Response.Builder.class);
+      }
+
+      // Construct using serialization.BVerifyAPIMessageSerialization.Response.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getSignaturesFieldBuilder();
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (signaturesBuilder_ == null) {
+          signatures_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          signaturesBuilder_.clear();
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Response_descriptor;
+      }
+
+      public serialization.BVerifyAPIMessageSerialization.Response getDefaultInstanceForType() {
+        return serialization.BVerifyAPIMessageSerialization.Response.getDefaultInstance();
+      }
+
+      public serialization.BVerifyAPIMessageSerialization.Response build() {
+        serialization.BVerifyAPIMessageSerialization.Response result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public serialization.BVerifyAPIMessageSerialization.Response buildPartial() {
+        serialization.BVerifyAPIMessageSerialization.Response result = new serialization.BVerifyAPIMessageSerialization.Response(this);
+        int from_bitField0_ = bitField0_;
+        if (signaturesBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            signatures_ = java.util.Collections.unmodifiableList(signatures_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.signatures_ = signatures_;
+        } else {
+          result.signatures_ = signaturesBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof serialization.BVerifyAPIMessageSerialization.Response) {
+          return mergeFrom((serialization.BVerifyAPIMessageSerialization.Response)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.Response other) {
+        if (other == serialization.BVerifyAPIMessageSerialization.Response.getDefaultInstance()) return this;
+        if (signaturesBuilder_ == null) {
+          if (!other.signatures_.isEmpty()) {
+            if (signatures_.isEmpty()) {
+              signatures_ = other.signatures_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureSignaturesIsMutable();
+              signatures_.addAll(other.signatures_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.signatures_.isEmpty()) {
+            if (signaturesBuilder_.isEmpty()) {
+              signaturesBuilder_.dispose();
+              signaturesBuilder_ = null;
+              signatures_ = other.signatures_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              signaturesBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getSignaturesFieldBuilder() : null;
+            } else {
+              signaturesBuilder_.addAllMessages(other.signatures_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        serialization.BVerifyAPIMessageSerialization.Response parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (serialization.BVerifyAPIMessageSerialization.Response) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<serialization.BVerifyAPIMessageSerialization.Signature> signatures_ =
+        java.util.Collections.emptyList();
+      private void ensureSignaturesIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          signatures_ = new java.util.ArrayList<serialization.BVerifyAPIMessageSerialization.Signature>(signatures_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          serialization.BVerifyAPIMessageSerialization.Signature, serialization.BVerifyAPIMessageSerialization.Signature.Builder, serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder> signaturesBuilder_;
+
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public java.util.List<serialization.BVerifyAPIMessageSerialization.Signature> getSignaturesList() {
+        if (signaturesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(signatures_);
+        } else {
+          return signaturesBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public int getSignaturesCount() {
+        if (signaturesBuilder_ == null) {
+          return signatures_.size();
+        } else {
+          return signaturesBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.Signature getSignatures(int index) {
+        if (signaturesBuilder_ == null) {
+          return signatures_.get(index);
+        } else {
+          return signaturesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public Builder setSignatures(
+          int index, serialization.BVerifyAPIMessageSerialization.Signature value) {
+        if (signaturesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSignaturesIsMutable();
+          signatures_.set(index, value);
+          onChanged();
+        } else {
+          signaturesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public Builder setSignatures(
+          int index, serialization.BVerifyAPIMessageSerialization.Signature.Builder builderForValue) {
+        if (signaturesBuilder_ == null) {
+          ensureSignaturesIsMutable();
+          signatures_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          signaturesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public Builder addSignatures(serialization.BVerifyAPIMessageSerialization.Signature value) {
+        if (signaturesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSignaturesIsMutable();
+          signatures_.add(value);
+          onChanged();
+        } else {
+          signaturesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public Builder addSignatures(
+          int index, serialization.BVerifyAPIMessageSerialization.Signature value) {
+        if (signaturesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureSignaturesIsMutable();
+          signatures_.add(index, value);
+          onChanged();
+        } else {
+          signaturesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public Builder addSignatures(
+          serialization.BVerifyAPIMessageSerialization.Signature.Builder builderForValue) {
+        if (signaturesBuilder_ == null) {
+          ensureSignaturesIsMutable();
+          signatures_.add(builderForValue.build());
+          onChanged();
+        } else {
+          signaturesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public Builder addSignatures(
+          int index, serialization.BVerifyAPIMessageSerialization.Signature.Builder builderForValue) {
+        if (signaturesBuilder_ == null) {
+          ensureSignaturesIsMutable();
+          signatures_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          signaturesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public Builder addAllSignatures(
+          java.lang.Iterable<? extends serialization.BVerifyAPIMessageSerialization.Signature> values) {
+        if (signaturesBuilder_ == null) {
+          ensureSignaturesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, signatures_);
+          onChanged();
+        } else {
+          signaturesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public Builder clearSignatures() {
+        if (signaturesBuilder_ == null) {
+          signatures_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          signaturesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public Builder removeSignatures(int index) {
+        if (signaturesBuilder_ == null) {
+          ensureSignaturesIsMutable();
+          signatures_.remove(index);
+          onChanged();
+        } else {
+          signaturesBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.Signature.Builder getSignaturesBuilder(
+          int index) {
+        return getSignaturesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder getSignaturesOrBuilder(
+          int index) {
+        if (signaturesBuilder_ == null) {
+          return signatures_.get(index);  } else {
+          return signaturesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public java.util.List<? extends serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder> 
+           getSignaturesOrBuilderList() {
+        if (signaturesBuilder_ != null) {
+          return signaturesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(signatures_);
+        }
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.Signature.Builder addSignaturesBuilder() {
+        return getSignaturesFieldBuilder().addBuilder(
+            serialization.BVerifyAPIMessageSerialization.Signature.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public serialization.BVerifyAPIMessageSerialization.Signature.Builder addSignaturesBuilder(
+          int index) {
+        return getSignaturesFieldBuilder().addBuilder(
+            index, serialization.BVerifyAPIMessageSerialization.Signature.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .serialization.Signature signatures = 1;</code>
+       */
+      public java.util.List<serialization.BVerifyAPIMessageSerialization.Signature.Builder> 
+           getSignaturesBuilderList() {
+        return getSignaturesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          serialization.BVerifyAPIMessageSerialization.Signature, serialization.BVerifyAPIMessageSerialization.Signature.Builder, serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder> 
+          getSignaturesFieldBuilder() {
+        if (signaturesBuilder_ == null) {
+          signaturesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              serialization.BVerifyAPIMessageSerialization.Signature, serialization.BVerifyAPIMessageSerialization.Signature.Builder, serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder>(
+                  signatures_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          signatures_ = null;
+        }
+        return signaturesBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:serialization.Response)
+    }
+
+    // @@protoc_insertion_point(class_scope:serialization.Response)
+    private static final serialization.BVerifyAPIMessageSerialization.Response DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.Response();
+    }
+
+    public static serialization.BVerifyAPIMessageSerialization.Response getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Response>
+        PARSER = new com.google.protobuf.AbstractParser<Response>() {
+      public Response parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Response(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Response> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Response> getParserForType() {
+      return PARSER;
+    }
+
+    public serialization.BVerifyAPIMessageSerialization.Response getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -4145,8 +6914,7 @@ public final class BVerifyAPIMessageSerialization {
   /**
    * <pre>
    **
-   * Request for the server to send updates (initiated 
-   * by a client)
+   * Request for the server to send updatess
    * </pre>
    *
    * Protobuf type {@code serialization.GetUpdatesRequest}
@@ -4440,8 +7208,7 @@ public final class BVerifyAPIMessageSerialization {
     /**
      * <pre>
      **
-     * Request for the server to send updates (initiated 
-     * by a client)
+     * Request for the server to send updatess
      * </pre>
      *
      * Protobuf type {@code serialization.GetUpdatesRequest}
@@ -4737,3921 +7504,6 @@ public final class BVerifyAPIMessageSerialization {
     }
 
     public serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface SignatureOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:serialization.Signature)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>bytes signature = 1;</code>
-     */
-    com.google.protobuf.ByteString getSignature();
-  }
-  /**
-   * <pre>
-   **
-   * 	Generic signature message along with the 
-   *	signer id
-   * </pre>
-   *
-   * Protobuf type {@code serialization.Signature}
-   */
-  public  static final class Signature extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:serialization.Signature)
-      SignatureOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use Signature.newBuilder() to construct.
-    private Signature(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private Signature() {
-      signature_ = com.google.protobuf.ByteString.EMPTY;
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private Signature(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownFieldProto3(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-
-              signature_ = input.readBytes();
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Signature_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Signature_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              serialization.BVerifyAPIMessageSerialization.Signature.class, serialization.BVerifyAPIMessageSerialization.Signature.Builder.class);
-    }
-
-    public static final int SIGNATURE_FIELD_NUMBER = 1;
-    private com.google.protobuf.ByteString signature_;
-    /**
-     * <code>bytes signature = 1;</code>
-     */
-    public com.google.protobuf.ByteString getSignature() {
-      return signature_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!signature_.isEmpty()) {
-        output.writeBytes(1, signature_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!signature_.isEmpty()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, signature_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.Signature)) {
-        return super.equals(obj);
-      }
-      serialization.BVerifyAPIMessageSerialization.Signature other = (serialization.BVerifyAPIMessageSerialization.Signature) obj;
-
-      boolean result = true;
-      result = result && getSignature()
-          .equals(other.getSignature());
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
-      hash = (53 * hash) + getSignature().hashCode();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.Signature parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.Signature parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.Signature parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.Signature prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     **
-     * 	Generic signature message along with the 
-     *	signer id
-     * </pre>
-     *
-     * Protobuf type {@code serialization.Signature}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:serialization.Signature)
-        serialization.BVerifyAPIMessageSerialization.SignatureOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Signature_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Signature_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                serialization.BVerifyAPIMessageSerialization.Signature.class, serialization.BVerifyAPIMessageSerialization.Signature.Builder.class);
-      }
-
-      // Construct using serialization.BVerifyAPIMessageSerialization.Signature.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        signature_ = com.google.protobuf.ByteString.EMPTY;
-
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_Signature_descriptor;
-      }
-
-      public serialization.BVerifyAPIMessageSerialization.Signature getDefaultInstanceForType() {
-        return serialization.BVerifyAPIMessageSerialization.Signature.getDefaultInstance();
-      }
-
-      public serialization.BVerifyAPIMessageSerialization.Signature build() {
-        serialization.BVerifyAPIMessageSerialization.Signature result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public serialization.BVerifyAPIMessageSerialization.Signature buildPartial() {
-        serialization.BVerifyAPIMessageSerialization.Signature result = new serialization.BVerifyAPIMessageSerialization.Signature(this);
-        result.signature_ = signature_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof serialization.BVerifyAPIMessageSerialization.Signature) {
-          return mergeFrom((serialization.BVerifyAPIMessageSerialization.Signature)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.Signature other) {
-        if (other == serialization.BVerifyAPIMessageSerialization.Signature.getDefaultInstance()) return this;
-        if (other.getSignature() != com.google.protobuf.ByteString.EMPTY) {
-          setSignature(other.getSignature());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        serialization.BVerifyAPIMessageSerialization.Signature parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (serialization.BVerifyAPIMessageSerialization.Signature) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
-      /**
-       * <code>bytes signature = 1;</code>
-       */
-      public com.google.protobuf.ByteString getSignature() {
-        return signature_;
-      }
-      /**
-       * <code>bytes signature = 1;</code>
-       */
-      public Builder setSignature(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        signature_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>bytes signature = 1;</code>
-       */
-      public Builder clearSignature() {
-        
-        signature_ = getDefaultInstance().getSignature();
-        onChanged();
-        return this;
-      }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFieldsProto3(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:serialization.Signature)
-    }
-
-    // @@protoc_insertion_point(class_scope:serialization.Signature)
-    private static final serialization.BVerifyAPIMessageSerialization.Signature DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.Signature();
-    }
-
-    public static serialization.BVerifyAPIMessageSerialization.Signature getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<Signature>
-        PARSER = new com.google.protobuf.AbstractParser<Signature>() {
-      public Signature parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Signature(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<Signature> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<Signature> getParserForType() {
-      return PARSER;
-    }
-
-    public serialization.BVerifyAPIMessageSerialization.Signature getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface ReceiptIssueApproveOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:serialization.ReceiptIssueApprove)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    java.lang.String getIssuerId();
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getIssuerIdBytes();
-
-    /**
-     * <code>string recepient_id = 2;</code>
-     */
-    java.lang.String getRecepientId();
-    /**
-     * <code>string recepient_id = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getRecepientIdBytes();
-
-    /**
-     * <code>.serialization.Receipt receipt = 3;</code>
-     */
-    boolean hasReceipt();
-    /**
-     * <code>.serialization.Receipt receipt = 3;</code>
-     */
-    serialization.BVerifyAPIMessageSerialization.Receipt getReceipt();
-    /**
-     * <code>.serialization.Receipt receipt = 3;</code>
-     */
-    serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder getReceiptOrBuilder();
-
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-     */
-    boolean hasAuthenticationProof();
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-     */
-    serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof();
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-     */
-    serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder();
-  }
-  /**
-   * <pre>
-   **
-   * A proof showing an issued receipt
-   * </pre>
-   *
-   * Protobuf type {@code serialization.ReceiptIssueApprove}
-   */
-  public  static final class ReceiptIssueApprove extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:serialization.ReceiptIssueApprove)
-      ReceiptIssueApproveOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use ReceiptIssueApprove.newBuilder() to construct.
-    private ReceiptIssueApprove(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private ReceiptIssueApprove() {
-      issuerId_ = "";
-      recepientId_ = "";
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private ReceiptIssueApprove(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownFieldProto3(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              issuerId_ = s;
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              recepientId_ = s;
-              break;
-            }
-            case 26: {
-              serialization.BVerifyAPIMessageSerialization.Receipt.Builder subBuilder = null;
-              if (receipt_ != null) {
-                subBuilder = receipt_.toBuilder();
-              }
-              receipt_ = input.readMessage(serialization.BVerifyAPIMessageSerialization.Receipt.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(receipt_);
-                receipt_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 34: {
-              serialization.MptSerialization.MerklePrefixTrie.Builder subBuilder = null;
-              if (authenticationProof_ != null) {
-                subBuilder = authenticationProof_.toBuilder();
-              }
-              authenticationProof_ = input.readMessage(serialization.MptSerialization.MerklePrefixTrie.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(authenticationProof_);
-                authenticationProof_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptIssueApprove_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptIssueApprove_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove.class, serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove.Builder.class);
-    }
-
-    public static final int ISSUER_ID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object issuerId_;
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    public java.lang.String getIssuerId() {
-      java.lang.Object ref = issuerId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        issuerId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getIssuerIdBytes() {
-      java.lang.Object ref = issuerId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        issuerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int RECEPIENT_ID_FIELD_NUMBER = 2;
-    private volatile java.lang.Object recepientId_;
-    /**
-     * <code>string recepient_id = 2;</code>
-     */
-    public java.lang.String getRecepientId() {
-      java.lang.Object ref = recepientId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        recepientId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string recepient_id = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getRecepientIdBytes() {
-      java.lang.Object ref = recepientId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        recepientId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int RECEIPT_FIELD_NUMBER = 3;
-    private serialization.BVerifyAPIMessageSerialization.Receipt receipt_;
-    /**
-     * <code>.serialization.Receipt receipt = 3;</code>
-     */
-    public boolean hasReceipt() {
-      return receipt_ != null;
-    }
-    /**
-     * <code>.serialization.Receipt receipt = 3;</code>
-     */
-    public serialization.BVerifyAPIMessageSerialization.Receipt getReceipt() {
-      return receipt_ == null ? serialization.BVerifyAPIMessageSerialization.Receipt.getDefaultInstance() : receipt_;
-    }
-    /**
-     * <code>.serialization.Receipt receipt = 3;</code>
-     */
-    public serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder getReceiptOrBuilder() {
-      return getReceipt();
-    }
-
-    public static final int AUTHENTICATION_PROOF_FIELD_NUMBER = 4;
-    private serialization.MptSerialization.MerklePrefixTrie authenticationProof_;
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-     */
-    public boolean hasAuthenticationProof() {
-      return authenticationProof_ != null;
-    }
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-     */
-    public serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof() {
-      return authenticationProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : authenticationProof_;
-    }
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-     */
-    public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder() {
-      return getAuthenticationProof();
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!getIssuerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, issuerId_);
-      }
-      if (!getRecepientIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, recepientId_);
-      }
-      if (receipt_ != null) {
-        output.writeMessage(3, getReceipt());
-      }
-      if (authenticationProof_ != null) {
-        output.writeMessage(4, getAuthenticationProof());
-      }
-      unknownFields.writeTo(output);
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!getIssuerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, issuerId_);
-      }
-      if (!getRecepientIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, recepientId_);
-      }
-      if (receipt_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, getReceipt());
-      }
-      if (authenticationProof_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getAuthenticationProof());
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove)) {
-        return super.equals(obj);
-      }
-      serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove other = (serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove) obj;
-
-      boolean result = true;
-      result = result && getIssuerId()
-          .equals(other.getIssuerId());
-      result = result && getRecepientId()
-          .equals(other.getRecepientId());
-      result = result && (hasReceipt() == other.hasReceipt());
-      if (hasReceipt()) {
-        result = result && getReceipt()
-            .equals(other.getReceipt());
-      }
-      result = result && (hasAuthenticationProof() == other.hasAuthenticationProof());
-      if (hasAuthenticationProof()) {
-        result = result && getAuthenticationProof()
-            .equals(other.getAuthenticationProof());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ISSUER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getIssuerId().hashCode();
-      hash = (37 * hash) + RECEPIENT_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getRecepientId().hashCode();
-      if (hasReceipt()) {
-        hash = (37 * hash) + RECEIPT_FIELD_NUMBER;
-        hash = (53 * hash) + getReceipt().hashCode();
-      }
-      if (hasAuthenticationProof()) {
-        hash = (37 * hash) + AUTHENTICATION_PROOF_FIELD_NUMBER;
-        hash = (53 * hash) + getAuthenticationProof().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     **
-     * A proof showing an issued receipt
-     * </pre>
-     *
-     * Protobuf type {@code serialization.ReceiptIssueApprove}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:serialization.ReceiptIssueApprove)
-        serialization.BVerifyAPIMessageSerialization.ReceiptIssueApproveOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptIssueApprove_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptIssueApprove_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove.class, serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove.Builder.class);
-      }
-
-      // Construct using serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        issuerId_ = "";
-
-        recepientId_ = "";
-
-        if (receiptBuilder_ == null) {
-          receipt_ = null;
-        } else {
-          receipt_ = null;
-          receiptBuilder_ = null;
-        }
-        if (authenticationProofBuilder_ == null) {
-          authenticationProof_ = null;
-        } else {
-          authenticationProof_ = null;
-          authenticationProofBuilder_ = null;
-        }
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptIssueApprove_descriptor;
-      }
-
-      public serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove getDefaultInstanceForType() {
-        return serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove.getDefaultInstance();
-      }
-
-      public serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove build() {
-        serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove buildPartial() {
-        serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove result = new serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove(this);
-        result.issuerId_ = issuerId_;
-        result.recepientId_ = recepientId_;
-        if (receiptBuilder_ == null) {
-          result.receipt_ = receipt_;
-        } else {
-          result.receipt_ = receiptBuilder_.build();
-        }
-        if (authenticationProofBuilder_ == null) {
-          result.authenticationProof_ = authenticationProof_;
-        } else {
-          result.authenticationProof_ = authenticationProofBuilder_.build();
-        }
-        onBuilt();
-        return result;
-      }
-
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove) {
-          return mergeFrom((serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove other) {
-        if (other == serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove.getDefaultInstance()) return this;
-        if (!other.getIssuerId().isEmpty()) {
-          issuerId_ = other.issuerId_;
-          onChanged();
-        }
-        if (!other.getRecepientId().isEmpty()) {
-          recepientId_ = other.recepientId_;
-          onChanged();
-        }
-        if (other.hasReceipt()) {
-          mergeReceipt(other.getReceipt());
-        }
-        if (other.hasAuthenticationProof()) {
-          mergeAuthenticationProof(other.getAuthenticationProof());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private java.lang.Object issuerId_ = "";
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public java.lang.String getIssuerId() {
-        java.lang.Object ref = issuerId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          issuerId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getIssuerIdBytes() {
-        java.lang.Object ref = issuerId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          issuerId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder setIssuerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        issuerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder clearIssuerId() {
-        
-        issuerId_ = getDefaultInstance().getIssuerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder setIssuerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        issuerId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object recepientId_ = "";
-      /**
-       * <code>string recepient_id = 2;</code>
-       */
-      public java.lang.String getRecepientId() {
-        java.lang.Object ref = recepientId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          recepientId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string recepient_id = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getRecepientIdBytes() {
-        java.lang.Object ref = recepientId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          recepientId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string recepient_id = 2;</code>
-       */
-      public Builder setRecepientId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        recepientId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string recepient_id = 2;</code>
-       */
-      public Builder clearRecepientId() {
-        
-        recepientId_ = getDefaultInstance().getRecepientId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string recepient_id = 2;</code>
-       */
-      public Builder setRecepientIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        recepientId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private serialization.BVerifyAPIMessageSerialization.Receipt receipt_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          serialization.BVerifyAPIMessageSerialization.Receipt, serialization.BVerifyAPIMessageSerialization.Receipt.Builder, serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder> receiptBuilder_;
-      /**
-       * <code>.serialization.Receipt receipt = 3;</code>
-       */
-      public boolean hasReceipt() {
-        return receiptBuilder_ != null || receipt_ != null;
-      }
-      /**
-       * <code>.serialization.Receipt receipt = 3;</code>
-       */
-      public serialization.BVerifyAPIMessageSerialization.Receipt getReceipt() {
-        if (receiptBuilder_ == null) {
-          return receipt_ == null ? serialization.BVerifyAPIMessageSerialization.Receipt.getDefaultInstance() : receipt_;
-        } else {
-          return receiptBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.serialization.Receipt receipt = 3;</code>
-       */
-      public Builder setReceipt(serialization.BVerifyAPIMessageSerialization.Receipt value) {
-        if (receiptBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          receipt_ = value;
-          onChanged();
-        } else {
-          receiptBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.Receipt receipt = 3;</code>
-       */
-      public Builder setReceipt(
-          serialization.BVerifyAPIMessageSerialization.Receipt.Builder builderForValue) {
-        if (receiptBuilder_ == null) {
-          receipt_ = builderForValue.build();
-          onChanged();
-        } else {
-          receiptBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.Receipt receipt = 3;</code>
-       */
-      public Builder mergeReceipt(serialization.BVerifyAPIMessageSerialization.Receipt value) {
-        if (receiptBuilder_ == null) {
-          if (receipt_ != null) {
-            receipt_ =
-              serialization.BVerifyAPIMessageSerialization.Receipt.newBuilder(receipt_).mergeFrom(value).buildPartial();
-          } else {
-            receipt_ = value;
-          }
-          onChanged();
-        } else {
-          receiptBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.Receipt receipt = 3;</code>
-       */
-      public Builder clearReceipt() {
-        if (receiptBuilder_ == null) {
-          receipt_ = null;
-          onChanged();
-        } else {
-          receipt_ = null;
-          receiptBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.Receipt receipt = 3;</code>
-       */
-      public serialization.BVerifyAPIMessageSerialization.Receipt.Builder getReceiptBuilder() {
-        
-        onChanged();
-        return getReceiptFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.serialization.Receipt receipt = 3;</code>
-       */
-      public serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder getReceiptOrBuilder() {
-        if (receiptBuilder_ != null) {
-          return receiptBuilder_.getMessageOrBuilder();
-        } else {
-          return receipt_ == null ?
-              serialization.BVerifyAPIMessageSerialization.Receipt.getDefaultInstance() : receipt_;
-        }
-      }
-      /**
-       * <code>.serialization.Receipt receipt = 3;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          serialization.BVerifyAPIMessageSerialization.Receipt, serialization.BVerifyAPIMessageSerialization.Receipt.Builder, serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder> 
-          getReceiptFieldBuilder() {
-        if (receiptBuilder_ == null) {
-          receiptBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              serialization.BVerifyAPIMessageSerialization.Receipt, serialization.BVerifyAPIMessageSerialization.Receipt.Builder, serialization.BVerifyAPIMessageSerialization.ReceiptOrBuilder>(
-                  getReceipt(),
-                  getParentForChildren(),
-                  isClean());
-          receipt_ = null;
-        }
-        return receiptBuilder_;
-      }
-
-      private serialization.MptSerialization.MerklePrefixTrie authenticationProof_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> authenticationProofBuilder_;
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public boolean hasAuthenticationProof() {
-        return authenticationProofBuilder_ != null || authenticationProof_ != null;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof() {
-        if (authenticationProofBuilder_ == null) {
-          return authenticationProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : authenticationProof_;
-        } else {
-          return authenticationProofBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public Builder setAuthenticationProof(serialization.MptSerialization.MerklePrefixTrie value) {
-        if (authenticationProofBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          authenticationProof_ = value;
-          onChanged();
-        } else {
-          authenticationProofBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public Builder setAuthenticationProof(
-          serialization.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
-        if (authenticationProofBuilder_ == null) {
-          authenticationProof_ = builderForValue.build();
-          onChanged();
-        } else {
-          authenticationProofBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public Builder mergeAuthenticationProof(serialization.MptSerialization.MerklePrefixTrie value) {
-        if (authenticationProofBuilder_ == null) {
-          if (authenticationProof_ != null) {
-            authenticationProof_ =
-              serialization.MptSerialization.MerklePrefixTrie.newBuilder(authenticationProof_).mergeFrom(value).buildPartial();
-          } else {
-            authenticationProof_ = value;
-          }
-          onChanged();
-        } else {
-          authenticationProofBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public Builder clearAuthenticationProof() {
-        if (authenticationProofBuilder_ == null) {
-          authenticationProof_ = null;
-          onChanged();
-        } else {
-          authenticationProof_ = null;
-          authenticationProofBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrie.Builder getAuthenticationProofBuilder() {
-        
-        onChanged();
-        return getAuthenticationProofFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder() {
-        if (authenticationProofBuilder_ != null) {
-          return authenticationProofBuilder_.getMessageOrBuilder();
-        } else {
-          return authenticationProof_ == null ?
-              serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : authenticationProof_;
-        }
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
-          getAuthenticationProofFieldBuilder() {
-        if (authenticationProofBuilder_ == null) {
-          authenticationProofBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder>(
-                  getAuthenticationProof(),
-                  getParentForChildren(),
-                  isClean());
-          authenticationProof_ = null;
-        }
-        return authenticationProofBuilder_;
-      }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFieldsProto3(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:serialization.ReceiptIssueApprove)
-    }
-
-    // @@protoc_insertion_point(class_scope:serialization.ReceiptIssueApprove)
-    private static final serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove();
-    }
-
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<ReceiptIssueApprove>
-        PARSER = new com.google.protobuf.AbstractParser<ReceiptIssueApprove>() {
-      public ReceiptIssueApprove parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ReceiptIssueApprove(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<ReceiptIssueApprove> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ReceiptIssueApprove> getParserForType() {
-      return PARSER;
-    }
-
-    public serialization.BVerifyAPIMessageSerialization.ReceiptIssueApprove getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface ReceiptRedeemApproveOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:serialization.ReceiptRedeemApprove)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    java.lang.String getIssuerId();
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getIssuerIdBytes();
-
-    /**
-     * <code>string owner_id = 2;</code>
-     */
-    java.lang.String getOwnerId();
-    /**
-     * <code>string owner_id = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getOwnerIdBytes();
-
-    /**
-     * <code>bytes receipt_hash = 3;</code>
-     */
-    com.google.protobuf.ByteString getReceiptHash();
-
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-     */
-    boolean hasAuthenticationProof();
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-     */
-    serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof();
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-     */
-    serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder();
-  }
-  /**
-   * <pre>
-   **
-   * A proof showing a redeemed receipt
-   * </pre>
-   *
-   * Protobuf type {@code serialization.ReceiptRedeemApprove}
-   */
-  public  static final class ReceiptRedeemApprove extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:serialization.ReceiptRedeemApprove)
-      ReceiptRedeemApproveOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use ReceiptRedeemApprove.newBuilder() to construct.
-    private ReceiptRedeemApprove(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private ReceiptRedeemApprove() {
-      issuerId_ = "";
-      ownerId_ = "";
-      receiptHash_ = com.google.protobuf.ByteString.EMPTY;
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private ReceiptRedeemApprove(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownFieldProto3(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              issuerId_ = s;
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              ownerId_ = s;
-              break;
-            }
-            case 26: {
-
-              receiptHash_ = input.readBytes();
-              break;
-            }
-            case 34: {
-              serialization.MptSerialization.MerklePrefixTrie.Builder subBuilder = null;
-              if (authenticationProof_ != null) {
-                subBuilder = authenticationProof_.toBuilder();
-              }
-              authenticationProof_ = input.readMessage(serialization.MptSerialization.MerklePrefixTrie.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(authenticationProof_);
-                authenticationProof_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptRedeemApprove_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptRedeemApprove_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove.class, serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove.Builder.class);
-    }
-
-    public static final int ISSUER_ID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object issuerId_;
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    public java.lang.String getIssuerId() {
-      java.lang.Object ref = issuerId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        issuerId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getIssuerIdBytes() {
-      java.lang.Object ref = issuerId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        issuerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int OWNER_ID_FIELD_NUMBER = 2;
-    private volatile java.lang.Object ownerId_;
-    /**
-     * <code>string owner_id = 2;</code>
-     */
-    public java.lang.String getOwnerId() {
-      java.lang.Object ref = ownerId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        ownerId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string owner_id = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getOwnerIdBytes() {
-      java.lang.Object ref = ownerId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        ownerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int RECEIPT_HASH_FIELD_NUMBER = 3;
-    private com.google.protobuf.ByteString receiptHash_;
-    /**
-     * <code>bytes receipt_hash = 3;</code>
-     */
-    public com.google.protobuf.ByteString getReceiptHash() {
-      return receiptHash_;
-    }
-
-    public static final int AUTHENTICATION_PROOF_FIELD_NUMBER = 4;
-    private serialization.MptSerialization.MerklePrefixTrie authenticationProof_;
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-     */
-    public boolean hasAuthenticationProof() {
-      return authenticationProof_ != null;
-    }
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-     */
-    public serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof() {
-      return authenticationProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : authenticationProof_;
-    }
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-     */
-    public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder() {
-      return getAuthenticationProof();
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!getIssuerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, issuerId_);
-      }
-      if (!getOwnerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, ownerId_);
-      }
-      if (!receiptHash_.isEmpty()) {
-        output.writeBytes(3, receiptHash_);
-      }
-      if (authenticationProof_ != null) {
-        output.writeMessage(4, getAuthenticationProof());
-      }
-      unknownFields.writeTo(output);
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!getIssuerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, issuerId_);
-      }
-      if (!getOwnerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, ownerId_);
-      }
-      if (!receiptHash_.isEmpty()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, receiptHash_);
-      }
-      if (authenticationProof_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getAuthenticationProof());
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove)) {
-        return super.equals(obj);
-      }
-      serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove other = (serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove) obj;
-
-      boolean result = true;
-      result = result && getIssuerId()
-          .equals(other.getIssuerId());
-      result = result && getOwnerId()
-          .equals(other.getOwnerId());
-      result = result && getReceiptHash()
-          .equals(other.getReceiptHash());
-      result = result && (hasAuthenticationProof() == other.hasAuthenticationProof());
-      if (hasAuthenticationProof()) {
-        result = result && getAuthenticationProof()
-            .equals(other.getAuthenticationProof());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ISSUER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getIssuerId().hashCode();
-      hash = (37 * hash) + OWNER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getOwnerId().hashCode();
-      hash = (37 * hash) + RECEIPT_HASH_FIELD_NUMBER;
-      hash = (53 * hash) + getReceiptHash().hashCode();
-      if (hasAuthenticationProof()) {
-        hash = (37 * hash) + AUTHENTICATION_PROOF_FIELD_NUMBER;
-        hash = (53 * hash) + getAuthenticationProof().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     **
-     * A proof showing a redeemed receipt
-     * </pre>
-     *
-     * Protobuf type {@code serialization.ReceiptRedeemApprove}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:serialization.ReceiptRedeemApprove)
-        serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApproveOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptRedeemApprove_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptRedeemApprove_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove.class, serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove.Builder.class);
-      }
-
-      // Construct using serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        issuerId_ = "";
-
-        ownerId_ = "";
-
-        receiptHash_ = com.google.protobuf.ByteString.EMPTY;
-
-        if (authenticationProofBuilder_ == null) {
-          authenticationProof_ = null;
-        } else {
-          authenticationProof_ = null;
-          authenticationProofBuilder_ = null;
-        }
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptRedeemApprove_descriptor;
-      }
-
-      public serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove getDefaultInstanceForType() {
-        return serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove.getDefaultInstance();
-      }
-
-      public serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove build() {
-        serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove buildPartial() {
-        serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove result = new serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove(this);
-        result.issuerId_ = issuerId_;
-        result.ownerId_ = ownerId_;
-        result.receiptHash_ = receiptHash_;
-        if (authenticationProofBuilder_ == null) {
-          result.authenticationProof_ = authenticationProof_;
-        } else {
-          result.authenticationProof_ = authenticationProofBuilder_.build();
-        }
-        onBuilt();
-        return result;
-      }
-
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove) {
-          return mergeFrom((serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove other) {
-        if (other == serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove.getDefaultInstance()) return this;
-        if (!other.getIssuerId().isEmpty()) {
-          issuerId_ = other.issuerId_;
-          onChanged();
-        }
-        if (!other.getOwnerId().isEmpty()) {
-          ownerId_ = other.ownerId_;
-          onChanged();
-        }
-        if (other.getReceiptHash() != com.google.protobuf.ByteString.EMPTY) {
-          setReceiptHash(other.getReceiptHash());
-        }
-        if (other.hasAuthenticationProof()) {
-          mergeAuthenticationProof(other.getAuthenticationProof());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private java.lang.Object issuerId_ = "";
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public java.lang.String getIssuerId() {
-        java.lang.Object ref = issuerId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          issuerId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getIssuerIdBytes() {
-        java.lang.Object ref = issuerId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          issuerId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder setIssuerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        issuerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder clearIssuerId() {
-        
-        issuerId_ = getDefaultInstance().getIssuerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder setIssuerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        issuerId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object ownerId_ = "";
-      /**
-       * <code>string owner_id = 2;</code>
-       */
-      public java.lang.String getOwnerId() {
-        java.lang.Object ref = ownerId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          ownerId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string owner_id = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getOwnerIdBytes() {
-        java.lang.Object ref = ownerId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          ownerId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string owner_id = 2;</code>
-       */
-      public Builder setOwnerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        ownerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string owner_id = 2;</code>
-       */
-      public Builder clearOwnerId() {
-        
-        ownerId_ = getDefaultInstance().getOwnerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string owner_id = 2;</code>
-       */
-      public Builder setOwnerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        ownerId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.ByteString receiptHash_ = com.google.protobuf.ByteString.EMPTY;
-      /**
-       * <code>bytes receipt_hash = 3;</code>
-       */
-      public com.google.protobuf.ByteString getReceiptHash() {
-        return receiptHash_;
-      }
-      /**
-       * <code>bytes receipt_hash = 3;</code>
-       */
-      public Builder setReceiptHash(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        receiptHash_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>bytes receipt_hash = 3;</code>
-       */
-      public Builder clearReceiptHash() {
-        
-        receiptHash_ = getDefaultInstance().getReceiptHash();
-        onChanged();
-        return this;
-      }
-
-      private serialization.MptSerialization.MerklePrefixTrie authenticationProof_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> authenticationProofBuilder_;
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public boolean hasAuthenticationProof() {
-        return authenticationProofBuilder_ != null || authenticationProof_ != null;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof() {
-        if (authenticationProofBuilder_ == null) {
-          return authenticationProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : authenticationProof_;
-        } else {
-          return authenticationProofBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public Builder setAuthenticationProof(serialization.MptSerialization.MerklePrefixTrie value) {
-        if (authenticationProofBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          authenticationProof_ = value;
-          onChanged();
-        } else {
-          authenticationProofBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public Builder setAuthenticationProof(
-          serialization.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
-        if (authenticationProofBuilder_ == null) {
-          authenticationProof_ = builderForValue.build();
-          onChanged();
-        } else {
-          authenticationProofBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public Builder mergeAuthenticationProof(serialization.MptSerialization.MerklePrefixTrie value) {
-        if (authenticationProofBuilder_ == null) {
-          if (authenticationProof_ != null) {
-            authenticationProof_ =
-              serialization.MptSerialization.MerklePrefixTrie.newBuilder(authenticationProof_).mergeFrom(value).buildPartial();
-          } else {
-            authenticationProof_ = value;
-          }
-          onChanged();
-        } else {
-          authenticationProofBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public Builder clearAuthenticationProof() {
-        if (authenticationProofBuilder_ == null) {
-          authenticationProof_ = null;
-          onChanged();
-        } else {
-          authenticationProof_ = null;
-          authenticationProofBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrie.Builder getAuthenticationProofBuilder() {
-        
-        onChanged();
-        return getAuthenticationProofFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder() {
-        if (authenticationProofBuilder_ != null) {
-          return authenticationProofBuilder_.getMessageOrBuilder();
-        } else {
-          return authenticationProof_ == null ?
-              serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : authenticationProof_;
-        }
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 4;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
-          getAuthenticationProofFieldBuilder() {
-        if (authenticationProofBuilder_ == null) {
-          authenticationProofBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder>(
-                  getAuthenticationProof(),
-                  getParentForChildren(),
-                  isClean());
-          authenticationProof_ = null;
-        }
-        return authenticationProofBuilder_;
-      }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFieldsProto3(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:serialization.ReceiptRedeemApprove)
-    }
-
-    // @@protoc_insertion_point(class_scope:serialization.ReceiptRedeemApprove)
-    private static final serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove();
-    }
-
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<ReceiptRedeemApprove>
-        PARSER = new com.google.protobuf.AbstractParser<ReceiptRedeemApprove>() {
-      public ReceiptRedeemApprove parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ReceiptRedeemApprove(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<ReceiptRedeemApprove> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ReceiptRedeemApprove> getParserForType() {
-      return PARSER;
-    }
-
-    public serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface ReceiptTransferApproveOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:serialization.ReceiptTransferApprove)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    java.lang.String getIssuerId();
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getIssuerIdBytes();
-
-    /**
-     * <code>string current_owner_id = 2;</code>
-     */
-    java.lang.String getCurrentOwnerId();
-    /**
-     * <code>string current_owner_id = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getCurrentOwnerIdBytes();
-
-    /**
-     * <code>string new_owner_id = 3;</code>
-     */
-    java.lang.String getNewOwnerId();
-    /**
-     * <code>string new_owner_id = 3;</code>
-     */
-    com.google.protobuf.ByteString
-        getNewOwnerIdBytes();
-
-    /**
-     * <code>bytes receipt_hash = 4;</code>
-     */
-    com.google.protobuf.ByteString getReceiptHash();
-
-    /**
-     * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-     */
-    boolean hasAddedProof();
-    /**
-     * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-     */
-    serialization.MptSerialization.MerklePrefixTrie getAddedProof();
-    /**
-     * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-     */
-    serialization.MptSerialization.MerklePrefixTrieOrBuilder getAddedProofOrBuilder();
-
-    /**
-     * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-     */
-    boolean hasRemovedProof();
-    /**
-     * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-     */
-    serialization.MptSerialization.MerklePrefixTrie getRemovedProof();
-    /**
-     * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-     */
-    serialization.MptSerialization.MerklePrefixTrieOrBuilder getRemovedProofOrBuilder();
-
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-     */
-    boolean hasAuthenticationProof();
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-     */
-    serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof();
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-     */
-    serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder();
-  }
-  /**
-   * <pre>
-   **
-   * A proof showing a transferred receipt
-   * </pre>
-   *
-   * Protobuf type {@code serialization.ReceiptTransferApprove}
-   */
-  public  static final class ReceiptTransferApprove extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:serialization.ReceiptTransferApprove)
-      ReceiptTransferApproveOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use ReceiptTransferApprove.newBuilder() to construct.
-    private ReceiptTransferApprove(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private ReceiptTransferApprove() {
-      issuerId_ = "";
-      currentOwnerId_ = "";
-      newOwnerId_ = "";
-      receiptHash_ = com.google.protobuf.ByteString.EMPTY;
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private ReceiptTransferApprove(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      if (extensionRegistry == null) {
-        throw new java.lang.NullPointerException();
-      }
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownFieldProto3(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              issuerId_ = s;
-              break;
-            }
-            case 18: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              currentOwnerId_ = s;
-              break;
-            }
-            case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              newOwnerId_ = s;
-              break;
-            }
-            case 34: {
-
-              receiptHash_ = input.readBytes();
-              break;
-            }
-            case 42: {
-              serialization.MptSerialization.MerklePrefixTrie.Builder subBuilder = null;
-              if (addedProof_ != null) {
-                subBuilder = addedProof_.toBuilder();
-              }
-              addedProof_ = input.readMessage(serialization.MptSerialization.MerklePrefixTrie.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(addedProof_);
-                addedProof_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 50: {
-              serialization.MptSerialization.MerklePrefixTrie.Builder subBuilder = null;
-              if (removedProof_ != null) {
-                subBuilder = removedProof_.toBuilder();
-              }
-              removedProof_ = input.readMessage(serialization.MptSerialization.MerklePrefixTrie.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(removedProof_);
-                removedProof_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 58: {
-              serialization.MptSerialization.MerklePrefixTrie.Builder subBuilder = null;
-              if (authenticationProof_ != null) {
-                subBuilder = authenticationProof_.toBuilder();
-              }
-              authenticationProof_ = input.readMessage(serialization.MptSerialization.MerklePrefixTrie.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(authenticationProof_);
-                authenticationProof_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptTransferApprove_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptTransferApprove_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove.class, serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove.Builder.class);
-    }
-
-    public static final int ISSUER_ID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object issuerId_;
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    public java.lang.String getIssuerId() {
-      java.lang.Object ref = issuerId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        issuerId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string issuer_id = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getIssuerIdBytes() {
-      java.lang.Object ref = issuerId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        issuerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int CURRENT_OWNER_ID_FIELD_NUMBER = 2;
-    private volatile java.lang.Object currentOwnerId_;
-    /**
-     * <code>string current_owner_id = 2;</code>
-     */
-    public java.lang.String getCurrentOwnerId() {
-      java.lang.Object ref = currentOwnerId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        currentOwnerId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string current_owner_id = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getCurrentOwnerIdBytes() {
-      java.lang.Object ref = currentOwnerId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        currentOwnerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int NEW_OWNER_ID_FIELD_NUMBER = 3;
-    private volatile java.lang.Object newOwnerId_;
-    /**
-     * <code>string new_owner_id = 3;</code>
-     */
-    public java.lang.String getNewOwnerId() {
-      java.lang.Object ref = newOwnerId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        newOwnerId_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string new_owner_id = 3;</code>
-     */
-    public com.google.protobuf.ByteString
-        getNewOwnerIdBytes() {
-      java.lang.Object ref = newOwnerId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        newOwnerId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int RECEIPT_HASH_FIELD_NUMBER = 4;
-    private com.google.protobuf.ByteString receiptHash_;
-    /**
-     * <code>bytes receipt_hash = 4;</code>
-     */
-    public com.google.protobuf.ByteString getReceiptHash() {
-      return receiptHash_;
-    }
-
-    public static final int ADDED_PROOF_FIELD_NUMBER = 5;
-    private serialization.MptSerialization.MerklePrefixTrie addedProof_;
-    /**
-     * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-     */
-    public boolean hasAddedProof() {
-      return addedProof_ != null;
-    }
-    /**
-     * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-     */
-    public serialization.MptSerialization.MerklePrefixTrie getAddedProof() {
-      return addedProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : addedProof_;
-    }
-    /**
-     * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-     */
-    public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAddedProofOrBuilder() {
-      return getAddedProof();
-    }
-
-    public static final int REMOVED_PROOF_FIELD_NUMBER = 6;
-    private serialization.MptSerialization.MerklePrefixTrie removedProof_;
-    /**
-     * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-     */
-    public boolean hasRemovedProof() {
-      return removedProof_ != null;
-    }
-    /**
-     * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-     */
-    public serialization.MptSerialization.MerklePrefixTrie getRemovedProof() {
-      return removedProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : removedProof_;
-    }
-    /**
-     * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-     */
-    public serialization.MptSerialization.MerklePrefixTrieOrBuilder getRemovedProofOrBuilder() {
-      return getRemovedProof();
-    }
-
-    public static final int AUTHENTICATION_PROOF_FIELD_NUMBER = 7;
-    private serialization.MptSerialization.MerklePrefixTrie authenticationProof_;
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-     */
-    public boolean hasAuthenticationProof() {
-      return authenticationProof_ != null;
-    }
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-     */
-    public serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof() {
-      return authenticationProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : authenticationProof_;
-    }
-    /**
-     * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-     */
-    public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder() {
-      return getAuthenticationProof();
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!getIssuerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, issuerId_);
-      }
-      if (!getCurrentOwnerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, currentOwnerId_);
-      }
-      if (!getNewOwnerIdBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, newOwnerId_);
-      }
-      if (!receiptHash_.isEmpty()) {
-        output.writeBytes(4, receiptHash_);
-      }
-      if (addedProof_ != null) {
-        output.writeMessage(5, getAddedProof());
-      }
-      if (removedProof_ != null) {
-        output.writeMessage(6, getRemovedProof());
-      }
-      if (authenticationProof_ != null) {
-        output.writeMessage(7, getAuthenticationProof());
-      }
-      unknownFields.writeTo(output);
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!getIssuerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, issuerId_);
-      }
-      if (!getCurrentOwnerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, currentOwnerId_);
-      }
-      if (!getNewOwnerIdBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, newOwnerId_);
-      }
-      if (!receiptHash_.isEmpty()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, receiptHash_);
-      }
-      if (addedProof_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getAddedProof());
-      }
-      if (removedProof_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, getRemovedProof());
-      }
-      if (authenticationProof_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, getAuthenticationProof());
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove)) {
-        return super.equals(obj);
-      }
-      serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove other = (serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove) obj;
-
-      boolean result = true;
-      result = result && getIssuerId()
-          .equals(other.getIssuerId());
-      result = result && getCurrentOwnerId()
-          .equals(other.getCurrentOwnerId());
-      result = result && getNewOwnerId()
-          .equals(other.getNewOwnerId());
-      result = result && getReceiptHash()
-          .equals(other.getReceiptHash());
-      result = result && (hasAddedProof() == other.hasAddedProof());
-      if (hasAddedProof()) {
-        result = result && getAddedProof()
-            .equals(other.getAddedProof());
-      }
-      result = result && (hasRemovedProof() == other.hasRemovedProof());
-      if (hasRemovedProof()) {
-        result = result && getRemovedProof()
-            .equals(other.getRemovedProof());
-      }
-      result = result && (hasAuthenticationProof() == other.hasAuthenticationProof());
-      if (hasAuthenticationProof()) {
-        result = result && getAuthenticationProof()
-            .equals(other.getAuthenticationProof());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ISSUER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getIssuerId().hashCode();
-      hash = (37 * hash) + CURRENT_OWNER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getCurrentOwnerId().hashCode();
-      hash = (37 * hash) + NEW_OWNER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getNewOwnerId().hashCode();
-      hash = (37 * hash) + RECEIPT_HASH_FIELD_NUMBER;
-      hash = (53 * hash) + getReceiptHash().hashCode();
-      if (hasAddedProof()) {
-        hash = (37 * hash) + ADDED_PROOF_FIELD_NUMBER;
-        hash = (53 * hash) + getAddedProof().hashCode();
-      }
-      if (hasRemovedProof()) {
-        hash = (37 * hash) + REMOVED_PROOF_FIELD_NUMBER;
-        hash = (53 * hash) + getRemovedProof().hashCode();
-      }
-      if (hasAuthenticationProof()) {
-        hash = (37 * hash) + AUTHENTICATION_PROOF_FIELD_NUMBER;
-        hash = (53 * hash) + getAuthenticationProof().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     **
-     * A proof showing a transferred receipt
-     * </pre>
-     *
-     * Protobuf type {@code serialization.ReceiptTransferApprove}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:serialization.ReceiptTransferApprove)
-        serialization.BVerifyAPIMessageSerialization.ReceiptTransferApproveOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptTransferApprove_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptTransferApprove_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove.class, serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove.Builder.class);
-      }
-
-      // Construct using serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        issuerId_ = "";
-
-        currentOwnerId_ = "";
-
-        newOwnerId_ = "";
-
-        receiptHash_ = com.google.protobuf.ByteString.EMPTY;
-
-        if (addedProofBuilder_ == null) {
-          addedProof_ = null;
-        } else {
-          addedProof_ = null;
-          addedProofBuilder_ = null;
-        }
-        if (removedProofBuilder_ == null) {
-          removedProof_ = null;
-        } else {
-          removedProof_ = null;
-          removedProofBuilder_ = null;
-        }
-        if (authenticationProofBuilder_ == null) {
-          authenticationProof_ = null;
-        } else {
-          authenticationProof_ = null;
-          authenticationProofBuilder_ = null;
-        }
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return serialization.BVerifyAPIMessageSerialization.internal_static_serialization_ReceiptTransferApprove_descriptor;
-      }
-
-      public serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove getDefaultInstanceForType() {
-        return serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove.getDefaultInstance();
-      }
-
-      public serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove build() {
-        serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove buildPartial() {
-        serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove result = new serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove(this);
-        result.issuerId_ = issuerId_;
-        result.currentOwnerId_ = currentOwnerId_;
-        result.newOwnerId_ = newOwnerId_;
-        result.receiptHash_ = receiptHash_;
-        if (addedProofBuilder_ == null) {
-          result.addedProof_ = addedProof_;
-        } else {
-          result.addedProof_ = addedProofBuilder_.build();
-        }
-        if (removedProofBuilder_ == null) {
-          result.removedProof_ = removedProof_;
-        } else {
-          result.removedProof_ = removedProofBuilder_.build();
-        }
-        if (authenticationProofBuilder_ == null) {
-          result.authenticationProof_ = authenticationProof_;
-        } else {
-          result.authenticationProof_ = authenticationProofBuilder_.build();
-        }
-        onBuilt();
-        return result;
-      }
-
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove) {
-          return mergeFrom((serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove other) {
-        if (other == serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove.getDefaultInstance()) return this;
-        if (!other.getIssuerId().isEmpty()) {
-          issuerId_ = other.issuerId_;
-          onChanged();
-        }
-        if (!other.getCurrentOwnerId().isEmpty()) {
-          currentOwnerId_ = other.currentOwnerId_;
-          onChanged();
-        }
-        if (!other.getNewOwnerId().isEmpty()) {
-          newOwnerId_ = other.newOwnerId_;
-          onChanged();
-        }
-        if (other.getReceiptHash() != com.google.protobuf.ByteString.EMPTY) {
-          setReceiptHash(other.getReceiptHash());
-        }
-        if (other.hasAddedProof()) {
-          mergeAddedProof(other.getAddedProof());
-        }
-        if (other.hasRemovedProof()) {
-          mergeRemovedProof(other.getRemovedProof());
-        }
-        if (other.hasAuthenticationProof()) {
-          mergeAuthenticationProof(other.getAuthenticationProof());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private java.lang.Object issuerId_ = "";
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public java.lang.String getIssuerId() {
-        java.lang.Object ref = issuerId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          issuerId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getIssuerIdBytes() {
-        java.lang.Object ref = issuerId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          issuerId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder setIssuerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        issuerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder clearIssuerId() {
-        
-        issuerId_ = getDefaultInstance().getIssuerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string issuer_id = 1;</code>
-       */
-      public Builder setIssuerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        issuerId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object currentOwnerId_ = "";
-      /**
-       * <code>string current_owner_id = 2;</code>
-       */
-      public java.lang.String getCurrentOwnerId() {
-        java.lang.Object ref = currentOwnerId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          currentOwnerId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string current_owner_id = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getCurrentOwnerIdBytes() {
-        java.lang.Object ref = currentOwnerId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          currentOwnerId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string current_owner_id = 2;</code>
-       */
-      public Builder setCurrentOwnerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        currentOwnerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string current_owner_id = 2;</code>
-       */
-      public Builder clearCurrentOwnerId() {
-        
-        currentOwnerId_ = getDefaultInstance().getCurrentOwnerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string current_owner_id = 2;</code>
-       */
-      public Builder setCurrentOwnerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        currentOwnerId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object newOwnerId_ = "";
-      /**
-       * <code>string new_owner_id = 3;</code>
-       */
-      public java.lang.String getNewOwnerId() {
-        java.lang.Object ref = newOwnerId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          newOwnerId_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string new_owner_id = 3;</code>
-       */
-      public com.google.protobuf.ByteString
-          getNewOwnerIdBytes() {
-        java.lang.Object ref = newOwnerId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          newOwnerId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string new_owner_id = 3;</code>
-       */
-      public Builder setNewOwnerId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        newOwnerId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string new_owner_id = 3;</code>
-       */
-      public Builder clearNewOwnerId() {
-        
-        newOwnerId_ = getDefaultInstance().getNewOwnerId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string new_owner_id = 3;</code>
-       */
-      public Builder setNewOwnerIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        newOwnerId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private com.google.protobuf.ByteString receiptHash_ = com.google.protobuf.ByteString.EMPTY;
-      /**
-       * <code>bytes receipt_hash = 4;</code>
-       */
-      public com.google.protobuf.ByteString getReceiptHash() {
-        return receiptHash_;
-      }
-      /**
-       * <code>bytes receipt_hash = 4;</code>
-       */
-      public Builder setReceiptHash(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        receiptHash_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>bytes receipt_hash = 4;</code>
-       */
-      public Builder clearReceiptHash() {
-        
-        receiptHash_ = getDefaultInstance().getReceiptHash();
-        onChanged();
-        return this;
-      }
-
-      private serialization.MptSerialization.MerklePrefixTrie addedProof_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> addedProofBuilder_;
-      /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-       */
-      public boolean hasAddedProof() {
-        return addedProofBuilder_ != null || addedProof_ != null;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrie getAddedProof() {
-        if (addedProofBuilder_ == null) {
-          return addedProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : addedProof_;
-        } else {
-          return addedProofBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-       */
-      public Builder setAddedProof(serialization.MptSerialization.MerklePrefixTrie value) {
-        if (addedProofBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          addedProof_ = value;
-          onChanged();
-        } else {
-          addedProofBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-       */
-      public Builder setAddedProof(
-          serialization.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
-        if (addedProofBuilder_ == null) {
-          addedProof_ = builderForValue.build();
-          onChanged();
-        } else {
-          addedProofBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-       */
-      public Builder mergeAddedProof(serialization.MptSerialization.MerklePrefixTrie value) {
-        if (addedProofBuilder_ == null) {
-          if (addedProof_ != null) {
-            addedProof_ =
-              serialization.MptSerialization.MerklePrefixTrie.newBuilder(addedProof_).mergeFrom(value).buildPartial();
-          } else {
-            addedProof_ = value;
-          }
-          onChanged();
-        } else {
-          addedProofBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-       */
-      public Builder clearAddedProof() {
-        if (addedProofBuilder_ == null) {
-          addedProof_ = null;
-          onChanged();
-        } else {
-          addedProof_ = null;
-          addedProofBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrie.Builder getAddedProofBuilder() {
-        
-        onChanged();
-        return getAddedProofFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAddedProofOrBuilder() {
-        if (addedProofBuilder_ != null) {
-          return addedProofBuilder_.getMessageOrBuilder();
-        } else {
-          return addedProof_ == null ?
-              serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : addedProof_;
-        }
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie added_proof = 5;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
-          getAddedProofFieldBuilder() {
-        if (addedProofBuilder_ == null) {
-          addedProofBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder>(
-                  getAddedProof(),
-                  getParentForChildren(),
-                  isClean());
-          addedProof_ = null;
-        }
-        return addedProofBuilder_;
-      }
-
-      private serialization.MptSerialization.MerklePrefixTrie removedProof_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> removedProofBuilder_;
-      /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-       */
-      public boolean hasRemovedProof() {
-        return removedProofBuilder_ != null || removedProof_ != null;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrie getRemovedProof() {
-        if (removedProofBuilder_ == null) {
-          return removedProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : removedProof_;
-        } else {
-          return removedProofBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-       */
-      public Builder setRemovedProof(serialization.MptSerialization.MerklePrefixTrie value) {
-        if (removedProofBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          removedProof_ = value;
-          onChanged();
-        } else {
-          removedProofBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-       */
-      public Builder setRemovedProof(
-          serialization.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
-        if (removedProofBuilder_ == null) {
-          removedProof_ = builderForValue.build();
-          onChanged();
-        } else {
-          removedProofBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-       */
-      public Builder mergeRemovedProof(serialization.MptSerialization.MerklePrefixTrie value) {
-        if (removedProofBuilder_ == null) {
-          if (removedProof_ != null) {
-            removedProof_ =
-              serialization.MptSerialization.MerklePrefixTrie.newBuilder(removedProof_).mergeFrom(value).buildPartial();
-          } else {
-            removedProof_ = value;
-          }
-          onChanged();
-        } else {
-          removedProofBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-       */
-      public Builder clearRemovedProof() {
-        if (removedProofBuilder_ == null) {
-          removedProof_ = null;
-          onChanged();
-        } else {
-          removedProof_ = null;
-          removedProofBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrie.Builder getRemovedProofBuilder() {
-        
-        onChanged();
-        return getRemovedProofFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrieOrBuilder getRemovedProofOrBuilder() {
-        if (removedProofBuilder_ != null) {
-          return removedProofBuilder_.getMessageOrBuilder();
-        } else {
-          return removedProof_ == null ?
-              serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : removedProof_;
-        }
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie removed_proof = 6;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
-          getRemovedProofFieldBuilder() {
-        if (removedProofBuilder_ == null) {
-          removedProofBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder>(
-                  getRemovedProof(),
-                  getParentForChildren(),
-                  isClean());
-          removedProof_ = null;
-        }
-        return removedProofBuilder_;
-      }
-
-      private serialization.MptSerialization.MerklePrefixTrie authenticationProof_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> authenticationProofBuilder_;
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-       */
-      public boolean hasAuthenticationProof() {
-        return authenticationProofBuilder_ != null || authenticationProof_ != null;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrie getAuthenticationProof() {
-        if (authenticationProofBuilder_ == null) {
-          return authenticationProof_ == null ? serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : authenticationProof_;
-        } else {
-          return authenticationProofBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-       */
-      public Builder setAuthenticationProof(serialization.MptSerialization.MerklePrefixTrie value) {
-        if (authenticationProofBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          authenticationProof_ = value;
-          onChanged();
-        } else {
-          authenticationProofBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-       */
-      public Builder setAuthenticationProof(
-          serialization.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
-        if (authenticationProofBuilder_ == null) {
-          authenticationProof_ = builderForValue.build();
-          onChanged();
-        } else {
-          authenticationProofBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-       */
-      public Builder mergeAuthenticationProof(serialization.MptSerialization.MerklePrefixTrie value) {
-        if (authenticationProofBuilder_ == null) {
-          if (authenticationProof_ != null) {
-            authenticationProof_ =
-              serialization.MptSerialization.MerklePrefixTrie.newBuilder(authenticationProof_).mergeFrom(value).buildPartial();
-          } else {
-            authenticationProof_ = value;
-          }
-          onChanged();
-        } else {
-          authenticationProofBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-       */
-      public Builder clearAuthenticationProof() {
-        if (authenticationProofBuilder_ == null) {
-          authenticationProof_ = null;
-          onChanged();
-        } else {
-          authenticationProof_ = null;
-          authenticationProofBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrie.Builder getAuthenticationProofBuilder() {
-        
-        onChanged();
-        return getAuthenticationProofFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-       */
-      public serialization.MptSerialization.MerklePrefixTrieOrBuilder getAuthenticationProofOrBuilder() {
-        if (authenticationProofBuilder_ != null) {
-          return authenticationProofBuilder_.getMessageOrBuilder();
-        } else {
-          return authenticationProof_ == null ?
-              serialization.MptSerialization.MerklePrefixTrie.getDefaultInstance() : authenticationProof_;
-        }
-      }
-      /**
-       * <code>.serialization.MerklePrefixTrie authentication_proof = 7;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder> 
-          getAuthenticationProofFieldBuilder() {
-        if (authenticationProofBuilder_ == null) {
-          authenticationProofBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              serialization.MptSerialization.MerklePrefixTrie, serialization.MptSerialization.MerklePrefixTrie.Builder, serialization.MptSerialization.MerklePrefixTrieOrBuilder>(
-                  getAuthenticationProof(),
-                  getParentForChildren(),
-                  isClean());
-          authenticationProof_ = null;
-        }
-        return authenticationProofBuilder_;
-      }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFieldsProto3(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:serialization.ReceiptTransferApprove)
-    }
-
-    // @@protoc_insertion_point(class_scope:serialization.ReceiptTransferApprove)
-    private static final serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove();
-    }
-
-    public static serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<ReceiptTransferApprove>
-        PARSER = new com.google.protobuf.AbstractParser<ReceiptTransferApprove>() {
-      public ReceiptTransferApprove parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ReceiptTransferApprove(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<ReceiptTransferApprove> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ReceiptTransferApprove> getParserForType() {
-      return PARSER;
-    }
-
-    public serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -9430,45 +8282,45 @@ public final class BVerifyAPIMessageSerialization {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_serialization_Receipt_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_serialization_IssueReceiptRequest_descriptor;
+    internal_static_serialization_ADSModification_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_serialization_IssueReceiptRequest_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_serialization_RedeemReceiptRequest_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_serialization_RedeemReceiptRequest_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_serialization_TransferReceiptRequest_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_serialization_TransferReceiptRequest_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_serialization_GetUpdatesRequest_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_serialization_GetUpdatesRequest_fieldAccessorTable;
+      internal_static_serialization_ADSModification_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_serialization_Signature_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_serialization_Signature_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_serialization_ReceiptIssueApprove_descriptor;
+    internal_static_serialization_Request_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_serialization_ReceiptIssueApprove_fieldAccessorTable;
+      internal_static_serialization_Request_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_serialization_ReceiptRedeemApprove_descriptor;
+    internal_static_serialization_IssueReceipt_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_serialization_ReceiptRedeemApprove_fieldAccessorTable;
+      internal_static_serialization_IssueReceipt_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_serialization_ReceiptTransferApprove_descriptor;
+    internal_static_serialization_RedeemReceipt_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_serialization_ReceiptTransferApprove_fieldAccessorTable;
+      internal_static_serialization_RedeemReceipt_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_serialization_TransferReceipt_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_serialization_TransferReceipt_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_serialization_Response_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_serialization_Response_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_serialization_GetUpdatesRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_serialization_GetUpdatesRequest_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_serialization_Updates_descriptor;
   private static final 
@@ -9489,35 +8341,26 @@ public final class BVerifyAPIMessageSerialization {
       "(\t\022\022\n\naccountant\030\003 \001(\t\022\020\n\010category\030\004 \001(\t" +
       "\022\014\n\004date\030\005 \001(\t\022\021\n\tinsurance\030\006 \001(\t\022\016\n\006wei" +
       "ght\030\007 \001(\001\022\016\n\006volume\030\010 \001(\001\022\020\n\010humidity\030\t " +
-      "\001(\001\022\r\n\005price\030\n \001(\001\022\017\n\007details\030\013 \001(\t\"g\n\023I" +
-      "ssueReceiptRequest\022\021\n\tissuer_id\030\001 \001(\t\022\024\n" +
-      "\014recepient_id\030\002 \001(\t\022\'\n\007receipt\030\003 \001(\0132\026.s" +
-      "erialization.Receipt\"Q\n\024RedeemReceiptReq" +
-      "uest\022\021\n\tissuer_id\030\001 \001(\t\022\020\n\010owner_id\030\002 \001(" +
-      "\t\022\024\n\014receipt_hash\030\003 \001(\014\"q\n\026TransferRecei" +
-      "ptRequest\022\021\n\tissuer_id\030\001 \001(\t\022\030\n\020current_" +
-      "owner_id\030\002 \001(\t\022\024\n\014new_owner_id\030\003 \001(\t\022\024\n\014" +
-      "receipt_hash\030\004 \001(\014\"=\n\021GetUpdatesRequest\022" +
-      "\032\n\022from_commit_number\030\001 \001(\005\022\014\n\004keys\030\002 \003(" +
-      "\014\"\036\n\tSignature\022\021\n\tsignature\030\001 \001(\014\"\246\001\n\023Re" +
-      "ceiptIssueApprove\022\021\n\tissuer_id\030\001 \001(\t\022\024\n\014" +
-      "recepient_id\030\002 \001(\t\022\'\n\007receipt\030\003 \001(\0132\026.se" +
-      "rialization.Receipt\022=\n\024authentication_pr" +
-      "oof\030\004 \001(\0132\037.serialization.MerklePrefixTr" +
-      "ie\"\220\001\n\024ReceiptRedeemApprove\022\021\n\tissuer_id" +
-      "\030\001 \001(\t\022\020\n\010owner_id\030\002 \001(\t\022\024\n\014receipt_hash" +
-      "\030\003 \001(\014\022=\n\024authentication_proof\030\004 \001(\0132\037.s" +
-      "erialization.MerklePrefixTrie\"\236\002\n\026Receip" +
-      "tTransferApprove\022\021\n\tissuer_id\030\001 \001(\t\022\030\n\020c" +
-      "urrent_owner_id\030\002 \001(\t\022\024\n\014new_owner_id\030\003 " +
-      "\001(\t\022\024\n\014receipt_hash\030\004 \001(\014\0224\n\013added_proof" +
-      "\030\005 \001(\0132\037.serialization.MerklePrefixTrie\022" +
-      "6\n\rremoved_proof\030\006 \001(\0132\037.serialization.M" +
-      "erklePrefixTrie\022=\n\024authentication_proof\030" +
-      "\007 \001(\0132\037.serialization.MerklePrefixTrie\":" +
-      "\n\007Updates\022/\n\006update\030\001 \003(\0132\037.serializatio" +
-      "n.MerklePrefixTrieB B\036BVerifyAPIMessageS" +
-      "erializationb\006proto3"
+      "\001(\001\022\r\n\005price\030\n \001(\001\022\017\n\007details\030\013 \001(\t\"a\n\017A" +
+      "DSModification\022\016\n\006ads_id\030\001 \001(\014\022\021\n\tnew_va" +
+      "lue\030\002 \001(\014\022+\n\tsignature\030\003 \001(\0132\030.serializa" +
+      "tion.Signature\"\036\n\tSignature\022\021\n\tsignature" +
+      "\030\001 \001(\014\"\202\002\n\007Request\0225\n\rmodifications\030\001 \003(" +
+      "\0132\036.serialization.ADSModification\022,\n\005iss" +
+      "ue\030\003 \001(\0132\033.serialization.IssueReceiptH\000\022" +
+      ".\n\006redeem\030\004 \001(\0132\034.serialization.RedeemRe" +
+      "ceiptH\000\0222\n\010transfer\030\005 \001(\0132\036.serializatio" +
+      "n.TransferReceiptH\000\022\034\n\024request_initiator" +
+      "_id\030\006 \001(\tB\020\n\016change_request\"7\n\014IssueRece" +
+      "ipt\022\'\n\007receipt\030\001 \001(\0132\026.serialization.Rec" +
+      "eipt\"%\n\rRedeemReceipt\022\024\n\014receipt_hash\030\001 " +
+      "\001(\014\"\'\n\017TransferReceipt\022\024\n\014receipt_hash\030\001" +
+      " \001(\014\"8\n\010Response\022,\n\nsignatures\030\001 \003(\0132\030.s" +
+      "erialization.Signature\"=\n\021GetUpdatesRequ" +
+      "est\022\032\n\022from_commit_number\030\001 \001(\005\022\014\n\004keys\030" +
+      "\002 \003(\014\":\n\007Updates\022/\n\006update\030\001 \003(\0132\037.seria" +
+      "lization.MerklePrefixTrieB B\036BVerifyAPIM" +
+      "essageSerializationb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -9538,54 +8381,54 @@ public final class BVerifyAPIMessageSerialization {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_serialization_Receipt_descriptor,
         new java.lang.String[] { "WarehouseId", "DepositorId", "Accountant", "Category", "Date", "Insurance", "Weight", "Volume", "Humidity", "Price", "Details", });
-    internal_static_serialization_IssueReceiptRequest_descriptor =
+    internal_static_serialization_ADSModification_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_serialization_IssueReceiptRequest_fieldAccessorTable = new
+    internal_static_serialization_ADSModification_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_serialization_IssueReceiptRequest_descriptor,
-        new java.lang.String[] { "IssuerId", "RecepientId", "Receipt", });
-    internal_static_serialization_RedeemReceiptRequest_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_serialization_RedeemReceiptRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_serialization_RedeemReceiptRequest_descriptor,
-        new java.lang.String[] { "IssuerId", "OwnerId", "ReceiptHash", });
-    internal_static_serialization_TransferReceiptRequest_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_serialization_TransferReceiptRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_serialization_TransferReceiptRequest_descriptor,
-        new java.lang.String[] { "IssuerId", "CurrentOwnerId", "NewOwnerId", "ReceiptHash", });
-    internal_static_serialization_GetUpdatesRequest_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_serialization_GetUpdatesRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_serialization_GetUpdatesRequest_descriptor,
-        new java.lang.String[] { "FromCommitNumber", "Keys", });
+        internal_static_serialization_ADSModification_descriptor,
+        new java.lang.String[] { "AdsId", "NewValue", "Signature", });
     internal_static_serialization_Signature_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_serialization_Signature_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_serialization_Signature_descriptor,
         new java.lang.String[] { "Signature", });
-    internal_static_serialization_ReceiptIssueApprove_descriptor =
+    internal_static_serialization_Request_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_serialization_Request_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_serialization_Request_descriptor,
+        new java.lang.String[] { "Modifications", "Issue", "Redeem", "Transfer", "RequestInitiatorId", "ChangeRequest", });
+    internal_static_serialization_IssueReceipt_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_serialization_IssueReceipt_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_serialization_IssueReceipt_descriptor,
+        new java.lang.String[] { "Receipt", });
+    internal_static_serialization_RedeemReceipt_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_serialization_RedeemReceipt_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_serialization_RedeemReceipt_descriptor,
+        new java.lang.String[] { "ReceiptHash", });
+    internal_static_serialization_TransferReceipt_descriptor =
       getDescriptor().getMessageTypes().get(6);
-    internal_static_serialization_ReceiptIssueApprove_fieldAccessorTable = new
+    internal_static_serialization_TransferReceipt_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_serialization_ReceiptIssueApprove_descriptor,
-        new java.lang.String[] { "IssuerId", "RecepientId", "Receipt", "AuthenticationProof", });
-    internal_static_serialization_ReceiptRedeemApprove_descriptor =
+        internal_static_serialization_TransferReceipt_descriptor,
+        new java.lang.String[] { "ReceiptHash", });
+    internal_static_serialization_Response_descriptor =
       getDescriptor().getMessageTypes().get(7);
-    internal_static_serialization_ReceiptRedeemApprove_fieldAccessorTable = new
+    internal_static_serialization_Response_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_serialization_ReceiptRedeemApprove_descriptor,
-        new java.lang.String[] { "IssuerId", "OwnerId", "ReceiptHash", "AuthenticationProof", });
-    internal_static_serialization_ReceiptTransferApprove_descriptor =
+        internal_static_serialization_Response_descriptor,
+        new java.lang.String[] { "Signatures", });
+    internal_static_serialization_GetUpdatesRequest_descriptor =
       getDescriptor().getMessageTypes().get(8);
-    internal_static_serialization_ReceiptTransferApprove_fieldAccessorTable = new
+    internal_static_serialization_GetUpdatesRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_serialization_ReceiptTransferApprove_descriptor,
-        new java.lang.String[] { "IssuerId", "CurrentOwnerId", "NewOwnerId", "ReceiptHash", "AddedProof", "RemovedProof", "AuthenticationProof", });
+        internal_static_serialization_GetUpdatesRequest_descriptor,
+        new java.lang.String[] { "FromCommitNumber", "Keys", });
     internal_static_serialization_Updates_descriptor =
       getDescriptor().getMessageTypes().get(9);
     internal_static_serialization_Updates_fieldAccessorTable = new

@@ -3,10 +3,9 @@ package server;
 import java.util.concurrent.Callable;
 
 import api.BVerifyProtocolClientAPI;
-import crpyto.CryptographicSignature;
 import pki.Account;
 import rmi.ClientProvider;
-import serialization.BVerifyAPIMessageSerialization.Signature;
+import serialization.BVerifyAPIMessageSerialization.Response;
 
 
 /**
@@ -22,57 +21,31 @@ import serialization.BVerifyAPIMessageSerialization.Signature;
  */
 public class MakeRequestVerifyResponseCallback implements Callable<Boolean> {
 	
-	private final byte[] requestMessage;
-	private final byte[] commitmentToBeSigned;
-
-	// this is ugly and should be replaced
-	private enum TYPE {ISSUE, REDEEM, TRANSFER};
-	private final TYPE messageType;
-
+	private final Update request;
 	private final Account sendTo;
 	private final ClientProvider rmi;
 
 	
-	public MakeRequestVerifyResponseCallback(final byte[] requestMessage, final Account sendTo, 
-			final byte[] commitmentToBeSigned, final Request r, final ClientProvider rmi) {
-		this.requestMessage = requestMessage;
-		this.commitmentToBeSigned = commitmentToBeSigned;
+	public MakeRequestVerifyResponseCallback(final Account sendTo, 
+			final Update r, final ClientProvider rmi) {
+		this.request = r;
 		this.sendTo = sendTo;
 		this.rmi = rmi;
-		if(r instanceof TransferRequest) {
-			this.messageType = TYPE.TRANSFER;
-		}else if (r instanceof IssueRequest) {
-			this.messageType = TYPE.ISSUE;		
-		}else if (r instanceof RedeemRequest) {
-			this.messageType = TYPE.REDEEM;
-		}else {
-			throw new RuntimeException("not a valid request");
-		}
 	}
 
 	@Override
 	public Boolean call() throws Exception {
 		// lookup the client 
 		BVerifyProtocolClientAPI stub = this.rmi.getClient(this.sendTo);
-		byte[] resp = null;
+		
 		// make the request
-		switch (this.messageType){
-		case ISSUE:
-			resp = stub.approveReceiptIssue(this.requestMessage);
-		case REDEEM:
-			resp = stub.approveReceiptRedeem(this.requestMessage);
-		case TRANSFER:
-			resp = stub.approveReceiptTransfer(this.requestMessage);
-		}
-		if(resp == null) {
-			return Boolean.FALSE;
-		}
-		// verify the signature
-		Signature sig = Signature.parseFrom(resp);
-		byte[] sigBytes = sig.getSignature().toByteArray();
-		boolean hasSigned = CryptographicSignature.verify(this.commitmentToBeSigned, 
-				sigBytes, this.sendTo.getPublicKey());
-		return Boolean.valueOf(hasSigned);		
+		byte[] resp = stub.approveRequest(this.request.getRequest().toByteArray());
+		// get the response
+		Response response = Response.parseFrom(resp);
+		
+		// check the signatures
+		
+		return Boolean.valueOf(true);		
 	}
 
 }

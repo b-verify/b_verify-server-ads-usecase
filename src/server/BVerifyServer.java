@@ -25,21 +25,17 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import api.BVerifyProtocolClientAPI;
 import api.BVerifyProtocolServerAPI;
-import crpyto.CryptographicDigest;
 import crpyto.CryptographicSignature;
 import crpyto.CryptographicUtils;
-import mpt.set.AuthenticatedSetServer;
 import mpt.set.MPTSetFull;
 import mpt.set.MPTSetPartial;
 import pki.Account;
 import pki.PKIDirectory;
 import rmi.ClientProvider;
+import serialization.BVerifyAPIMessageSerialization.ADSModification;
 import serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest;
-import serialization.BVerifyAPIMessageSerialization.IssueReceiptRequest;
-import serialization.BVerifyAPIMessageSerialization.Receipt;
-import serialization.BVerifyAPIMessageSerialization.RedeemReceiptRequest;
+import serialization.BVerifyAPIMessageSerialization.Request;
 import serialization.BVerifyAPIMessageSerialization.Signature;
-import serialization.BVerifyAPIMessageSerialization.TransferReceiptRequest;
 import serialization.MptSerialization.MerklePrefixTrie;
 
 public class BVerifyServer implements BVerifyProtocolServerAPI {
@@ -56,20 +52,28 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 	protected final ClientProvider rmi;
 	
 	/**
-	 * Client ADSes - stored on disk
+	 * Client ADSes
 	 */
 	protected final ClientADSManager clientadsManager;
 
 	/**
-	 * Server (Authentication) ADSes - stored in memory
+	 * Server (Authentication) ADSes
 	 */
 	protected final ServerADSManager serveradsManager;
 	
 	/**
-	 * Changes to be applied. We batch changes for efficiency we keep track of all
-	 * requests and try to apply them all at once.
+	 * When ADSes are updated, the server will request
+	 * signatures from the required parties
 	 */
-	private Set<Request> requests;
+	private Set<Update> updatesToBeAttempted;
+	
+	/**
+	 * Once a request has been signed by all parties
+	 * it is added to this set to be applied at a later point.
+	 * Changes are batched and committed together for 
+	 * efficiency.
+	 */
+	private Set<Update> updatesToBeApplied;
 	
 	/**
 	 * We use read-write locks to handle concurrent client requests 
@@ -98,63 +102,50 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 		}
 		this.rmi.bind(ClientProvider.SERVER_NAME, serverAPI);
 		
-		this.clientadsManager = new ClientADSManager(base + "/client-ads/");
+		this.clientadsManager = new ClientADSManager(this.pki, base + "/client-ads/");
 		this.serveradsManager = new ServerADSManager(base + "/server-ads/");	
-		this.requests = new HashSet<>();
+		
+		this.updatesToBeAttempted = new HashSet<>();
+		this.updatesToBeApplied = new HashSet<>();
 	}
 
 	@Override
-	public boolean startIssueReceipt(byte[] requestIssueMessage) {
+	public boolean submitRequest(byte[] requestMessage) {
 		try {
-			this.rwLock.readLock().lock();
-			// parse the request message
-			IssueReceiptRequest request = IssueReceiptRequest.parseFrom(requestIssueMessage);
-			String issuerUUID = request.getIssuerId();
-			String recepientUUID = request.getRecepientId();
-			// the receipt data is the actual receipt
-			Receipt receipt = request.getReceipt();
-			
-			// lookup the accounts
-			Account issuer = this.pki.getAccount(issuerUUID);
-			Account recepient = this.pki.getAccount(recepientUUID);
-			List<Account> accounts = new ArrayList<>();
-			accounts.add(issuer);
-			accounts.add(recepient);
-			
-			// calculate the client ads key
-			byte[] adsKey = CryptographicUtils.listOfAccountsToADSKey(accounts);
-
-			// now load the client ads
-			AuthenticatedSetServer ads = this.clientadsManager.getADS(adsKey);
+			// #1 parse the request message
+			Request request = Request.parseFrom(requestMessage);
+			Account requestInitiator = this.pki.getAccount(request.getRequestInitiatorId());
 						
-			// and insert the receipt authentication information 
-			// into the client ADS
-			byte[] receiptHash = CryptographicDigest.hash(receipt.toByteArray());
-			ads.insert(receiptHash);
-			
-			// get the new commitment 
-			byte[] newADSCommitment = ads.commitment();
-			
-			// stage the updated client ads for a commit
-			boolean success = this.clientadsManager.preCommit(ads, adsKey);
-			
-			if(!success) {
-				this.rwLock.readLock().unlock();
-				return false;
+			// #2 look up all the ads modifications required by this request
+			Set<ClientADSModification> modifications = new HashSet<>();
+			for(ADSModification adsModifcation : request.getModificationsList()) {
+				byte[] adsKey = adsModifcation.getAdsId().toByteArray();
+				byte[] adsValue = adsModifcation.getNewValue().toByteArray();
+				Set<Account> relevantAccounts = 
+						this.clientadsManager.getRelevantClients(adsKey);
+				ClientADSModification adsModification = 
+						new ClientADSModification(adsKey, adsValue, 
+								relevantAccounts, null, null);
+				// #3 make sure that the request initiator has signed 
+				// any relevant
+				if(relevantAccounts.contains(requestInitiator)) {
+					byte[] signature = adsModifcation.getSignature().toByteArray();
+					boolean signed = CryptographicSignature.verify(adsValue, signature,
+							requestInitiator.getPublicKey());
+					adsModification.addApproval(requestInitiator, signature);
+					if(!signed) {
+						return false;
+					}
+				}
+				modifications.add(adsModification);
 			}
 			
-			// schedule the overall request to try and commit later
-			IssueRequest ir = new IssueRequest(issuer, recepient, receipt, adsKey,
-					newADSCommitment);
-			
-			// the request set is not threadsafe so we need to gaurd access to it
-			synchronized(this) {
-				this.requests.add(ir);	
-			}
-			
-			this.rwLock.readLock().unlock();
+			// #4 request signatures from any other parties
+			relevantAccounts.remove(requestInitiator);
+			Update requestForSig = new Update(relevantAccounts, request);
+			this.updatesToBeAttempted.add(requestForSig);
 			return true;
-		} catch (InvalidProtocolBufferException e) {
+		} 	catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
 			
 			this.rwLock.readLock().unlock();
@@ -162,139 +153,12 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 		}
 	}
 
-	@Override
-	public boolean startRedeemReceipt(byte[] requestRedeemMessage) {
-		try {
-			this.rwLock.readLock().lock();
-			// parse the request message
-			RedeemReceiptRequest request = RedeemReceiptRequest.parseFrom(requestRedeemMessage);
-			String issuerUUID = request.getIssuerId(); 
-			String ownerUUID = request.getOwnerId();
-			byte[] receiptHash = request.getReceiptHash().toByteArray();
-			
-			// lookup the accounts
-			Account issuer = this.pki.getAccount(issuerUUID);
-			Account owner = this.pki.getAccount(ownerUUID);
-			List<Account> accounts = new ArrayList<>();
-			accounts.add(issuer);
-			accounts.add(owner);
-			
-			// calculate the client ads key
-			byte[] adsKey = CryptographicUtils.listOfAccountsToADSKey(accounts);
-			
-			// now load the client ads
-			AuthenticatedSetServer ads = this.clientadsManager.getADS(adsKey);
-						
-			// and delete the receipt
-			// and update the authentication information 
-			ads.delete(receiptHash);
-			
-			// get the new commitment 
-			byte[] newADSCommitment = ads.commitment();
-			
-			// stage the updated client ads for a commit
-			boolean success = this.clientadsManager.preCommit(ads, adsKey);
-			
-			if(!success) {
-				this.rwLock.readLock().unlock();
-				return false;
-			}
-			
-			// schedule the overall request to try and commit later
-			RedeemRequest rr = new RedeemRequest(issuer, owner, receiptHash, adsKey,
-					newADSCommitment);
-			
-			synchronized(this) {
-				this.requests.add(rr);				
-			}
-			
-			this.rwLock.readLock().unlock();
-			return true;
-		} catch (InvalidProtocolBufferException e) {
-			e.printStackTrace();
-			this.rwLock.readLock().unlock();
-			return false;
-		}
-	}
-
-	@Override
-	public boolean startTransferReceipt(byte[] requestTransferMessage) {
-		try {
-			this.rwLock.readLock().lock();
-			TransferReceiptRequest request = TransferReceiptRequest.parseFrom(requestTransferMessage);
-			String issuerUUID = request.getIssuerId();
-			String currentOwnerUUID = request.getCurrentOwnerId();
-			String newOwnerUUID = request.getNewOwnerId();
-			byte[] receiptHash = request.getReceiptHash().toByteArray();
-			
-			// lookup the accounts
-			Account issuer = this.pki.getAccount(issuerUUID);
-			Account currentOwner = this.pki.getAccount(currentOwnerUUID);
-			Account newOwner = this.pki.getAccount(newOwnerUUID);
-
-			// calculate the corresponding ADSkeys
-			// and look up the ADSes
-			
-			List<Account> ads1accounts = new ArrayList<>();
-			ads1accounts.add(issuer);
-			ads1accounts.add(currentOwner);
-			byte[] ads1Key = CryptographicUtils.listOfAccountsToADSKey(ads1accounts);
-			MPTSetFull ads1 = (MPTSetFull) this.clientadsManager.getADS(ads1Key);
-			if(!ads1.inSet(receiptHash)) {
-				return false;
-			}	
-			
-			List<Account> ads2accounts = new ArrayList<>();
-			ads2accounts.add(issuer);
-			ads2accounts.add(newOwner);
-			byte[] ads2Key = CryptographicUtils.listOfAccountsToADSKey(ads2accounts);
-			MPTSetFull ads2 = (MPTSetFull) this.clientadsManager.getADS(ads2Key);
-			if(ads2.inSet(receiptHash)) {
-				this.rwLock.readLock().unlock();
-				return false;
-			}
-			
-			// now move the receipt from one ads to the other and 
-			// create the corresponding proofs
-			ads1.delete(receiptHash);
-			ads2.insert(receiptHash);
-			
-			byte[] currentOwnerAdsValueNew = ads1.commitment();
-			MerklePrefixTrie proofCurrentOwnerAdsNew = (new MPTSetPartial(ads1, receiptHash)).serialize();
-			byte[] newOwnerAdsValueNew = ads2.commitment();
-			MerklePrefixTrie proofNewOwnerAdsNew = (new MPTSetPartial(ads2, receiptHash)).serialize();
-			
-			// pre-commit the new adses
-			this.clientadsManager.preCommit(ads1, ads1Key);
-			this.clientadsManager.preCommit(ads2, ads2Key);
-			
-			// schedule the overall request to try and commit later
-			TransferRequest tr = new TransferRequest(
-					issuer, currentOwner, newOwner, receiptHash,
-					ads1Key, ads2Key,
-					currentOwnerAdsValueNew,
-					proofCurrentOwnerAdsNew,
-					newOwnerAdsValueNew,
-					proofNewOwnerAdsNew);
-			synchronized(this) {
-				this.requests.add(tr);
-			}
-			this.rwLock.readLock().unlock();
-			return true;
-			// move the receipt from one ads to another 
-		} catch (InvalidProtocolBufferException e) {
-			e.printStackTrace();
-			this.rwLock.readLock().unlock();
-			return false;
-		}
-	}
 
 	@Override
 	public byte[] getUpdates(byte[] updateRequest) {
 		try {
 			this.rwLock.readLock().lock();
 			GetUpdatesRequest request = GetUpdatesRequest.parseFrom(updateRequest);
-
 			// parse the keys
 			List<byte[]> keys = new ArrayList<>();
 			List<ByteString> keyByteStrings = request.getKeysList();
@@ -304,7 +168,6 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 			int from = request.getFromCommitNumber();
 			this.rwLock.readLock().unlock();
 			return this.serveradsManager.getUpdate(from, keys);
-
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
 			this.rwLock.readLock().unlock();
@@ -312,36 +175,23 @@ public class BVerifyServer implements BVerifyProtocolServerAPI {
 		}
 	}
 
-	public boolean attemptCommit() {
-		// pre-commit all the updates
-		// to update the authentication information
+	public boolean commitUpdates() {
 		this.rwLock.writeLock().lock();
-		for (Request r : this.requests) {
-			for(Map.Entry<byte[], byte[]> kvUpdate : r.getUpdatedKeyValues()) {
-				this.serveradsManager.preCommit(kvUpdate.getKey(), kvUpdate.getValue());
+		// apply the updates
+		for(Update updateReq : this.updatesToBeApplied) {
+			// for now just update the server
+			// authentication table
+			for(Map.Entry<byte[], byte[]> update : updateReq.getUpdatedKeyValues()) {
+				this.serveradsManager.update(update.getKey(), update.getValue());
 			}
 		}
+		this.updatesToBeApplied.clear();
+		this.rwLock.writeLock().unlock();
+		return true;
+	}
 		
-		// add the authentication proofs
-		for (Request r : this.requests) {
-			List<byte[]> keys = r.getUpdatedKeyValues().stream().map(x -> x.getKey()).collect(Collectors.toList());
-			MerklePrefixTrie authProof = this.serveradsManager.getProof(keys);
-			r.setAuthenticationProof(authProof);
-		}
-		
-		// now time to collect the approvals
-		byte[] commitmentToBeSigned = this.serveradsManager.commitment();
-		Collection<Callable<Boolean>> approvals = new ArrayList<Callable<Boolean>>();
-		
-		for (Request r : this.requests) {
-			byte[] message = r.serialize();
-			for (Account a : r.sendRequestTo()) {
-				MakeRequestVerifyResponseCallback mr = new MakeRequestVerifyResponseCallback(
-						message, a, commitmentToBeSigned, r, this.rmi);
-				approvals.add(mr);
-			}
-		}
-		
+	
+	public boolean requestSig() {
 		// send proofs and wait to collect the signature
 		boolean commit = true;
 		try {
