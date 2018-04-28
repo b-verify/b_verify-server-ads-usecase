@@ -71,16 +71,18 @@ public class PKIDirectory {
 		return this.lookupTable.keySet();
 	}
 	
-	public static void generateRandomAccounts(int numberOfAccounts, String base) {
+	public static List<Account> generateRandomAccounts(int numberOfAccounts) {
+		List<Account> accounts = new ArrayList<>();
 		for(int i = 0; i < numberOfAccounts; i++) {
 			Faker faker = new Faker();
 			String firstName = faker.name().firstName(); 
 			String lastName = faker.name().lastName(); 
 			Account account = new Account(firstName, lastName);
-			account.saveToFile(base);
+			accounts.add(account);
 			System.out.println("generating account "+(i+1)+
 					" - of - "+numberOfAccounts+"("+faker.name().fullName()+")");
 		}
+		return accounts;
 	}
 	
 }

@@ -4,9 +4,11 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -30,6 +32,7 @@ import serialization.BVerifyAPIMessageSerialization.ReceiptRedeemApprove;
 import serialization.BVerifyAPIMessageSerialization.ReceiptTransferApprove;
 import serialization.BVerifyAPIMessageSerialization.Signature;
 import serialization.MptSerialization.MerklePrefixTrie;
+import server.ClientADSManager;
 
 /**
  * For benchmarking and testing purposes 
@@ -49,20 +52,33 @@ import serialization.MptSerialization.MerklePrefixTrie;
  * @author henryaspegren
  *
  */
-public class MockClient implements BVerifyProtocolClientAPI{
+public class MockClient implements BVerifyProtocolClientAPI {
 	
-	private final ClientProvider rmi;
+	// the account of this mock client
 	private final Account account;
+
+	// stores the full ADSes necessary for authenticating 
+	// those receipts
+	private final Map<byte[], AuthenticatedSetServer> receiptADSes;
 	
-	// stores server authentication information
-	private AuthenticatedDictionaryClient authenticationInfo;
+	// provides rmi interface for 
+	// invoking methods remotely on the server
+	private ClientProvider rmi;
 	
-	// stores the ADSes that the client cares about
-	// these the ADSes that hold the client receipts 
-	private Map<byte[], AuthenticatedSetServer> clientReceipts;
-	
-	public MockClient(Account a, String registryHost, int registryPort) {
+	public MockClient(Account a, String base) {
 		this.account = a;
+		this.receiptADSes = new HashMap<>();
+		Set<byte[]> adsKeys = a.getADSKeys();
+		for(byte[] adsKey : adsKeys) {
+			AuthenticatedSetServer ads = ClientADSManager
+					.loadADSFromFile(base+"client-ads/", adsKey);
+			this.receiptADSes.put(adsKey, ads);
+		}
+		
+		
+	}
+
+	public void bind(String registryHost, int registryPort) {
 		this.rmi = new ClientProvider(registryHost, registryPort);
 		// bind this object
 		BVerifyProtocolClientAPI clientAPI;
@@ -94,10 +110,10 @@ public class MockClient implements BVerifyProtocolClientAPI{
 			ids.add(recepientId);
 			ids.add(issuerId);
 			byte[] adsKey = CryptographicUtils.listOfAccountIDStringsToADSKey(ids);
-			if(! this.clientReceipts.containsKey(adsKey) ) {
+			if(! this.receiptADSes.containsKey(adsKey) ) {
 				return sig.build().toByteArray();
 			}
-			AuthenticatedSetServer ads = this.clientReceipts.get(adsKey);
+			AuthenticatedSetServer ads = this.receiptADSes.get(adsKey);
 			
 			// perform some checks on the receipt
 			// omitted - client automatically approves
@@ -153,10 +169,10 @@ public class MockClient implements BVerifyProtocolClientAPI{
 			ids.add(ownerId);
 			ids.add(issuerId);
 			byte[] adsKey = CryptographicUtils.listOfAccountIDStringsToADSKey(ids);
-			if(! this.clientReceipts.containsKey(adsKey) ) {
+			if(! this.receiptADSes.containsKey(adsKey) ) {
 				return sig.build().toByteArray();
 			}
-			AuthenticatedSetServer ads = this.clientReceipts.get(adsKey);
+			AuthenticatedSetServer ads = this.receiptADSes.get(adsKey);
 			
 			// check that the client has the receipt
 			if(!ads.inSet(receiptHash)) {
@@ -222,12 +238,12 @@ public class MockClient implements BVerifyProtocolClientAPI{
 			// what needs to be check varies depending on which role the client 
 			// is playing
 			if(this.account.getId().equals(issuerId)) {
-				if(!( this.clientReceipts.containsKey(originADSKey) && 
-						this.clientReceipts.containsKey(destinationADSKey) ) ) {
+				if(!( this.receiptADSes.containsKey(originADSKey) && 
+						this.receiptADSes.containsKey(destinationADSKey) ) ) {
 					return sig.build().toByteArray();
 				}
-				AuthenticatedSetServer origin = this.clientReceipts.get(originADSKey);
-				AuthenticatedSetServer destination = this.clientReceipts.get(destinationADSKey);
+				AuthenticatedSetServer origin = this.receiptADSes.get(originADSKey);
+				AuthenticatedSetServer destination = this.receiptADSes.get(destinationADSKey);
 				if(!origin.inSet(receiptHash) || destination.inSet(receiptHash)) {
 					return sig.build().toByteArray();
 				}
@@ -238,10 +254,10 @@ public class MockClient implements BVerifyProtocolClientAPI{
 					return sig.build().toByteArray();
 				}
 			}else if(this.account.getId().equals(currentOwnerId)) {
-				if(!this.clientReceipts.containsKey(originADSKey) ) {
+				if(!this.receiptADSes.containsKey(originADSKey) ) {
 					return sig.build().toByteArray();
 				}
-				AuthenticatedSetServer origin = this.clientReceipts.get(originADSKey);
+				AuthenticatedSetServer origin = this.receiptADSes.get(originADSKey);
 				if(!origin.inSet(receiptHash)) {
 					return sig.build().toByteArray();
 				}
@@ -254,10 +270,10 @@ public class MockClient implements BVerifyProtocolClientAPI{
 					return sig.build().toByteArray();
 				}
 			}else if(this.account.getId().equals(newOwnerId)) {
-				if(!this.clientReceipts.containsKey(destinationADSKey) ) {
+				if(!this.receiptADSes.containsKey(destinationADSKey) ) {
 					return sig.build().toByteArray();
 				}
-				AuthenticatedSetServer destination = this.clientReceipts.get(destinationADSKey);
+				AuthenticatedSetServer destination = this.receiptADSes.get(destinationADSKey);
 				if(destination.inSet(receiptHash)) {
 					return sig.build().toByteArray();
 				}
@@ -311,14 +327,22 @@ public class MockClient implements BVerifyProtocolClientAPI{
 		return sig.build().toByteArray();
 	}
 	
+	@Override 
+	public String toString() {
+		return "<"+this.account.getIdAsString()+" - "+this.receiptADSes.keySet()+">";
+	}
+	
 	public static void main(String[] args) {
 		String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/mock-data/";
 		String host = null;
 		int port = 1099;
-		PKIDirectory pki = new PKIDirectory(base + "/pki/");
+		PKIDirectory pki = new PKIDirectory(base + "pki/");
 		// create clients
 		for(Account a : pki.getAllAccounts()) {
-			new MockClient(a, host, port);
+			// load client ads data
+			MockClient mc = new MockClient(a, base);
+			System.out.println(mc);
+			// mc.bind(host, port);
 		}
 		System.out.println("Press enter when test complete");
 		Scanner sc = new Scanner(System.in);

@@ -9,6 +9,8 @@ import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import crpyto.CryptographicSignature;
@@ -22,6 +24,34 @@ public class Account implements Serializable {
 	private final UUID id;
 	private PublicKey pubKey;
 	private PrivateKey privKey;
+	
+	// keeps track of the ADSes this client cares about
+	// technically this does not need to be in the PKI, 
+	// but to simplify things we store it here
+	private Set<byte[]> adsKeys;
+	
+	public Account(String firstName, String lastName) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		
+		// generate a (unique) random id
+		this.id = UUID.randomUUID();
+		
+		// along with pubKeys
+		KeyPair keys = CryptographicSignature.generateNewKeyPair();
+		this.pubKey = keys.getPublic();
+		this.privKey = keys.getPrivate();
+		
+		this.adsKeys = new HashSet<>();
+	}
+	
+	public void addADSKey(byte[] adsKey) {
+		this.adsKeys.add(adsKey);
+	}
+	
+	public Set<byte[]> getADSKeys(){
+		return this.adsKeys;
+	}
 	
 	public String getFirstName() {
 		return this.firstName;
@@ -51,22 +81,9 @@ public class Account implements Serializable {
 		return id.toString();
 	}
 	
-	public Account(String firstName, String lastName) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		
-		// generate a (unique) random id
-		this.id = UUID.randomUUID();
-		
-		// along with pubKeys
-		KeyPair keys = CryptographicSignature.generateNewKeyPair();
-		this.pubKey = keys.getPublic();
-		this.privKey = keys.getPrivate();
-	}
-	
-	public void saveToFile(String path) {
+	public void saveToFile(String dir) {
 		try {
-			File f = new File(path+id.toString());
+			File f = new File(dir+id.toString());
 			FileOutputStream fout = new FileOutputStream(f);
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
 			oos.writeObject(this);

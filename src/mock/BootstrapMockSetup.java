@@ -1,11 +1,12 @@
 package mock;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import com.github.javafaker.Faker;
 
@@ -17,8 +18,78 @@ import pki.Account;
 import pki.PKIDirectory;
 import serialization.BVerifyAPIMessageSerialization.Receipt;
 
+/**
+ * This class is used to create mock data
+ * for testing and demo purposes. All mock data 
+ * is created in the /mock-data/ directory and 
+ * can be read in using the MockClient class
+ * to create mock clients.
+ * @author henryaspegren
+ *
+ */
 public class BootstrapMockSetup {
-
+		
+	public static void bootstrap(int nClient, int nWarehouses, int nReceipts, String base) {
+		String pkiDirectoryFile  = base+"/pki/";
+		String dataDirectoryFile = base+"/data/";
+		String clientADSDirectoryFile = base+"/client-ads/";
+		String serverADSDirectoryFile = base+"/server-ads/";
+		
+		int n = nWarehouses+nClient;
+				
+		// generate random accounts
+		List<Account> accounts = PKIDirectory.generateRandomAccounts(n);
+	    
+	    //split into warehouses and depositors
+	    List<Account> warehouses = accounts.subList(0, nWarehouses);
+	    List<Account> depositors = accounts.subList(nWarehouses, n);
+	    
+	    // server auth 
+	    MPTDictionaryFull serverADS = new MPTDictionaryFull();
+	    
+	    for(Account warehouse : warehouses) {
+	    	for(Account depositor : depositors) {	    				    	
+	    		List<Account> accs = new ArrayList<>();
+	    		accs.add(warehouse);
+	    		accs.add(depositor);
+	    		// create an ADS to store 
+	    		// receipts issued by this warehouse to this depositor
+	    		byte[] adsKey = CryptographicUtils.listOfAccountsToADSKey(accs);
+	    		String adsKeyString = Utils.byteArrayAsHexString(adsKey);
+	    		MPTSetFull clientADS = new MPTSetFull();
+		    	new File(dataDirectoryFile+adsKeyString).mkdirs();
+		    	for(int i = 0; i < nReceipts; i++) {
+	    			// create some receipts
+	    			Receipt receipt = BootstrapMockSetup.generateReceipt(warehouse, depositor);
+	    			byte[] witness = CryptographicUtils.witnessReceipt(receipt);
+	    			// save the raw receipts in the data/adskey/ directory
+	    			BootstrapMockSetup.saveReceipt(dataDirectoryFile+adsKeyString+"/"
+	    					, receipt, witness);
+	    			clientADS.insert(witness);
+	    		}
+	    		
+		    	// save the client ads in the /client-ads/ directory
+		    	BootstrapMockSetup.writeADSToFile(clientADSDirectoryFile, adsKey, clientADS.serialize().toByteArray());
+		    	warehouse.addADSKey(adsKey);
+		    	depositor.addADSKey(adsKey);
+	    		byte[] adsRoot = clientADS.commitment();
+	    		serverADS.insert(adsKey, adsRoot);
+	    	}
+	    }
+	    
+	    // save the accounts in the PKI directory
+	    for(Account warehouse : warehouses) {
+	    	warehouse.saveToFile(pkiDirectoryFile);
+	    }
+	    for(Account depositor : depositors) {
+	    	depositor.saveToFile(pkiDirectoryFile);
+	    }
+	    
+	    // save the server auth ADS in the server-ads directory
+		BootstrapMockSetup.writeADSToFile(serverADSDirectoryFile, "starting-ads", serverADS.serialize().toByteArray());
+	}
+	
+	
 	/**
 	 * Used to generate fake but vaguely realistic data
 	 */
@@ -42,7 +113,7 @@ public class BootstrapMockSetup {
 	}
 	
 	public static void saveReceipt(String directory, Receipt receipt, byte[] witness) {
-		String fileName = directory+"/"+Utils.byteArrayAsHexString(witness);
+		String fileName = directory+Utils.byteArrayAsHexString(witness);
 		File f = new File(fileName);
 		try {
 			FileOutputStream fos = new FileOutputStream(f);
@@ -53,8 +124,22 @@ public class BootstrapMockSetup {
 		}
 	}
 	
+	public static Receipt loadReceipt(File receiptF) {
+		try {
+			FileInputStream fis = new FileInputStream(receiptF);
+			byte[] encodedReceipt = new byte[(int) receiptF.length()];
+			fis.read(encodedReceipt);
+			fis.close();
+			Receipt receipt = Receipt.parseFrom(encodedReceipt);
+			return receipt;
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException("corrupted data");
+		}
+	}
+	
 	public static void writeADSToFile(String directory, byte[] id, byte[] serializedADS) {
-		String fileName = directory+"/"+Utils.byteArrayAsHexString(id);
+		String fileName = directory+Utils.byteArrayAsHexString(id);
 		File f = new File(fileName);
 		try {
 			FileOutputStream fos = new FileOutputStream(f);
@@ -67,7 +152,7 @@ public class BootstrapMockSetup {
 	
 	
 	public static void writeADSToFile(String directory, String name, byte[] serializedADS) {
-		String fileName = directory+"/"+name;
+		String fileName = directory+name;
 		File f = new File(fileName);
 		try {
 			FileOutputStream fos = new FileOutputStream(f);
@@ -77,70 +162,10 @@ public class BootstrapMockSetup {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-		
-	public static boolean bootstrap(int nClient, int nWarehouses, int nReceipts, String base) {
-		String pkiDirectoryFile  = base+"/pki/";
-		String dataDiectoryFile = base+"/data/";
-		String clientADSDirectoryFile = base+"/client-ads/";
-		String serverADSDirectoryFile = base+"/server-ads/";
-		
-		int n = nWarehouses+nClient;
-		
-		// generate the accounts
-		PKIDirectory.generateRandomAccounts(n, pkiDirectoryFile);
-		PKIDirectory pki = new PKIDirectory(pkiDirectoryFile);
-		Set<Account> accounts = pki.getAllAccounts();
-	    List<Account> accountsList = new ArrayList<>();
-	    accountsList.addAll(accounts);
-	    
-	    //split into warehouses and depositors
-	    List<Account> warehouses = accountsList.subList(0, nWarehouses);
-	    List<Account> depositors = accountsList.subList(nWarehouses, n);
-	    
-	    // server auth 
-	    MPTDictionaryFull serverADS = new MPTDictionaryFull();
-	    
-	    for(Account warehouse : warehouses) {
-	    	// create a warehouse directory
-	    	String dataDirectory  = dataDiectoryFile+warehouse.getIdAsString();
-	    	new File(dataDirectory).mkdirs();
-	    	
-	    	for(Account depositor : depositors) {
-	    		// for each depositor create a directory
-	    		String depositorDirectory = dataDirectory+"/"+depositor.getIdAsString();
-		    	new File(depositorDirectory).mkdirs();
-	    				    	
-		    	// create ADS
-	    		List<Account> accs = new ArrayList<>();
-	    		accs.add(warehouse);
-	    		accs.add(depositor);
-	    		byte[] adsKey = CryptographicUtils.listOfAccountsToADSKey(accs);
-	    		MPTSetFull clientADS = new MPTSetFull();
-	    		
-	    		for(int i = 0; i < nReceipts; i++) {
-	    			// create receipt
-	    			Receipt receipt = BootstrapMockSetup.generateReceipt(warehouse, depositor);
-	    			// save receipt in data folder
-	    			byte[] witness = CryptographicUtils.witnessReceipt(receipt);
-	    			BootstrapMockSetup.saveReceipt(depositorDirectory, receipt, witness);
-	    			// and put the witness in the ADS
-	    			clientADS.insert(witness);
-	    		}
-	    		// save the client ads 
-	    		BootstrapMockSetup.writeADSToFile(clientADSDirectoryFile, adsKey, clientADS.serialize().toByteArray());
-	    		byte[] adsRoot = clientADS.commitment();
-	    		serverADS.insert(adsKey, adsRoot);
-	    	}
-	    }
-	    
-	    // save the server auth ads
-		BootstrapMockSetup.writeADSToFile(serverADSDirectoryFile, "starting-ads", serverADS.serialize().toByteArray());
-
-		return false;
-	}
-	
 	
 	public static void main(String[] args) {
+		
+		// runs the bootstrap to setup the mock data
 		String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/mock-data/";
 		BootstrapMockSetup.bootstrap(10, 1, 10, base);
 	}
