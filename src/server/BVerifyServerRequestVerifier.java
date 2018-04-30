@@ -31,7 +31,6 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 		this.updatesToBeCommited = update;
 	}
 	
-	
 	@Override
 	public boolean submitUpdates(byte[] adsUpdates) {
 		try {

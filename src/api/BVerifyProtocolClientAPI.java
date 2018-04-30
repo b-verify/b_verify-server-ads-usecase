@@ -11,8 +11,7 @@ import java.rmi.RemoteException;
  */
 public interface BVerifyProtocolClientAPI extends Remote {
 	
-	
-	public byte[] approveRequest(byte[] requestMessage);
+	public byte[] approveRequest(byte[] requestMessage) throws RemoteException;
 	
 	public boolean approveEchoBenchmark(boolean response) throws RemoteException;
 	

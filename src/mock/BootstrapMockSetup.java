@@ -28,6 +28,7 @@ import serialization.BVerifyAPIMessageSerialization.Receipt;
  *
  */
 public class BootstrapMockSetup {
+	
 		
 	public static void bootstrap(int nClient, int nWarehouses, int nReceipts, String base) {
 		String pkiDirectoryFile  = base+"/pki/";
