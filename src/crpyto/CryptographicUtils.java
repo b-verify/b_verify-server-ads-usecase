@@ -3,7 +3,6 @@ package crpyto;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import pki.Account;
 import serialization.BVerifyAPIMessageSerialization.Receipt;
@@ -72,32 +71,17 @@ public class CryptographicUtils {
 	 *         that ADS.
 	 */
 	public static byte[] listOfAccountsToADSKey(List<Account> accounts) {
-		return CryptographicUtils.listOfAccountIDStringsToADSKey(
-				accounts.stream().map(x -> x.getIdAsString()).collect(Collectors.toList()));
-	}
-
-	/**
-	 * This method returns a deterministic crpytographic identifier for a list of
-	 * account strings - an "ADS Key"
-	 * 
-	 * @param accountIdStrings
-	 *            - a list of (unique) account Id Strings
-	 * @return a fixed-length unique identifier for the ADS (the "ADS Key"). This
-	 *         can be used to lookup the ADS and as a cryptographic commitment to
-	 *         that ADS.
-	 */
-	public static byte[] listOfAccountIDStringsToADSKey(List<String> accountIdStrings) {
-		// we canonically sort the accounts
-		Collections.sort(accountIdStrings);
-
+		Collections.sort(accounts);
+		
 		// turn it into a list of byte arrays
 		List<byte[]> preimage = new ArrayList<>();
-		for (String idString : accountIdStrings) {
-			preimage.add(idString.getBytes());
+		for (Account account : accounts) {
+			preimage.add(account.getIdAsBytes());
 		}
 
 		// and take the sha256 hash of it all to get the key
 		byte[] adsKey = CryptographicDigest.hash(preimage);
 		return adsKey;
 	}
+
 }

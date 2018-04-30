@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import crpyto.CryptographicSignature;
 
-public class Account implements Serializable {
+public class Account implements Serializable, Comparable<Account> {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -135,6 +135,11 @@ public class Account implements Serializable {
 	@Override
 	public String toString() {
 		return "<"+this.id.toString()+">";
+	}
+
+	@Override
+	public int compareTo(Account o) {
+		return this.id.compareTo(o.id);
 	}
 	
 }

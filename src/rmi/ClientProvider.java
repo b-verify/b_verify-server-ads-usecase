@@ -11,7 +11,7 @@ import pki.Account;
 
 public class ClientProvider {
 	
-	public static String SERVER_NAME = "SERVER";
+	public static final String SERVER_NAME = "SERVER";
 	
 	private Registry registry;
 	
@@ -31,6 +31,10 @@ public class ClientProvider {
 			e.printStackTrace();
 			throw new RuntimeException();
 		}
+	}
+	
+	public void bindServer(Remote robj) {
+		this.bind(SERVER_NAME, robj);
 	}
 	
 	public BVerifyProtocolClientAPI getClient(Account client) {

@@ -11,7 +11,7 @@ import java.rmi.RemoteException;
  */
 public interface BVerifyProtocolServerAPI extends Remote {
 	
-	public boolean submitRequest(byte[] requestMessage);
+	public boolean submitUpdates(byte[] adsUpdates);
 	
 	/**
 	 * Invoked by a client remotely on the server to request

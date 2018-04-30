@@ -5,7 +5,6 @@ import java.util.concurrent.Callable;
 import api.BVerifyProtocolClientAPI;
 import pki.Account;
 import rmi.ClientProvider;
-import serialization.BVerifyAPIMessageSerialization.Response;
 
 
 /**
@@ -39,9 +38,9 @@ public class MakeRequestVerifyResponseCallback implements Callable<Boolean> {
 		BVerifyProtocolClientAPI stub = this.rmi.getClient(this.sendTo);
 		
 		// make the request
-		byte[] resp = stub.approveRequest(this.request.getRequest().toByteArray());
+		// byte[] resp = stub.approveRequest(this.request.getRequest().toByteArray());
 		// get the response
-		Response response = Response.parseFrom(resp);
+		// Response response = Response.parseFrom(resp);
 		
 		// check the signatures
 		
