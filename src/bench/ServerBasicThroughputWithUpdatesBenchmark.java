@@ -50,7 +50,7 @@ public class ServerBasicThroughputWithUpdatesBenchmark {
 					@Override
 					public Boolean call() throws Exception {
 						client.sendRequest();
-						Thread.sleep(1000);
+						Thread.sleep(5000);
 						client.getAndCheckUpdates();
 						System.out.println("COMPLETED");
 						return Boolean.TRUE;

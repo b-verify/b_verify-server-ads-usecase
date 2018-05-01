@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import api.BVerifyProtocolClientAPI;
 import crpyto.CryptographicDigest;
@@ -21,6 +22,8 @@ import serialization.generated.BVerifyAPIMessageSerialization.ADSModificationReq
 import serialization.generated.BVerifyAPIMessageSerialization.GetUpdatesRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.RequestADSUpdates;
 import serialization.generated.BVerifyAPIMessageSerialization.Signature;
+import serialization.generated.BVerifyAPIMessageSerialization.Updates;
+import serialization.generated.MptSerialization.MerklePrefixTrie;
 
 public class MockSimpleClient implements BVerifyProtocolClientAPI {
 	
@@ -120,8 +123,14 @@ public class MockSimpleClient implements BVerifyProtocolClientAPI {
 	public void getAndCheckUpdates() {
 		try {
 			byte[] update = this.rmi.getServer().getUpdates(this.getUpdatesRequest);
-			System.out.println("update recieved | length: "+update.length);
-		} catch (RemoteException e) {
+			Updates updateMsg = Updates.parseFrom(update);
+			for(MerklePrefixTrie mptUpdate : updateMsg.getUpdateList()) {
+				this.authAds.processUpdates(mptUpdate);
+				System.out.println("update processed - new commitment : "+
+						Utils.byteArrayAsHexString(this.authAds.commitment()));
+			}
+			System.out.println("all updates processed");
+		} catch (RemoteException | InvalidProtocolBufferException | InvalidSerializationException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
 		}
