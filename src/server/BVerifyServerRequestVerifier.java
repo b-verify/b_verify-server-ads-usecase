@@ -13,6 +13,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import api.BVerifyProtocolServerAPI;
+import crpyto.CryptographicDigest;
 import crpyto.CryptographicSignature;
 import pki.Account;
 import serialization.BVerifyAPIMessageSerialization.ADSModificationRequest;
@@ -45,7 +46,8 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 			for(ADSModificationRequest adsModifcation : request.getModificationsList()) {
 				byte[] adsKey = adsModifcation.getAdsId().toByteArray();
 				byte[] adsValue = adsModifcation.getNewValue().toByteArray();
-				needToSign.addAll(this.adsManager.getADSOwners(adsKey));
+				Set<Account> owners = this.adsManager.getADSOwners(adsKey);
+				needToSign.addAll(owners);
 				// # 3 create the actual ADS modifications
 				ADSModification adsModification = new ADSModification(adsKey, adsValue);
 				modifications.add(adsModification);
@@ -64,7 +66,9 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 			for(int i = 0; i < signatures.size(); i++) {
 				Account a = needToSign.get(i);
 				byte[] sig = signatures.get(i);
-				boolean signed = CryptographicSignature.verify(adsUpdates, sig, a.getPublicKey());
+				// witness for now is just the first modification
+				byte[] witness = CryptographicDigest.hash(request.getModifications(0).toByteArray());
+				boolean signed = CryptographicSignature.verify(witness, sig, a.getPublicKey());
 				if(!signed) {
 					return false;
 				}

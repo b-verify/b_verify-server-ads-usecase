@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +29,10 @@ public class ADSManager {
 	// to sets of clients who control the ADS.
 	// these clients must all sign to update
 	// the ADS
-	private final Map<byte[], Set<Account>> adsKeyToOwners;
+	// Java NOTE: cannot use byte[] as a key since
+	//				implements referential equality so
+	//				instead we wrap it with a string
+	private final Map<String, Set<Account>> adsKeyToOwners;
 
 	// current server authentication 
 	// information. 
@@ -46,7 +50,7 @@ public class ADSManager {
 	
 	public ADSManager(String base, PKIDirectory pki) {
 		this.base = base;
-		File f = new File(base + "/server-ads/starting-ads");
+		File f = new File(base + "server-ads/starting-ads");
 		
 		// First all the ADS Keys and 
 		// determine which clients care about 
@@ -56,12 +60,13 @@ public class ADSManager {
 		for(Account a : accounts) {
 			Set<byte[]> adsKeys = a.getADSKeys();
 			for(byte[] adsKey : adsKeys) {
-				Set<Account> accs = this.adsKeyToOwners.get(adsKey);
+				String adsKeyString = new String(adsKey);
+				Set<Account> accs = this.adsKeyToOwners.get(adsKeyString);
 				if(accs == null) {
 					accs = new HashSet<>();
 				}
 				accs.add(a);
-				this.adsKeyToOwners.put(adsKey, accs);
+				this.adsKeyToOwners.put(adsKeyString, accs);
 			}
 		}
 		
@@ -76,17 +81,18 @@ public class ADSManager {
 			e.printStackTrace();
 			throw new RuntimeException("corrupted data");
 		}
-		
+		this.deltas = new ArrayList<>();
+		System.out.println("ADSManager Loaded!");	
 	}
 	
 	public Set<Account> getADSOwners(byte[] adsKey){
-		return this.adsKeyToOwners.get(adsKey);
+		return this.adsKeyToOwners.get(new String(adsKey));
 	}
 	
 	public void update(byte[] adsKey, byte[] adsValue) {
 		this.serverAuthADS.insert(adsKey, adsValue);
 	}
-
+	
 	public byte[] commit() {
 		// save delta
 		MPTDictionaryDelta delta = new MPTDictionaryDelta(this.serverAuthADS);

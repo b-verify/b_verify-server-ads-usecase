@@ -9,14 +9,20 @@ import java.util.Date;
 import java.util.List;
 
 import com.github.javafaker.Faker;
+import com.google.protobuf.ByteString;
 
+import crpyto.CryptographicDigest;
+import crpyto.CryptographicSignature;
 import crpyto.CryptographicUtils;
 import mpt.core.Utils;
 import mpt.dictionary.MPTDictionaryFull;
 import mpt.set.MPTSetFull;
 import pki.Account;
 import pki.PKIDirectory;
+import serialization.BVerifyAPIMessageSerialization.ADSModificationRequest;
 import serialization.BVerifyAPIMessageSerialization.Receipt;
+import serialization.BVerifyAPIMessageSerialization.RequestADSUpdates;
+import serialization.BVerifyAPIMessageSerialization.Signature;
 
 /**
  * This class is used to create mock data
@@ -29,8 +35,57 @@ import serialization.BVerifyAPIMessageSerialization.Receipt;
  */
 public class BootstrapMockSetup {
 	
+	
+	public static void bootstrapSingleADSPerClient(int nClients, int nUpdates, String base) {
+		String pkiDirectoryFile  = base+"pki/";
+		String serverADSDirectoryFile = base+"server-ads/";
+		String txFileDirectory = base+"transaction/";
+
+	    // server auth 
+	    MPTDictionaryFull serverADS = new MPTDictionaryFull();
+	    
+	    // generate a bunch of accounts
+		List<Account> accounts = PKIDirectory.generateRandomAccounts(nClients);
+		for(int accountNumber = 0; accountNumber < accounts.size(); accountNumber++) {
+			Account a = accounts.get(accountNumber);
+    		List<Account> accs = new ArrayList<>();
+    		accs.add(a);
+    		// associate a single ADS for each client 
+    		// with a value
+    		byte[] adsKey = CryptographicUtils.listOfAccountsToADSKey(accs);
+    		a.addADSKey(adsKey);
+    		System.out.println("Creating "+a+" - "+Utils.byteArrayAsHexString(adsKey));
+    		byte[] adsValue = CryptographicDigest.hash("0".getBytes());
+    		for(int update = 1; update <= nUpdates; update++) {
+	    		System.out.println("Generating Update "+update+"|Account "+accountNumber);
+    			byte[] newADSValue = CryptographicDigest.hash(String.valueOf(update).getBytes());
+	    		ADSModificationRequest modification = ADSModificationRequest.newBuilder()
+	    				.setAdsId(ByteString.copyFrom(adsKey))
+	    				.setNewValue(ByteString.copyFrom(newADSValue))
+	    				.build();
+	    		byte[] witness = CryptographicDigest.hash(modification.toByteArray());
+	    		byte[] signature = CryptographicSignature.sign(witness, 
+	    				a.getPrivateKey());
+	    		RequestADSUpdates request = RequestADSUpdates
+	    				.newBuilder()
+	    				.addModifications(modification)
+	    				.addSignatures(Signature
+	    						.newBuilder()
+	    						.setSignature(ByteString.copyFrom(signature)))
+	    				.build();
+	    		String name = a.getIdAsString()+"-"+update;
+	    		BootstrapMockSetup.writeBytesToFile(txFileDirectory, name, request.toByteArray());
+	    		
+    		}
+    		a.saveToFile(pkiDirectoryFile);
+       		serverADS.insert(adsKey, adsValue);
+		}
+		BootstrapMockSetup.writeBytesToFile(serverADSDirectoryFile, "starting-ads", serverADS.serialize().toByteArray());
 		
-	public static void bootstrap(int nClient, int nWarehouses, int nReceipts, String base) {
+		
+	}
+		
+	public static void bootstrapWarehouseUsecase(int nClient, int nWarehouses, int nReceipts, String base) {
 		String pkiDirectoryFile  = base+"/pki/";
 		String dataDirectoryFile = base+"/data/";
 		String clientADSDirectoryFile = base+"/client-ads/";
@@ -87,7 +142,7 @@ public class BootstrapMockSetup {
 	    }
 	    
 	    // save the server auth ADS in the server-ads directory
-		BootstrapMockSetup.writeADSToFile(serverADSDirectoryFile, "starting-ads", serverADS.serialize().toByteArray());
+		BootstrapMockSetup.writeBytesToFile(serverADSDirectoryFile, "starting-ads", serverADS.serialize().toByteArray());
 	}
 	
 	
@@ -139,20 +194,24 @@ public class BootstrapMockSetup {
 		}
 	}
 	
-	public static void writeADSToFile(String directory, byte[] id, byte[] serializedADS) {
-		String fileName = directory+Utils.byteArrayAsHexString(id);
-		File f = new File(fileName);
-		try {
-			FileOutputStream fos = new FileOutputStream(f);
-			fos.write(serializedADS);
-			fos.close();
-		}catch(Exception e) {
-			throw new RuntimeException(e.getMessage());
+	public static List<byte[]> loadTransactionRequests(String base){
+		String directory = base+"transaction/";
+		File dir = new File(directory);
+		File[] txFiles = dir.listFiles();
+		List<byte[]> requests = new ArrayList<>();
+		for(File f : txFiles) {
+			byte[] request  = readBytesFromFile(f);
+			requests.add(request);
 		}
+		return requests;
+		
 	}
 	
+	public static void writeADSToFile(String directory, byte[] id, byte[] serializedADS) {
+		writeBytesToFile(directory, Utils.byteArrayAsHexString(id), serializedADS);
+	}
 	
-	public static void writeADSToFile(String directory, String name, byte[] serializedADS) {
+	public static void writeBytesToFile(String directory, String name, byte[] serializedADS) {
 		String fileName = directory+name;
 		File f = new File(fileName);
 		try {
@@ -164,10 +223,27 @@ public class BootstrapMockSetup {
 		}
 	}
 	
+	public static byte[] readBytesFromFile(File f) {
+		try {
+			FileInputStream fis = new FileInputStream(f);
+			byte[] data = new byte[(int) f.length()];
+			fis.read(data);
+			fis.close();
+			return data;
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException("corrupted data");
+		}
+	}
+	
 	public static void main(String[] args) {
 		
 		// runs the bootstrap to setup the mock data
-		String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/mock-data/";
-		BootstrapMockSetup.bootstrap(10, 1, 10, base);
+		// String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/mock-data/";
+		// BootstrapMockSetup.bootstrapWarehouseUsecase(10, 1, 10, base);
+		
+		// this bootstraps 
+		String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/throughput-test/";
+		BootstrapMockSetup.bootstrapSingleADSPerClient(10, 1, base);
 	}
 }

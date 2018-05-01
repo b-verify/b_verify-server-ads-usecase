@@ -7,6 +7,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 import api.BVerifyProtocolClientAPI;
+import api.BVerifyProtocolServerAPI;
 import pki.Account;
 
 public class ClientProvider {
@@ -35,6 +36,15 @@ public class ClientProvider {
 	
 	public void bindServer(Remote robj) {
 		this.bind(SERVER_NAME, robj);
+	}
+	
+	public BVerifyProtocolServerAPI getServer() {
+		try {
+			return (BVerifyProtocolServerAPI) this.registry.lookup(SERVER_NAME);
+		} catch (RemoteException | NotBoundException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 	
 	public BVerifyProtocolClientAPI getClient(Account client) {

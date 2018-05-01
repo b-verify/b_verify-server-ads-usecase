@@ -64,7 +64,8 @@ public class BVerifyServer {
 	private static final int TIMEOUT = 60;
 	
 	public BVerifyServer(String base, String registryHost, int registryPort) {
-		this.pki = new PKIDirectory(base + "/pki/");
+		this.pki = new PKIDirectory(base + "pki/");
+		System.out.println("loaded PKI");
 		this.rmi = new ClientProvider(registryHost, registryPort);
 		
 		// setup the shared data
@@ -170,6 +171,7 @@ public class BVerifyServer {
 		LocateRegistry.createRegistry(port);
 		
 		BVerifyServer server = new BVerifyServer(base, host, port);
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		while(true) {
 			System.out.println("Press enter to start test");
