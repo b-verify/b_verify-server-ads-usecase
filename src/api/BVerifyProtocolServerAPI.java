@@ -2,6 +2,7 @@ package api;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
 /**
  * The API exposed by the b_verify server to the b_verify clients
@@ -41,6 +42,13 @@ public interface BVerifyProtocolServerAPI extends Remote {
 	 * and are used ONLy for testing and demo purposes.
 	 */
 	
-	public byte[] getAuthenticationObject(byte[] adsKey) throws RemoteException;
+	public byte[] getAuthenticationObjectNoProof(byte[] adsKey) throws RemoteException;
+	
+	public byte[] getAuthenticationProof(List<byte[]> adsKeys) throws RemoteException;
+	
+	public byte[] getCommitment(int commitmentNumber) throws RemoteException;
 
+	
+	
+	
 }

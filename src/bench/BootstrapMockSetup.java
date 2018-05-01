@@ -36,7 +36,7 @@ import serialization.generated.BVerifyAPIMessageSerialization.Signature;
 public class BootstrapMockSetup {
 	
 	
-	public static void bootstrapSingleADSPerClient(int nClients, int nUpdates, String base) {
+	public static void bootstrapSingleADSPerClientGenerateUpdates(int nClients, int nUpdates, String base) {
 		String pkiDirectoryFile  = base+"pki/";
 		String serverADSDirectoryFile = base+"server-ads/";
 		String txFileDirectory = base+"transaction/";
@@ -77,6 +77,33 @@ public class BootstrapMockSetup {
 	    		BootstrapMockSetup.writeBytesToFile(txFileDirectory, name, request.toByteArray());
 	    		
     		}
+    		a.saveToFile(pkiDirectoryFile);
+       		serverADS.insert(adsKey, adsValue);
+		}
+		BootstrapMockSetup.writeBytesToFile(serverADSDirectoryFile, "starting-ads", serverADS.serialize().toByteArray());
+		
+		
+	}
+	
+	public static void bootstrapSingleADSPerClient(int nClients, String base) {
+		String pkiDirectoryFile  = base+"pki/";
+		String serverADSDirectoryFile = base+"server-ads/";
+
+	    // server auth 
+	    MPTDictionaryFull serverADS = new MPTDictionaryFull();
+	    
+	    // generate a bunch of accounts
+		List<Account> accounts = PKIDirectory.generateRandomAccounts(nClients);
+		for(int accountNumber = 0; accountNumber < accounts.size(); accountNumber++) {
+			Account a = accounts.get(accountNumber);
+    		List<Account> accs = new ArrayList<>();
+    		accs.add(a);
+    		// associate a single ADS for each client 
+    		// with a value
+    		byte[] adsKey = CryptographicUtils.listOfAccountsToADSKey(accs);
+    		a.addADSKey(adsKey);
+    		System.out.println("Creating "+a+" - "+Utils.byteArrayAsHexString(adsKey));
+    		byte[] adsValue = CryptographicDigest.hash("0".getBytes());
     		a.saveToFile(pkiDirectoryFile);
        		serverADS.insert(adsKey, adsValue);
 		}

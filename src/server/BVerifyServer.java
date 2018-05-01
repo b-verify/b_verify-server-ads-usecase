@@ -1,12 +1,10 @@
 package server;
 
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -160,28 +158,4 @@ public class BVerifyServer {
 		System.out.println("DONE PROCESSING RESPONSES RESULT: "+commit);
 		return commit;
 	}
-	
-	
-	
-	public static void main(String[] args) throws RemoteException {
-		String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/mock-data/";
-		String host = null;
-		int port = 1099;
-		int batchSize = 1;
-		// first create a registry
-		LocateRegistry.createRegistry(port);
-		
-		BVerifyServer server = new BVerifyServer(base, host, port, batchSize);
-		@SuppressWarnings("resource")
-		Scanner sc = new Scanner(System.in);
-		while(true) {
-			System.out.println("Press enter to start test");
-			sc.nextLine();
-	        System.out.println("Starting test");
-	        boolean res = server.benchmarkSigEcho();
-	        System.out.println("Test complete - res: "+res);
-		}
-	}
-	
-
 }

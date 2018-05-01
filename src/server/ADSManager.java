@@ -27,8 +27,8 @@ public class ADSManager {
 	
 	// we store a mapping from adsKeys 
 	// to sets of clients who control the ADS.
-	// these clients must all sign to update
-	// the ADS
+	// The protocol requires that these 
+	// clients must all sign updates to the ADS.
 	// Java NOTE: cannot use byte[] as a key since
 	//				implements referential equality so
 	//				instead we wrap it with a string
@@ -41,6 +41,11 @@ public class ADSManager {
 	// root value of that ADS.
 	private MPTDictionaryFull serverAuthADS;
 
+	// we store the previous commitments
+	// normall these would be broadcast in
+	// the Bitcoin blockchain
+	private List<byte[]> commitments;
+	
 	// we also store a log of changes to generate
 	// proofs of updates
 	// TODO: consider if we want to store these
@@ -48,8 +53,11 @@ public class ADSManager {
 	private List<MPTDictionaryDelta> deltas;
 	
 	
+	
 	public ADSManager(String base, PKIDirectory pki) {
 		this.base = base;
+		this.deltas = new ArrayList<>();
+		this.commitments = new ArrayList<>();
 		File f = new File(base + "server-ads/starting-ads");
 		
 		// First all the ADS Keys and 
@@ -77,11 +85,12 @@ public class ADSManager {
 			fis.read(encodedAds);
 			fis.close();
 			this.serverAuthADS = MPTDictionaryFull.deserialize(encodedAds);
+			byte[] initialCommitment = this.serverAuthADS.commitment();
+			this.commitments.add(initialCommitment);
 		} catch (InvalidSerializationException | IOException e) {
 			e.printStackTrace();
 			throw new RuntimeException("corrupted data");
 		}
-		this.deltas = new ArrayList<>();
 		System.out.println("ADSManager Loaded!");	
 	}
 	
@@ -101,15 +110,23 @@ public class ADSManager {
 		this.serverAuthADS.reset();
 		// calculate a new commitment 
 		byte[] commitment = this.serverAuthADS.commitment();
+		this.commitments.add(commitment);
 		return commitment;
 	}
 
-	public byte[] get(byte[] key) {
+	public byte[] getValue(byte[] key) {
 		return this.serverAuthADS.get(key);
 	}
 
-	public byte[] commitment() {
-		return this.serverAuthADS.commitment();
+	public byte[] currentCommitment() {
+		return this.commitments.get(this.commitments.size());
+	}
+	
+	public byte[] getCommitment(int commitmentNumber) {
+		if(commitmentNumber < 0 || commitmentNumber >= this.commitments.size()) {
+			return null;
+		}
+		return this.commitments.get(commitmentNumber);
 	}
 
 	public MerklePrefixTrie getProof(List<byte[]> keys) {
@@ -117,7 +134,7 @@ public class ADSManager {
 		return partial.serialize();
 	}
 
-	public byte[] getUpdate(int startingCommitNumber, List<byte[]> keyHashes) {
+	public Updates getUpdate(int startingCommitNumber, List<byte[]> keyHashes) {
 		Updates.Builder updates = Updates.newBuilder();
 		// go through each commitment
 		for (int commitmentNumber = startingCommitNumber; commitmentNumber < this.deltas.size(); commitmentNumber++) {
@@ -127,7 +144,7 @@ public class ADSManager {
 			MerklePrefixTrie update = delta.getUpdates(keyHashes);
 			updates.addUpdate(update);
 		}
-		return updates.build().toByteArray();
+		return updates.build();
 	}
 
 	public void save() {

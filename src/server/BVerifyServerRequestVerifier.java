@@ -101,7 +101,7 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 				keys.add(key.toByteArray());
 			}
 			int from = request.getFromCommitNumber();
-			byte[] updates = this.adsManager.getUpdate(from, keys);
+			byte[] updates = this.adsManager.getUpdate(from, keys).toByteArray();
 			return updates;
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
@@ -110,8 +110,18 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 	}
 
 	@Override
-	public byte[] getAuthenticationObject(byte[] adsKey) throws RemoteException {
-		return this.adsManager.get(adsKey);
+	public byte[] getAuthenticationObjectNoProof(byte[] adsKey) throws RemoteException {
+		return this.adsManager.getValue(adsKey);
+	}
+
+	@Override
+	public byte[] getAuthenticationProof(List<byte[]> adsKeys) throws RemoteException {
+		return this.adsManager.getProof(adsKeys).toByteArray();
+	}
+
+	@Override
+	public byte[] getCommitment(int commitmentNumber) throws RemoteException {
+		return this.adsManager.getCommitment(commitmentNumber);
 	}
 
 }

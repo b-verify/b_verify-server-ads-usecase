@@ -26,7 +26,7 @@ public class ServerBasicThroughputBenchmark {
 	private static final int TIMEOUT = 60;
 	
 	public static void generateTestData(String base) {
-		BootstrapMockSetup.bootstrapSingleADSPerClient(1000, 10, base);
+		BootstrapMockSetup.bootstrapSingleADSPerClientGenerateUpdates(1000, 10, base);
 	}
 	
 	public static void runTest(String base, int batchSize, boolean checkUpdates) {
@@ -83,7 +83,7 @@ public class ServerBasicThroughputBenchmark {
 				for(byte[] request : requests) {
 					RequestADSUpdates requestMsg = RequestADSUpdates.parseFrom(request);
 					for(ADSModificationRequest modification : requestMsg.getModificationsList()) {
-						byte[] adsRoot = stub.getAuthenticationObject(modification.getAdsId().toByteArray());
+						byte[] adsRoot = stub.getAuthenticationObjectNoProof(modification.getAdsId().toByteArray());
 						boolean updated = Arrays.equals(adsRoot, modification.getNewValue().toByteArray());
 						System.out.println("checking update: "+updated);
 					}
@@ -95,7 +95,7 @@ public class ServerBasicThroughputBenchmark {
 	}
 
 	public static void main(String[] args) {
-		String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/throughput-test/";
+		String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/benchmarks/throughput-test-server-basic/";
 		// generateTestData(base);
 		runTest(base, 100, false);
 	}

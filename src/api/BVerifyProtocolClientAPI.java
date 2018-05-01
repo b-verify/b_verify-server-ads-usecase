@@ -22,6 +22,7 @@ public interface BVerifyProtocolClientAPI extends Remote {
 	 * These methods are not part of the secure API
 	 * 	and are used only for benchmarking and testing. 
 	 */
+	public void recieveNewCommitment(byte[] commitment) throws RemoteException;
 	
 	public boolean approveEchoBenchmark(boolean response) throws RemoteException;
 	

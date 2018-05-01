@@ -27,10 +27,10 @@ public class PKIDirectory {
 	private final Map<UUID, Account> lookupTable;
 	private final List<UUID> uuids; 
 	
-	public PKIDirectory(String base) {
+	public PKIDirectory(String dir) {
 		this.lookupTable = new HashMap<>();
 		this.uuids = new ArrayList<>();
-		File folder = new File(base);
+		File folder = new File(dir);
 		File[] listOfFiles = folder.listFiles();
 		for(File f : listOfFiles) {
 			if(f.isFile()) {
