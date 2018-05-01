@@ -14,7 +14,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import api.BVerifyProtocolServerAPI;
-import mock.BootstrapMockSetup;
 import rmi.ClientProvider;
 import server.BVerifyServer;
 

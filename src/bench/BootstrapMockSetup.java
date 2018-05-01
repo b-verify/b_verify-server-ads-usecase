@@ -1,4 +1,4 @@
-package mock;
+package bench;
 
 import java.io.File;
 import java.io.FileInputStream;
