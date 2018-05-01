@@ -16,9 +16,9 @@ import api.BVerifyProtocolServerAPI;
 import crpyto.CryptographicDigest;
 import crpyto.CryptographicSignature;
 import pki.Account;
-import serialization.BVerifyAPIMessageSerialization.ADSModificationRequest;
-import serialization.BVerifyAPIMessageSerialization.GetUpdatesRequest;
-import serialization.BVerifyAPIMessageSerialization.RequestADSUpdates;
+import serialization.generated.BVerifyAPIMessageSerialization.ADSModificationRequest;
+import serialization.generated.BVerifyAPIMessageSerialization.GetUpdatesRequest;
+import serialization.generated.BVerifyAPIMessageSerialization.RequestADSUpdates;
 
 public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 	
@@ -107,6 +107,11 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public byte[] getAuthenticationObject(byte[] adsKey) throws RemoteException {
+		return this.adsManager.get(adsKey);
 	}
 
 }

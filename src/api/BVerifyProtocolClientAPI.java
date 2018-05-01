@@ -11,7 +11,17 @@ import java.rmi.RemoteException;
  */
 public interface BVerifyProtocolClientAPI extends Remote {
 	
+	/*
+	 * These methods are the b_verify client API
+	 */
+	
 	public byte[] approveRequest(byte[] requestMessage) throws RemoteException;
+	
+	
+	/*
+	 * These methods are not part of the secure API
+	 * 	and are used only for benchmarking and testing. 
+	 */
 	
 	public boolean approveEchoBenchmark(boolean response) throws RemoteException;
 	

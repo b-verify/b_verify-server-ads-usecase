@@ -3,6 +3,7 @@ package bench;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
@@ -15,15 +16,20 @@ import java.util.concurrent.TimeUnit;
 
 import api.BVerifyProtocolServerAPI;
 import rmi.ClientProvider;
+import serialization.generated.BVerifyAPIMessageSerialization.ADSModificationRequest;
+import serialization.generated.BVerifyAPIMessageSerialization.RequestADSUpdates;
 import server.BVerifyServer;
 
 public class ServerBasicThroughputBenchmark {
 	
 	private static final ExecutorService WORKERS = Executors.newCachedThreadPool();
 	private static final int TIMEOUT = 60;
-
-	public static void main(String[] args) {
-		String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/throughput-test/";
+	
+	public static void generateTestData(String base) {
+		BootstrapMockSetup.bootstrapSingleADSPerClient(1000, 10, base);
+	}
+	
+	public static void runTest(String base, int batchSize, boolean checkUpdates) {
 		// load the requests
 		List<byte[]> requests = BootstrapMockSetup.loadTransactionRequests(base);
 		
@@ -37,7 +43,7 @@ public class ServerBasicThroughputBenchmark {
 			throw new RuntimeException(e.getMessage());
 		}
 		@SuppressWarnings("unused")
-		BVerifyServer server = new BVerifyServer(base, host, port);
+		BVerifyServer server = new BVerifyServer(base, host, port, batchSize);
 		ClientProvider rmi = new ClientProvider(host, port);
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Press enter to start test");
@@ -68,6 +74,30 @@ public class ServerBasicThroughputBenchmark {
 			e.printStackTrace();
 		}
 		System.out.println("DONE PROCESSING RESPONSES RESULT: "+commit);
+		// now check that the requests have been performed
+		if(checkUpdates) {
+			try {
+				// wait one second
+				Thread.sleep(1000);
+				BVerifyProtocolServerAPI stub = rmi.getServer();
+				for(byte[] request : requests) {
+					RequestADSUpdates requestMsg = RequestADSUpdates.parseFrom(request);
+					for(ADSModificationRequest modification : requestMsg.getModificationsList()) {
+						byte[] adsRoot = stub.getAuthenticationObject(modification.getAdsId().toByteArray());
+						boolean updated = Arrays.equals(adsRoot, modification.getNewValue().toByteArray());
+						System.out.println("checking update: "+updated);
+					}
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+		String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/throughput-test/";
+		// generateTestData(base);
+		runTest(base, 100, false);
 	}
 	
 }

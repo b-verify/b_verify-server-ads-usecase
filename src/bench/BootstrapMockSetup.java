@@ -19,10 +19,10 @@ import mpt.dictionary.MPTDictionaryFull;
 import mpt.set.MPTSetFull;
 import pki.Account;
 import pki.PKIDirectory;
-import serialization.BVerifyAPIMessageSerialization.ADSModificationRequest;
-import serialization.BVerifyAPIMessageSerialization.Receipt;
-import serialization.BVerifyAPIMessageSerialization.RequestADSUpdates;
-import serialization.BVerifyAPIMessageSerialization.Signature;
+import serialization.generated.BVerifyAPIMessageSerialization.ADSModificationRequest;
+import serialization.generated.BVerifyAPIMessageSerialization.Receipt;
+import serialization.generated.BVerifyAPIMessageSerialization.RequestADSUpdates;
+import serialization.generated.BVerifyAPIMessageSerialization.Signature;
 
 /**
  * This class is used to create mock data
@@ -241,9 +241,5 @@ public class BootstrapMockSetup {
 		// runs the bootstrap to setup the mock data
 		// String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/mock-data/";
 		// BootstrapMockSetup.bootstrapWarehouseUsecase(10, 1, 10, base);
-		
-		// this bootstraps 
-		String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/throughput-test/";
-		BootstrapMockSetup.bootstrapSingleADSPerClient(10, 1, base);
 	}
 }

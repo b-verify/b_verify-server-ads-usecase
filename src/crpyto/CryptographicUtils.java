@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import pki.Account;
-import serialization.BVerifyAPIMessageSerialization.Receipt;
+import serialization.generated.BVerifyAPIMessageSerialization.Receipt;
 
 /**
  * This class contains the various cryptographic commitments and mappings used

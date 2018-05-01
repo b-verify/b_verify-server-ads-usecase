@@ -22,7 +22,7 @@ import crpyto.CryptographicSignature;
 import pki.Account;
 import pki.PKIDirectory;
 import rmi.ClientProvider;
-import serialization.BVerifyAPIMessageSerialization.Signature;
+import serialization.generated.BVerifyAPIMessageSerialization.Signature;
 
 public class BVerifyServer {
 	
@@ -63,7 +63,7 @@ public class BVerifyServer {
 	private static final ExecutorService WORKERS = Executors.newCachedThreadPool();
 	private static final int TIMEOUT = 60;
 	
-	public BVerifyServer(String base, String registryHost, int registryPort) {
+	public BVerifyServer(String base, String registryHost, int registryPort, int batchSize) {
 		this.pki = new PKIDirectory(base + "pki/");
 		System.out.println("loaded PKI");
 		this.rmi = new ClientProvider(registryHost, registryPort);
@@ -76,7 +76,7 @@ public class BVerifyServer {
 		
 		// this component runs as its own thread
 		BVerifyServerUpdateApplier applierThread = 
-				new BVerifyServerUpdateApplier(this.updatesToBeCommited, this.adsManager);
+				new BVerifyServerUpdateApplier(this.updatesToBeCommited, this.adsManager, batchSize);
 		applierThread.start();
 		
 		// this is an object exposed to the RMI interface.
@@ -167,10 +167,11 @@ public class BVerifyServer {
 		String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/mock-data/";
 		String host = null;
 		int port = 1099;
+		int batchSize = 1;
 		// first create a registry
 		LocateRegistry.createRegistry(port);
 		
-		BVerifyServer server = new BVerifyServer(base, host, port);
+		BVerifyServer server = new BVerifyServer(base, host, port, batchSize);
 		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		while(true) {

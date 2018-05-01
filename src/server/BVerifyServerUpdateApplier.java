@@ -3,15 +3,25 @@ package server;
 import java.util.concurrent.BlockingQueue;
 
 public class BVerifyServerUpdateApplier extends Thread {
-
 	
-	private static final int BATCH_SIZE = 1;
+	/**
+	 * Parameters - batching, impact performance
+	 */
+	private final int BATCH_SIZE;
+	// TODO also add a timeout so that things eventually get
+	//			committed
+	
+	/**
+	 * Shared data!
+	 */
 	private final BlockingQueue<Update> updates;
 	private final ADSManager adsManager;
 	
-	public BVerifyServerUpdateApplier(BlockingQueue<Update> updates, ADSManager adsManager) {
+	public BVerifyServerUpdateApplier(BlockingQueue<Update> updates, ADSManager adsManager, 
+			int batchSize) {
 		this.updates = updates;
 		this.adsManager = adsManager;
+		this.BATCH_SIZE = batchSize;
 	}
 
 	@Override

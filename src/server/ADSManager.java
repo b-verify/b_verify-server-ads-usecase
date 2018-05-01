@@ -17,8 +17,8 @@ import mpt.dictionary.MPTDictionaryFull;
 import mpt.dictionary.MPTDictionaryPartial;
 import pki.Account;
 import pki.PKIDirectory;
-import serialization.BVerifyAPIMessageSerialization.Updates;
-import serialization.MptSerialization.MerklePrefixTrie;
+import serialization.generated.BVerifyAPIMessageSerialization.Updates;
+import serialization.generated.MptSerialization.MerklePrefixTrie;
 
 
 public class ADSManager {

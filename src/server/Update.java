@@ -2,7 +2,7 @@ package server;
 
 import java.util.Set;
 
-import serialization.BVerifyAPIMessageSerialization.RequestADSUpdates;
+import serialization.generated.BVerifyAPIMessageSerialization.RequestADSUpdates;
 
 public class Update {
 

@@ -19,7 +19,7 @@ import mpt.set.MPTSetFull;
 import pki.Account;
 import pki.PKIDirectory;
 import rmi.ClientProvider;
-import serialization.BVerifyAPIMessageSerialization.Signature;
+import serialization.generated.BVerifyAPIMessageSerialization.Signature;
 
 /**
  * For benchmarking and testing purposes 
