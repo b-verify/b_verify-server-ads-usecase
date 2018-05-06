@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -28,7 +29,7 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 	private static final Logger logger = Logger.getLogger(ServerSingleUpdateBaselineThroughputBenchmark.class.getName());
 	
 	private static final ExecutorService WORKERS = Executors.newCachedThreadPool();
-	private static final int TIMEOUT = 120;
+	private static final int TIMEOUT = 240;
 		
 	/*
 	 * Run this once to generate the data for the benchmark
@@ -89,21 +90,21 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 					@Override
 					public Boolean call() throws Exception {
 						// request the update
-						logger.log(Level.INFO, "sending update request to server");
+						Random rand = new Random();
+						Thread.sleep(rand.nextInt(15)*1000);
 						rmi.getServer().performUpdate(updateRequestAsBytes);
-						logger.log(Level.INFO, "update submitted!");
-						Thread.sleep(60*1000);
+						Thread.sleep(30*1000);
 						
 						// ask for a proof it was applied 
-						logger.log(Level.INFO, "asking for update proof from the server");
 						byte[] proofApplied = rmi.getServer().proveUpdate(proofRequestAsBytes);
 						ProveUpdateResponse up = ProveUpdateResponse.parseFrom(proofApplied);
-						logger.log(Level.INFO, "proof recieved!");
-						
 						// check the proof 
 						MPTDictionaryPartial proof = MPTDictionaryPartial.deserialize(up.getProof());
 						byte[] value = proof.get(adsId);
 						boolean success = Arrays.equals(value, newAdsRoot);
+						if(!success){
+							logger.log(Level.WARNING, "PROOF FAILED!");
+						}
 						return Boolean.valueOf(success);
 					}
 				});
@@ -113,18 +114,26 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		logger.log(Level.INFO, "[Press enter to start client test]");
 		sc.nextLine();
 		sc.close();
+		long startTime = System.currentTimeMillis();
 		try {
 			List<Future<Boolean>> results = WORKERS.invokeAll(workerThreads, TIMEOUT, TimeUnit.SECONDS);
 			for (Future<Boolean> result : results) {
 				Boolean resultBool = result.get();
-				logger.log(Level.INFO, "performed update: "+resultBool);
 				if(!resultBool) {
-					throw new RuntimeException("server did not update - test failed");
+					logger.log(Level.WARNING, "UPDATE WAS NOT PERFORMED");
 				}
 			}
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
+		long endTime = System.currentTimeMillis();
+		long duration = endTime-startTime;
+		String timeTaken = String.format("TOTAL TIME: %d min, %d sec", 
+			    TimeUnit.MILLISECONDS.toMinutes(duration),
+			    TimeUnit.MILLISECONDS.toSeconds(duration) - 
+			    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))
+			);
+		logger.log(Level.INFO, timeTaken);
 		logger.log(Level.INFO, "[TEST COMPLETE!]");
 	}
 	
@@ -137,7 +146,7 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		// generateTestData(base, nClients, nTotalADSes, nUpdates);
 		String host = "18.85.22.252";
 		int port = 1099;
-		runBenchmarkServer(base, host, port, nUpdates);
+		//runBenchmarkServer(base, host, port, nUpdates);
 		runBenchmarkClients(base, host, port);
 	}
 }
