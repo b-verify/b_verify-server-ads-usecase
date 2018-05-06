@@ -75,8 +75,8 @@ public class BVerifyServer {
 		// the RMI library handles the threading and 
 		// may invoke multiple methods concurrently on this 
 		// object
-		BVerifyServerUpdateVerifier verifierForRMI = 
-				new BVerifyServerUpdateVerifier(this.updatesToBeCommited, this.adsManager);
+		BVerifyServerRequestHandler verifierForRMI = 
+				new BVerifyServerRequestHandler(this.updatesToBeCommited, this.adsManager);
 		BVerifyProtocolServerAPI serverAPI;
 		try {
 			// port 0 = any free port

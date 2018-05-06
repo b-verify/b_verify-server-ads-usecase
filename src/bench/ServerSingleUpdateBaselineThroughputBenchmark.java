@@ -3,6 +3,7 @@ package bench;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
@@ -15,14 +16,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.protobuf.ByteString;
+
+import mpt.dictionary.MPTDictionaryPartial;
 import rmi.ClientProvider;
+import serialization.generated.BVerifyAPIMessageSerialization.ADSModification;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateResponse;
+import serialization.generated.BVerifyAPIMessageSerialization.ProveUpdateRequest;
+import serialization.generated.BVerifyAPIMessageSerialization.ProveUpdateResponse;
 import server.BVerifyServer;
 
-public class ServerSimpleThroughputBenchmark {
-	private static final Logger logger = Logger.getLogger(ServerSimpleThroughputBenchmark.class.getName());
-
+public class ServerSingleUpdateBaselineThroughputBenchmark {
+	private static final Logger logger = Logger.getLogger(ServerSingleUpdateBaselineThroughputBenchmark.class.getName());
 	
 	private static final ExecutorService WORKERS = Executors.newCachedThreadPool();
 	private static final int TIMEOUT = 60;
@@ -30,13 +36,12 @@ public class ServerSimpleThroughputBenchmark {
 	/*
 	 * Run this once to generate the data for the benchmark
 	 */
-	public static void generateTestData(String base, int numberOfClients) {
+	public static void generateTestData(String base, int nClients, int nTotalADSes, int nUpdates) {
 		logger.log(Level.INFO, "...resetting the test data");
 		BootstrapMockSetup.resetDataDir(base);
 		logger.log(Level.INFO, "...generating test data for simple throughput benchmark");
-		BootstrapMockSetup.bootstrapSingleADSPerClient(base, numberOfClients);
+		BootstrapMockSetup.bootstrapSingleADSUpdates(base, nClients, nTotalADSes, nUpdates);	
 	}
-	
 	
 	/*
 	 * Actually run the benchmark
@@ -63,15 +68,38 @@ public class ServerSimpleThroughputBenchmark {
 		List<PerformUpdateRequest> requests = BootstrapMockSetup.loadPerformUpdateRequests(base);
 		
 		Collection<Callable<Boolean>> workerThreads = new ArrayList<Callable<Boolean>>();
-
+		
 		for(PerformUpdateRequest request : requests) {
-			byte[] requestAsBytes = request.toByteArray();
+			// for now only one ADS Modification per request
+			ADSModification singleModification = request.getUpdate().getModifications(0);
+			byte[] adsId = singleModification.getAdsId().toByteArray();
+			byte[] newAdsRoot = singleModification.getNewValue().toByteArray();
+			
+			// construct the proof request
+			ProveUpdateRequest proofRequest = ProveUpdateRequest.newBuilder()
+					.addAdsIds(singleModification.getAdsId())
+					.build();
+			
+			byte[] updateRequestAsBytes = request.toByteArray();
+			byte[] proofRequestAsBytes = proofRequest.toByteArray();
+			
+			
 			workerThreads.add(new Callable<Boolean>() {
 					@Override
 					public Boolean call() throws Exception {
-						byte[] response = rmi.getServer().performUpdate(requestAsBytes);
-						PerformUpdateResponse r = PerformUpdateResponse.parseFrom(response);
-						return Boolean.valueOf(r.getAccepted());
+						// request the update
+						rmi.getServer().performUpdate(updateRequestAsBytes);
+						Thread.sleep(1000);
+						
+						// ask for a proof it was applied 
+						byte[] proofApplied = rmi.getServer().proveUpdate(proofRequestAsBytes);
+						ProveUpdateResponse up = ProveUpdateResponse.parseFrom(proofApplied);
+						
+						// check the proof 
+						MPTDictionaryPartial proof = MPTDictionaryPartial.deserialize(up.getProof());
+						byte[] value = proof.get(adsId);
+						boolean success = Arrays.equals(value, newAdsRoot);
+						return Boolean.valueOf(success);
 					}
 				});
 		}
@@ -83,7 +111,10 @@ public class ServerSimpleThroughputBenchmark {
 			List<Future<Boolean>> results = WORKERS.invokeAll(workerThreads, TIMEOUT, TimeUnit.SECONDS);
 			for (Future<Boolean> result : results) {
 				Boolean resultBool = result.get();
-				logger.log(Level.INFO, "accepted update and returned update proof: "+resultBool);
+				logger.log(Level.INFO, "performed update: "+resultBool);
+				if(!resultBool) {
+					throw new RuntimeException("server did not update - test failed");
+				}
 			}
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
@@ -92,9 +123,11 @@ public class ServerSimpleThroughputBenchmark {
 	}
 
 	public static void main(String[] args) {
-		String base = System.getProperty("user.dir") + "/benchmark/throughput-simple/";
-		int nClients = 10000;
-		generateTestData(base, nClients);
-		//runBenchmark(base, nClients);
+		String base = System.getProperty("user.dir") + "/benchmark/throughput-simple-baseline/";
+		int nClients = 100;
+		int nTotalADSes = 1000;
+		int nUpdates = 100;
+		generateTestData(base, nClients, nTotalADSes, nUpdates);
+		runBenchmark(base, nUpdates);
 	}
 }

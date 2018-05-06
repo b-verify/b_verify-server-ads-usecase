@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +26,7 @@ import pki.Account;
 import pki.PKIDirectory;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSModification;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
+import serialization.generated.BVerifyAPIMessageSerialization.ProveUpdateRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.Update;
 
 /**
@@ -41,8 +43,72 @@ public class BootstrapMockSetup {
 	
 	private static final String PKI_DIR = "pki/";
 	private static final String SERVER_ADS_FILE = "server-ads";
-	private static final String CLIENT_ADS_DIR = "client-ads/";
 	private static final String UPDATES_DIR = "updates/";
+	
+	public static void bootstrapSingleADSUpdates(String base, int nClients, int nTotalADSes, int nUpdates) {
+	    // server auth 
+	    MPTDictionaryFull serverADS = new MPTDictionaryFull();
+	    
+		// first generate a bunch of clients 
+		List<Account> clients = PKIDirectory.generateRandomAccounts(nClients);
+				
+		// now create the correct number of ADSes
+		// and updates
+		List<PerformUpdateRequest> updates = new ArrayList<>();
+		int adsNumber = 0;
+		int updateNumber = 0;
+		outer:
+		for(int i = 0; i < clients.size(); i++) {
+			for(int j = i+1; j < clients.size(); j++) {
+				for(int k = j+1; k < clients.size(); k++) {
+		       		if(adsNumber == nTotalADSes) {
+		       			break outer;
+		       		}
+		       		adsNumber++;
+					// make an ADS for these 3 clients 
+					logger.log(Level.INFO, "...creating ads #"+adsNumber+" of "+nTotalADSes);
+					Account a = clients.get(i);
+					Account b = clients.get(j);
+					Account c = clients.get(k);
+					List<Account> accounts  = Arrays.asList(a, b, c);
+					byte[] adsId = CryptographicUtils.listOfAccountsToADSId(accounts);
+					a.addADSKey(adsId);
+		       		b.addADSKey(adsId);
+		       		c.addADSKey(adsId);
+					byte[] adsRootOriginalValue = CryptographicDigest.hash((adsNumber+"START").getBytes());
+		       		serverADS.insert(adsId, adsRootOriginalValue);
+		       		
+		       		// make an update if necessary
+		       		if(updateNumber < nUpdates) {
+			    		updateNumber++;
+						byte[] adsRootUpdatedValue = CryptographicDigest.hash((adsNumber+"START").getBytes());
+						logger.log(Level.INFO, "...generating update #"+updateNumber+" of "+nUpdates);
+			    		ADSModification modification = ADSModification.newBuilder()
+			    				.setAdsId(ByteString.copyFrom(adsId))
+			    				.setNewValue(ByteString.copyFrom(adsRootUpdatedValue))
+			    				.build();
+			    		Update update = Update.newBuilder()
+			    				.addModifications(modification)
+			    				.build();
+			    		PerformUpdateRequest request  = produceUpdateRequest(update, accounts);
+			    		updates.add(request);
+		       		}
+				}
+			}
+		}
+		if(adsNumber != nTotalADSes || updateNumber != nUpdates) {
+			throw new RuntimeException("not enough clients provided!");
+		}
+		logger.log(Level.INFO, "...done generating ADSes and Updates!");
+		logger.log(Level.INFO, "...saving the clients");
+		for(Account client : clients) {
+			saveClient(base, client);
+		}
+		logger.log(Level.INFO, "...saving the server ads");
+		saveServerADS(base, serverADS);
+		logger.log(Level.INFO, "...saving the update requests");
+		savePerformUpdateRequests(base, updates);		
+	}
 			
 	public static void bootstrapSingleADSPerClient(String base, int nClients) {
 
@@ -95,6 +161,23 @@ public class BootstrapMockSetup {
 		
 		logger.log(Level.INFO, "...saving the update requests");
 		savePerformUpdateRequests(base, updateRequests);
+	}
+	
+	
+	public static PerformUpdateRequest produceUpdateRequest(Update update, List<Account> accounts) {
+		// calculate the witness
+		byte[] witness = CryptographicDigest.hash(update.toByteArray());
+		
+		// have the account sign in order!
+		Collections.sort(accounts);
+  		PerformUpdateRequest.Builder request = PerformUpdateRequest.newBuilder()
+				.setUpdate(update);
+  		for(Account a : accounts) {
+  			byte[] signature = CryptographicSignature.sign(witness, a.getPrivateKey());
+  			request.addSignatures(ByteString.copyFrom(signature));
+  		}
+		return request.build();
+		
 	}
 	
 	public static void savePerformUpdateRequests(String base, List<PerformUpdateRequest> requests) {
@@ -183,7 +266,5 @@ public class BootstrapMockSetup {
 			throw new RuntimeException("corrupted data");
 		}
 	}
-	
-	
 
 }

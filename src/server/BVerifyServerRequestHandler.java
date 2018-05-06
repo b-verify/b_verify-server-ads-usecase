@@ -23,8 +23,8 @@ import serialization.generated.BVerifyAPIMessageSerialization.ProveUpdateRequest
 import serialization.generated.BVerifyAPIMessageSerialization.ProveUpdateResponse;
 import serialization.generated.MptSerialization.MerklePrefixTrie;
 
-public class BVerifyServerUpdateVerifier implements BVerifyProtocolServerAPI {
-	private static final Logger logger = Logger.getLogger(BVerifyServerUpdateVerifier.class.getName());
+public class BVerifyServerRequestHandler implements BVerifyProtocolServerAPI {
+	private static final Logger logger = Logger.getLogger(BVerifyServerRequestHandler.class.getName());
 	
 	// shared data
 	private final ADSManager adsManager;
@@ -40,7 +40,7 @@ public class BVerifyServerUpdateVerifier implements BVerifyProtocolServerAPI {
 			.build()
 			.toByteArray();
 
-	public BVerifyServerUpdateVerifier( 
+	public BVerifyServerRequestHandler( 
 			BlockingQueue<PerformUpdateRequest> update, ADSManager ads) {
 		this.adsManager = ads;
 		this.updatesToBeCommited = update;
