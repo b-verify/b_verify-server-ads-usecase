@@ -70,23 +70,26 @@ public class ADSManager {
 				this.adsIdToOwners.put(adsKeyString, accs);
 			}
 		}
-		logger.log(Level.INFO, "ads_id -> {owners} loaded");
-		
+		logger.log(Level.INFO, "ads_id -> {owners} loaded");	
 		// Second load the MASTER_ADS from disk
 		this.serverAuthADS = BootstrapMockSetup.loadServerADS(base);
+		
+		logger.log(Level.INFO, "doing initial commitment");
+		this.commit();
+		
 		logger.log(Level.INFO, "master ads loaded");
 	}
 	
-	public Set<Account> getADSOwners(byte[] adsKey){
+	public synchronized Set<Account> getADSOwners(byte[] adsKey){
 		String key = Utils.byteArrayAsHexString(adsKey);
 		return new HashSet<Account>(this.adsIdToOwners.get(key));
 	}
 	
-	public void update(byte[] adsKey, byte[] adsValue) {
+	public synchronized void update(byte[] adsKey, byte[] adsValue) {
 		this.serverAuthADS.insert(adsKey, adsValue);
 	}
 	
-	public byte[] commit() {
+	public synchronized byte[] commit() {
 		// save delta
 		MPTDictionaryDelta delta = new MPTDictionaryDelta(this.serverAuthADS);
 		this.deltas.add(delta);
@@ -99,21 +102,21 @@ public class ADSManager {
 		return commitment;
 	}
 
-	public MerklePrefixTrie getProof(List<byte[]> keys) {
+	public synchronized MerklePrefixTrie getProof(List<byte[]> keys) {
 		MPTDictionaryPartial partial = new MPTDictionaryPartial(this.serverAuthADS, keys);
 		return partial.serialize();
 	}
 	
 
-	public byte[] getValue(byte[] key) {
+	public synchronized byte[] getValue(byte[] key) {
 		return this.serverAuthADS.get(key);
 	}
 
-	public byte[] currentCommitment() {
+	public synchronized byte[] currentCommitment() {
 		return this.commitments.get(this.commitments.size());
 	}
 	
-	public byte[] getCommitment(int commitmentNumber) {
+	public synchronized byte[] getCommitment(int commitmentNumber) {
 		if(commitmentNumber < 0 || commitmentNumber >= this.commitments.size()) {
 			return null;
 		}

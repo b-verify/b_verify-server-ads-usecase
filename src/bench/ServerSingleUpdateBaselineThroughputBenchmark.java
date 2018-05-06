@@ -31,7 +31,7 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 	private static final Logger logger = Logger.getLogger(ServerSingleUpdateBaselineThroughputBenchmark.class.getName());
 	
 	private static final ExecutorService WORKERS = Executors.newCachedThreadPool();
-	private static final int TIMEOUT = 60;
+	private static final int TIMEOUT = 120;
 		
 	/*
 	 * Run this once to generate the data for the benchmark
@@ -89,7 +89,7 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 					public Boolean call() throws Exception {
 						// request the update
 						rmi.getServer().performUpdate(updateRequestAsBytes);
-						Thread.sleep(1000);
+						Thread.sleep(30*1000);
 						
 						// ask for a proof it was applied 
 						byte[] proofApplied = rmi.getServer().proveUpdate(proofRequestAsBytes);
@@ -124,9 +124,9 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 
 	public static void main(String[] args) {
 		String base = System.getProperty("user.dir") + "/benchmark/throughput-simple-baseline/";
-		int nClients = 100;
-		int nTotalADSes = 1000;
-		int nUpdates = 100;
+		int nClients = 1000;
+		int nTotalADSes = 1000000;
+		int nUpdates = 10000;
 		generateTestData(base, nClients, nTotalADSes, nUpdates);
 		runBenchmark(base, nUpdates);
 	}
