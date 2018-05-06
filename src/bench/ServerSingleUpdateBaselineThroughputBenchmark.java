@@ -40,10 +40,11 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		BootstrapMockSetup.bootstrapSingleADSUpdates(base, nClients, nTotalADSes, nUpdates);	
 	}
 	
-	public static void runBenchmarkServer(String base, int port, int batchSize) {
-		
+	public static void runBenchmarkServer(String base, String host, int port, int batchSize) {
+		logger.log(Level.INFO, "...starting server on port: "+port);
 		// first create a registry on localhost
 		try {
+			 System.setProperty("java.rmi.server.hostname", host); 
 			LocateRegistry.createRegistry(port);
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -53,9 +54,9 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		// start up the server (also on localhost)
 		@SuppressWarnings("unused")
 		BVerifyServer server = new BVerifyServer(base, null, port, batchSize);
-		
+		logger.log(Level.INFO, "...ready!");
 		Scanner sc = new Scanner(System.in);
-		logger.log(Level.INFO, "Press enter to shut down server");
+		logger.log(Level.INFO, "[Press enter to kill sever]");
 		sc.nextLine();
 		sc.close();
 	}
@@ -88,12 +89,16 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 					@Override
 					public Boolean call() throws Exception {
 						// request the update
+						logger.log(Level.INFO, "sending update request to server");
 						rmi.getServer().performUpdate(updateRequestAsBytes);
+						logger.log(Level.INFO, "update submitted!");
 						Thread.sleep(60*1000);
 						
 						// ask for a proof it was applied 
+						logger.log(Level.INFO, "asking for update proof from the server");
 						byte[] proofApplied = rmi.getServer().proveUpdate(proofRequestAsBytes);
 						ProveUpdateResponse up = ProveUpdateResponse.parseFrom(proofApplied);
+						logger.log(Level.INFO, "proof recieved!");
 						
 						// check the proof 
 						MPTDictionaryPartial proof = MPTDictionaryPartial.deserialize(up.getProof());
@@ -105,7 +110,7 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		}
 		
 		Scanner sc = new Scanner(System.in);
-		logger.log(Level.INFO, "Press enter to start test");
+		logger.log(Level.INFO, "[Press enter to start client test]");
 		sc.nextLine();
 		sc.close();
 		try {
@@ -120,7 +125,7 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
-		logger.log(Level.INFO, "TEST COMPLETE!");
+		logger.log(Level.INFO, "[TEST COMPLETE!]");
 	}
 	
 	
@@ -129,10 +134,10 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		int nClients = 1000;
 		int nTotalADSes = 1000000;
 		int nUpdates = 10000;
-		generateTestData(base, nClients, nTotalADSes, nUpdates);
+		// generateTestData(base, nClients, nTotalADSes, nUpdates);
 		String host = "18.85.22.252";
 		int port = 1099;
-		runBenchmarkServer(base, port, nUpdates);
+		runBenchmarkServer(base, host, port, nUpdates);
 		runBenchmarkClients(base, host, port);
 	}
 }
