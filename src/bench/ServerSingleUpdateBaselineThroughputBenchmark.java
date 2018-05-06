@@ -16,13 +16,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.protobuf.ByteString;
-
 import mpt.dictionary.MPTDictionaryPartial;
 import rmi.ClientProvider;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSModification;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
-import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateResponse;
 import serialization.generated.BVerifyAPIMessageSerialization.ProveUpdateRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.ProveUpdateResponse;
 import server.BVerifyServer;
@@ -43,14 +40,9 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		BootstrapMockSetup.bootstrapSingleADSUpdates(base, nClients, nTotalADSes, nUpdates);	
 	}
 	
-	/*
-	 * Actually run the benchmark
-	 */
-	public static void runBenchmark(String base, int batchSize) {
-		String host = null;
-		int port = 1099;
+	public static void runBenchmarkServer(String base, int port, int batchSize) {
 		
-		// first create a registry
+		// first create a registry on localhost
 		try {
 			LocateRegistry.createRegistry(port);
 		} catch (RemoteException e) {
@@ -58,13 +50,21 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 			throw new RuntimeException(e.getMessage());
 		}
 		
-		ClientProvider rmi = new ClientProvider(host, port);
-		
-		// start up the server
+		// start up the server (also on localhost)
 		@SuppressWarnings("unused")
-		BVerifyServer server = new BVerifyServer(base, host, port, batchSize);
+		BVerifyServer server = new BVerifyServer(base, null, port, batchSize);
 		
-		// now through requests at its
+		Scanner sc = new Scanner(System.in);
+		logger.log(Level.INFO, "Press enter to shut down server");
+		sc.nextLine();
+		sc.close();
+	}
+	
+	public static void runBenchmarkClients(String base, String host, int port) {
+		// first connect to the registry 
+		ClientProvider rmi = new ClientProvider(host, port);
+
+		// now throw requests at it
 		List<PerformUpdateRequest> requests = BootstrapMockSetup.loadPerformUpdateRequests(base);
 		
 		Collection<Callable<Boolean>> workerThreads = new ArrayList<Callable<Boolean>>();
@@ -89,7 +89,7 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 					public Boolean call() throws Exception {
 						// request the update
 						rmi.getServer().performUpdate(updateRequestAsBytes);
-						Thread.sleep(30*1000);
+						Thread.sleep(60*1000);
 						
 						// ask for a proof it was applied 
 						byte[] proofApplied = rmi.getServer().proveUpdate(proofRequestAsBytes);
@@ -103,6 +103,7 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 					}
 				});
 		}
+		
 		Scanner sc = new Scanner(System.in);
 		logger.log(Level.INFO, "Press enter to start test");
 		sc.nextLine();
@@ -121,13 +122,17 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		}
 		logger.log(Level.INFO, "TEST COMPLETE!");
 	}
-
+	
+	
 	public static void main(String[] args) {
 		String base = System.getProperty("user.dir") + "/benchmark/throughput-simple-baseline/";
 		int nClients = 1000;
 		int nTotalADSes = 1000000;
 		int nUpdates = 10000;
 		generateTestData(base, nClients, nTotalADSes, nUpdates);
-		runBenchmark(base, nUpdates);
+		String host = "18.85.22.252";
+		int port = 1099;
+		runBenchmarkServer(base, port, nUpdates);
+		runBenchmarkClients(base, host, port);
 	}
 }
