@@ -1,7 +1,10 @@
 package bench;
 
+import java.io.File;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,23 +15,43 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.commons.io.FileUtils;
 
 import pki.Account;
 import pki.PKIDirectory;
+import rmi.ClientProvider;
+import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
 import server.BVerifyServer;
+import server.BVerifyServerUpdateVerifier;
 
-public class ServerBasicThroughputWithUpdatesBenchmark {
+public class ServerSimpleThroughputBenchmark {
+	private static final Logger logger = Logger.getLogger(ServerSimpleThroughputBenchmark.class.getName());
+
 	
 	private static final ExecutorService WORKERS = Executors.newCachedThreadPool();
 	private static final int TIMEOUT = 60;
-	
-	public static void generateTestData(String base) {
-		BootstrapMockSetup.bootstrapSingleADSPerClient(10, base);
+		
+	/*
+	 * Run this once to generate the data for the benchmark
+	 */
+	public static void generateTestData(String base, int numberOfClients) {
+		logger.log(Level.INFO, "...resetting the test data");
+		BootstrapMockSetup.resetDataDir(base);
+		logger.log(Level.INFO, "...generating test data for simple throughput benchmark");
+		BootstrapMockSetup.bootstrapSingleADSPerClient(base, numberOfClients);
 	}
 	
-	public static void runTest(String base, int batchSize, boolean checkUpdates) {
+	
+	/*
+	 * Actually run the benchmark
+	 */
+	public static void runBenchmark(String base, int batchSize) {
 		String host = null;
 		int port = 1099;
+		
 		// first create a registry
 		try {
 			LocateRegistry.createRegistry(port);
@@ -37,28 +60,29 @@ public class ServerBasicThroughputWithUpdatesBenchmark {
 			throw new RuntimeException(e.getMessage());
 		}
 		
+		ClientProvider rmi = new ClientProvider(host, port);
+		
 		// start up the server
 		@SuppressWarnings("unused")
 		BVerifyServer server = new BVerifyServer(base, host, port, batchSize);
 		
-		// now start up the mock clients
-		PKIDirectory pki = new PKIDirectory(base+"pki/");
+		// now through requests at its
+		List<PerformUpdateRequest> requests = BootstrapMockSetup.loadPerformUpdateRequests(base);
+		
 		Collection<Callable<Boolean>> workerThreads = new ArrayList<Callable<Boolean>>();
-		for(Account a : pki.getAllAccounts()) {
-			MockSimpleClient client = new MockSimpleClient(a, base, host, port);
+
+		for(PerformUpdateRequest request : requests) {
+			byte[] requestAsBytes = request.toByteArray();
 			workerThreads.add(new Callable<Boolean>() {
 					@Override
 					public Boolean call() throws Exception {
-						client.sendRequest();
-						Thread.sleep(5000);
-						client.getAndCheckUpdates();
-						System.out.println("COMPLETED");
+						rmi.getServer().performUpdate(requestAsBytes);
 						return Boolean.TRUE;
 					}
 				});
 		}
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Press enter to start test");
+		logger.log(Level.INFO, "Press enter to start test");
 		sc.nextLine();
 		sc.close();
 		try {
@@ -70,12 +94,13 @@ public class ServerBasicThroughputWithUpdatesBenchmark {
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
-		System.out.println("DONE PROCESSING RESPONSES");
+		logger.log(Level.INFO, "TEST COMPLETE!");
 	}
 
 	public static void main(String[] args) {
-		String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/benchmarks/throughput-test-server-with-updates/";
-		// generateTestData(base);
-		runTest(base, 1, false);
+		String base = System.getProperty("user.dir") + "/benchmark/throughput-simple/";
+		int nClients = 10;
+		generateTestData(base, nClients);
+		runBenchmark(base, nClients);
 	}
 }

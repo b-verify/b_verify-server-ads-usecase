@@ -1,6 +1,5 @@
 package server;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -74,8 +73,7 @@ public class ADSManager {
 		logger.log(Level.INFO, "ads_id -> {owners} loaded");
 		
 		// Second load the MASTER_ADS from disk
-		File f = new File(base + "server-ads/starting-ads");
-		this.serverAuthADS = BootstrapMockSetup.loadMPTDictionarFromFile(f);
+		this.serverAuthADS = BootstrapMockSetup.loadServerADS(base);
 		logger.log(Level.INFO, "master ads loaded");
 	}
 	

@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.FileUtils;
+
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -41,9 +43,8 @@ public class BootstrapMockSetup {
 	private static final String SERVER_ADS_FILE = "server-ads";
 	private static final String CLIENT_ADS_DIR = "client-ads/";
 	private static final String UPDATES_DIR = "updates/";
-		
-	public static void bootstrapSingleADSPerClient(
-			int nClients, int nUpdates, String base) {
+			
+	public static void bootstrapSingleADSPerClient(String base, int nClients) {
 
 	    // server auth 
 	    MPTDictionaryFull serverADS = new MPTDictionaryFull();
@@ -93,6 +94,7 @@ public class BootstrapMockSetup {
 		saveServerADS(base, serverADS);
 		
 		logger.log(Level.INFO, "...saving the update requests");
+		savePerformUpdateRequests(base, updateRequests);
 	}
 	
 	public static void savePerformUpdateRequests(String base, List<PerformUpdateRequest> requests) {
@@ -144,6 +146,21 @@ public class BootstrapMockSetup {
 		}
 	}
 	
+	public static void resetDataDir(String base) {
+		// delete the old test data
+		try {
+			FileUtils.deleteDirectory(new File(base));
+			new File(base).mkdirs();
+			new File(base+PKI_DIR).mkdirs();
+			new File(base+UPDATES_DIR).mkdirs();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
+		// create new directories
+	}
+	
 	public static void writeBytesToFile(File f, byte[] toWrite) {
 		try {
 			FileOutputStream fos = new FileOutputStream(f);
@@ -167,10 +184,6 @@ public class BootstrapMockSetup {
 		}
 	}
 	
-	public static void main(String[] args) {
-		
-		// runs the bootstrap to setup the mock data
-		// String base = "/home/henryaspegren/eclipse-workspace/b_verify-server/mock-data/";
-		// BootstrapMockSetup.bootstrapWarehouseUsecase(10, 1, 10, base);
-	}
+	
+
 }
