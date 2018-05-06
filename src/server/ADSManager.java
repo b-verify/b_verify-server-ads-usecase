@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,6 +23,8 @@ import serialization.generated.MptSerialization.MerklePrefixTrie;
 
 public class ADSManager {
 	private static final Logger logger = Logger.getLogger(ADSManager.class.getName());
+	
+	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 	
 	// we store a mapping from ads_id 
 	// to sets of clients who control the ADS.
@@ -80,16 +84,19 @@ public class ADSManager {
 		logger.log(Level.INFO, "master ads loaded");
 	}
 	
-	public synchronized Set<Account> getADSOwners(byte[] adsKey){
+	public Set<Account> getADSOwners(byte[] adsKey){
 		String key = Utils.byteArrayAsHexString(adsKey);
 		return new HashSet<Account>(this.adsIdToOwners.get(key));
 	}
 	
-	public synchronized void update(byte[] adsKey, byte[] adsValue) {
+	public void update(byte[] adsKey, byte[] adsValue) {
+		this.lock.writeLock().lock();
 		this.serverAuthADS.insert(adsKey, adsValue);
+		this.lock.writeLock().unlock();
 	}
 	
-	public synchronized byte[] commit() {
+	public byte[] commit() {
+		this.lock.writeLock().lock();
 		// save delta
 		MPTDictionaryDelta delta = new MPTDictionaryDelta(this.serverAuthADS);
 		this.deltas.add(delta);
@@ -99,28 +106,40 @@ public class ADSManager {
 		byte[] commitment = this.serverAuthADS.commitment();
 		this.commitments.add(commitment);
 		logger.log(Level.INFO, "commitment added!");
+		this.lock.writeLock().unlock();
 		return commitment;
 	}
 
-	public synchronized MerklePrefixTrie getProof(List<byte[]> keys) {
+	public MerklePrefixTrie getProof(List<byte[]> keys) {
+		this.lock.readLock().lock();
 		MPTDictionaryPartial partial = new MPTDictionaryPartial(this.serverAuthADS, keys);
+		this.lock.readLock().unlock();
 		return partial.serialize();
 	}
 	
 
 	public synchronized byte[] getValue(byte[] key) {
-		return this.serverAuthADS.get(key);
+		this.lock.readLock().lock();
+		byte[] value = this.serverAuthADS.get(key);
+		this.lock.readLock().unlock();
+		return value;
 	}
 
 	public synchronized byte[] currentCommitment() {
-		return this.commitments.get(this.commitments.size());
+		this.lock.readLock().lock();
+		byte[] currentCommitment = this.commitments.get(this.commitments.size());
+		this.lock.readLock().unlock();
+		return currentCommitment;
 	}
 	
 	public synchronized byte[] getCommitment(int commitmentNumber) {
-		if(commitmentNumber < 0 || commitmentNumber >= this.commitments.size()) {
-			return null;
+		this.lock.readLock().lock();
+		byte[] commitment = null;
+		if(commitmentNumber >= 0 && commitmentNumber < this.commitments.size()) {
+			commitment = this.commitments.get(commitmentNumber);
 		}
-		return this.commitments.get(commitmentNumber);
+		this.lock.readLock().unlock();
+		return commitment;
 	}
 
 }
