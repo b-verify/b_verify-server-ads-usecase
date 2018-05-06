@@ -1,10 +1,7 @@
 package bench;
 
-import java.io.File;
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,14 +15,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FileUtils;
-
-import pki.Account;
-import pki.PKIDirectory;
 import rmi.ClientProvider;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
+import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateResponse;
 import server.BVerifyServer;
-import server.BVerifyServerUpdateVerifier;
 
 public class ServerSimpleThroughputBenchmark {
 	private static final Logger logger = Logger.getLogger(ServerSimpleThroughputBenchmark.class.getName());
@@ -76,8 +69,9 @@ public class ServerSimpleThroughputBenchmark {
 			workerThreads.add(new Callable<Boolean>() {
 					@Override
 					public Boolean call() throws Exception {
-						rmi.getServer().performUpdate(requestAsBytes);
-						return Boolean.TRUE;
+						byte[] response = rmi.getServer().performUpdate(requestAsBytes);
+						PerformUpdateResponse r = PerformUpdateResponse.parseFrom(response);
+						return Boolean.valueOf(r.getAccepted());
 					}
 				});
 		}
@@ -89,7 +83,7 @@ public class ServerSimpleThroughputBenchmark {
 			List<Future<Boolean>> results = WORKERS.invokeAll(workerThreads, TIMEOUT, TimeUnit.SECONDS);
 			for (Future<Boolean> result : results) {
 				Boolean resultBool = result.get();
-				System.out.println(resultBool);
+				logger.log(Level.INFO, "accepted update and returned update proof: "+resultBool);
 			}
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
@@ -99,8 +93,8 @@ public class ServerSimpleThroughputBenchmark {
 
 	public static void main(String[] args) {
 		String base = System.getProperty("user.dir") + "/benchmark/throughput-simple/";
-		int nClients = 10;
+		int nClients = 10000;
 		generateTestData(base, nClients);
-		runBenchmark(base, nClients);
+		//runBenchmark(base, nClients);
 	}
 }
