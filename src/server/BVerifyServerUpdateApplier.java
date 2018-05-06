@@ -1,9 +1,15 @@
 package server;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import serialization.generated.BVerifyAPIMessageSerialization.ADSModification;
+import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
 
 public class BVerifyServerUpdateApplier extends Thread {
-	
+	private static final Logger logger = Logger.getLogger(BVerifyServerUpdateApplier.class.getName());
+
 	/**
 	 * Parameters - batching, impact performance
 	 */
@@ -14,10 +20,11 @@ public class BVerifyServerUpdateApplier extends Thread {
 	/**
 	 * Shared data!
 	 */
-	private final BlockingQueue<Update> updates;
+	private final BlockingQueue<PerformUpdateRequest> updates;
 	private final ADSManager adsManager;
 	
-	public BVerifyServerUpdateApplier(BlockingQueue<Update> updates, ADSManager adsManager, 
+	public BVerifyServerUpdateApplier(BlockingQueue<PerformUpdateRequest> updates, 
+			ADSManager adsManager, 
 			int batchSize) {
 		this.updates = updates;
 		this.adsManager = adsManager;
@@ -27,24 +34,30 @@ public class BVerifyServerUpdateApplier extends Thread {
 	@Override
 	public void run() {
 		try {
-			int uncommittedChanges = 0;
+			int totalUpdates = 0;
+			int uncommittedUpdates = 0;
 			while(true) {
 				// block and wait for an update
-				Update update = this.updates.take();
+				PerformUpdateRequest updateRequest = this.updates.take();
 				//go through and apply the updates
-				for(ADSModification modification : update.getADSModifications()) {
-					this.adsManager.update(modification.getADSKey(), modification.getADSValue());
-					uncommittedChanges++;
+				for(ADSModification modification : updateRequest.getUpdate().getModificationsList()) {
+					this.adsManager.update(modification.getAdsId().toByteArray(), 
+							modification.getNewValue().toByteArray());
 				}
+				uncommittedUpdates++;
+				totalUpdates++;
+				logger.log(Level.INFO, "applying update #"+totalUpdates);
 				// only commit once batch is large enough
-				if(uncommittedChanges > BATCH_SIZE) {
+				if(uncommittedUpdates >= BATCH_SIZE) {
 					byte[] newCommitment = this.adsManager.commit();
-					System.out.println(newCommitment);
-					uncommittedChanges = 0;
+					logger.log(Level.INFO, "committing "+uncommittedUpdates+" updates");
+					uncommittedUpdates = 0;
 				}
 			}
 		} catch(InterruptedException e) {
 			e.printStackTrace();
+			logger.log(Level.WARNING, "something is wrong...shutdown");
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 	

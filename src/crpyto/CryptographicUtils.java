@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import pki.Account;
-import serialization.generated.BVerifyAPIMessageSerialization.Receipt;
 
 /**
  * This class contains the various cryptographic commitments and mappings used
@@ -34,18 +33,6 @@ public class CryptographicUtils {
 	}
 	
 	/**
-	 * Creates a cryptographic commitment to a given 
-	 * receipt
-	 * @param r - the receipt for which a commitment 
-	 * should be calculated
-	 * @return 
-	 */
-	public static byte[] witnessReceipt(Receipt r) {
-		byte[] witness = CryptographicDigest.hash(r.toByteArray());
-		return witness;
-	}
-
-	/**
 	 * TODO - need to finalize what this will look like
 	 * 
 	 * Used to calculate the witness for a server update
@@ -62,7 +49,7 @@ public class CryptographicUtils {
 	
 	/**
 	 * This method provides a deterministic mapping from a list of accounts to an
-	 * "ADS Key", returning a unique cryptographic identifier for the ADS
+	 * ADS_ID, returning a unique cryptographic identifier for the ADS
 	 * 
 	 * @param accounts
 	 *            - the list of (unique) accounts
@@ -70,7 +57,7 @@ public class CryptographicUtils {
 	 *         can be used to lookup the ADS and as a cryptographic commitment to
 	 *         that ADS.
 	 */
-	public static byte[] listOfAccountsToADSKey(List<Account> accounts) {
+	public static byte[] listOfAccountsToADSId(List<Account> accounts) {
 		Collections.sort(accounts);
 		
 		// turn it into a list of byte arrays

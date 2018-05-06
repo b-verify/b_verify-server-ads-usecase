@@ -12,43 +12,9 @@ import java.util.List;
  */
 public interface BVerifyProtocolServerAPI extends Remote {
 	
-	/*
-	 * These methods are the b_verify server API
-	 */
+	public byte[] performUpdate(byte[] adsUpdates) throws RemoteException;
 	
-	
-	/**
-	 * Invoked b
-	 * @param adsUpdates
-	 * @return
-	 * @throws RemoteException
-	 */
-	public boolean submitUpdates(byte[] adsUpdates) throws RemoteException;
-	
-	/**
-	 * Invoked by a client remotely on the server to request
-	 * the server to send (client specific) updates. This method
-	 * returns a serialized set of updates
-	 * @param updateRequest - a serialized request for updates 
-	 * (see GetUpdatesRequest in bverifyprotocol.proto)
-	 * @return a serialized response containing updates 
-	 * (see Updates in bverifyprotocol.proto)
-	 */
-	public byte[] getUpdates(byte[] updateRequest)  throws RemoteException;
-	
-	
-	/*
-	 * These methods are not part of the secure API
-	 * and are used ONLy for testing and demo purposes.
-	 */
-	
-	public byte[] getAuthenticationObjectNoProof(byte[] adsKey) throws RemoteException;
-	
-	public byte[] getAuthenticationProof(List<byte[]> adsKeys) throws RemoteException;
-	
-	public byte[] getCommitment(int commitmentNumber) throws RemoteException;
-
-	
+	public byte[] proveUpdate(byte[] updateRequest)  throws RemoteException;
 	
 	
 }

@@ -1,101 +1,87 @@
 package server;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import mpt.core.InvalidSerializationException;
+import bench.BootstrapMockSetup;
+import mpt.core.Utils;
 import mpt.dictionary.MPTDictionaryDelta;
 import mpt.dictionary.MPTDictionaryFull;
 import mpt.dictionary.MPTDictionaryPartial;
 import pki.Account;
 import pki.PKIDirectory;
-import serialization.generated.BVerifyAPIMessageSerialization.Updates;
 import serialization.generated.MptSerialization.MerklePrefixTrie;
 
 
 public class ADSManager {
-
-	private final String base;
+	private static final Logger logger = Logger.getLogger(ADSManager.class.getName());
 	
-	// we store a mapping from adsKeys 
+	// we store a mapping from ads_id 
 	// to sets of clients who control the ADS.
 	// The protocol requires that these 
 	// clients must all sign updates to the ADS.
 	// Java NOTE: cannot use byte[] as a key since
 	//				implements referential equality so
 	//				instead we wrap it with a string
-	private final Map<String, Set<Account>> adsKeyToOwners;
+	private final Map<String, Set<Account>> adsIdToOwners;
+	private final Map<String, byte[]> adsIdStringToBytes;
 
 	// current server authentication 
 	// information. 
-	// this is a mapping from a client ads key 
-	// (also referred to as ads id) to the 
-	// root value of that ADS.
+	// this is a mapping from a client ads id
+	// to the root value of that ADS.
 	private MPTDictionaryFull serverAuthADS;
 
 	// we store the previous commitments
-	// normall these would be broadcast in
-	// the Bitcoin blockchain
+	// normally these would be witnessed
+	// using the Bitcoin blockchain
 	private List<byte[]> commitments;
 	
 	// we also store a log of changes to generate
 	// proofs of updates
-	// TODO: consider if we want to store these
-	// or some subset of them on disk
 	private List<MPTDictionaryDelta> deltas;
 	
-	
-	
 	public ADSManager(String base, PKIDirectory pki) {
-		this.base = base;
 		this.deltas = new ArrayList<>();
 		this.commitments = new ArrayList<>();
-		File f = new File(base + "server-ads/starting-ads");
 		
-		// First all the ADS Keys and 
-		// determine which clients care about 
-		// each ADS
-		this.adsKeyToOwners = new HashMap<>();
+		// First create a mapping from ADS_ID
+		// to the set of OWNERS
+		this.adsIdToOwners = new HashMap<>();
+		this.adsIdStringToBytes = new HashMap<>();
 		Set<Account> accounts = pki.getAllAccounts();
 		for(Account a : accounts) {
 			Set<byte[]> adsKeys = a.getADSKeys();
 			for(byte[] adsKey : adsKeys) {
-				String adsKeyString = new String(adsKey);
-				Set<Account> accs = this.adsKeyToOwners.get(adsKeyString);
+				// TODO check if other more efficient matching
+				String adsKeyString = Utils.byteArrayAsHexString(adsKey);
+				this.adsIdStringToBytes.put(adsKeyString, adsKey);
+				Set<Account> accs = this.adsIdToOwners.get(adsKeyString);
 				if(accs == null) {
 					accs = new HashSet<>();
 				}
 				accs.add(a);
-				this.adsKeyToOwners.put(adsKeyString, accs);
+				this.adsIdToOwners.put(adsKeyString, accs);
 			}
 		}
+		logger.log(Level.INFO, "ads_id -> {owners} loaded");
 		
-		try {
-			// Second load the Authentication ADS from disk
-			FileInputStream fis = new FileInputStream(f);
-			byte[] encodedAds = new byte[(int) f.length()];
-			fis.read(encodedAds);
-			fis.close();
-			this.serverAuthADS = MPTDictionaryFull.deserialize(encodedAds);
-			byte[] initialCommitment = this.serverAuthADS.commitment();
-			this.commitments.add(initialCommitment);
-		} catch (InvalidSerializationException | IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException("corrupted data");
-		}
-		System.out.println("ADSManager Loaded!");	
+		// Second load the MASTER_ADS from disk
+		File f = new File(base + "server-ads/starting-ads");
+		this.serverAuthADS = BootstrapMockSetup.loadMPTDictionarFromFile(f);
+		logger.log(Level.INFO, "master ads loaded");
 	}
 	
 	public Set<Account> getADSOwners(byte[] adsKey){
-		return this.adsKeyToOwners.get(new String(adsKey));
+		String key = Utils.byteArrayAsHexString(adsKey);
+		return new HashSet<Account>(this.adsIdToOwners.get(key));
 	}
 	
 	public void update(byte[] adsKey, byte[] adsValue) {
@@ -111,8 +97,15 @@ public class ADSManager {
 		// calculate a new commitment 
 		byte[] commitment = this.serverAuthADS.commitment();
 		this.commitments.add(commitment);
+		logger.log(Level.INFO, "commitment added!");
 		return commitment;
 	}
+
+	public MerklePrefixTrie getProof(List<byte[]> keys) {
+		MPTDictionaryPartial partial = new MPTDictionaryPartial(this.serverAuthADS, keys);
+		return partial.serialize();
+	}
+	
 
 	public byte[] getValue(byte[] key) {
 		return this.serverAuthADS.get(key);
@@ -127,37 +120,6 @@ public class ADSManager {
 			return null;
 		}
 		return this.commitments.get(commitmentNumber);
-	}
-
-	public MerklePrefixTrie getProof(List<byte[]> keys) {
-		MPTDictionaryPartial partial = new MPTDictionaryPartial(this.serverAuthADS, keys);
-		return partial.serialize();
-	}
-
-	public Updates getUpdate(int startingCommitNumber, List<byte[]> keyHashes) {
-		Updates.Builder updates = Updates.newBuilder();
-		// go through each commitment
-		for (int commitmentNumber = startingCommitNumber; commitmentNumber < this.deltas.size(); commitmentNumber++) {
-			// get the changes
-			MPTDictionaryDelta delta = this.deltas.get(commitmentNumber);
-			// and calculate the updates
-			MerklePrefixTrie update = delta.getUpdates(keyHashes);
-			updates.addUpdate(update);
-		}
-		return updates.build();
-	}
-
-	public void save() {
-		// TBD
-		byte[] asBytes = this.serverAuthADS.serialize().toByteArray();
-		try {
-			File f = new File(base + "-" + this.serverAuthADS.commitment());
-			FileOutputStream fos = new FileOutputStream(f);
-			fos.write(asBytes);
-			fos.close();
-		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
-		}
 	}
 
 }

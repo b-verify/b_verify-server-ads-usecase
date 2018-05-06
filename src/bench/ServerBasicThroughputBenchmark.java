@@ -16,8 +16,6 @@ import java.util.concurrent.TimeUnit;
 
 import api.BVerifyProtocolServerAPI;
 import rmi.ClientProvider;
-import serialization.generated.BVerifyAPIMessageSerialization.ADSModificationRequest;
-import serialization.generated.BVerifyAPIMessageSerialization.RequestADSUpdates;
 import server.BVerifyServer;
 
 public class ServerBasicThroughputBenchmark {
@@ -56,7 +54,7 @@ public class ServerBasicThroughputBenchmark {
 				public Boolean call() throws Exception {
 					BVerifyProtocolServerAPI stub = rmi.getServer();
 					System.out.println("Making update request: "+request);
-					boolean response = stub.submitUpdates(request);
+					boolean response = stub.performUpdate(request);
 					System.out.println(response);
 					return Boolean.valueOf(response);
 				}

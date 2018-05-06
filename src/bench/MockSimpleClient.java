@@ -112,7 +112,7 @@ public class MockSimpleClient implements BVerifyProtocolClientAPI {
 	public void sendRequest() {
 		System.out.println("sending update request for "+this.account.getIdAsString());
 		try {
-			boolean response = this.rmi.getServer().submitUpdates(this.adsUpdateRequest);
+			boolean response = this.rmi.getServer().performUpdate(this.adsUpdateRequest);
 			System.out.println("response recieved for "+this.account.getIdAsString()+" response: "+response);
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -122,7 +122,7 @@ public class MockSimpleClient implements BVerifyProtocolClientAPI {
 	
 	public void getAndCheckUpdates() {
 		try {
-			byte[] update = this.rmi.getServer().getUpdates(this.getUpdatesRequest);
+			byte[] update = this.rmi.getServer().proveUpdate(this.getUpdatesRequest);
 			Updates updateMsg = Updates.parseFrom(update);
 			for(MerklePrefixTrie mptUpdate : updateMsg.getUpdateList()) {
 				this.authAds.processUpdates(mptUpdate);

@@ -2,27 +2,20 @@ package server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import api.BVerifyProtocolClientAPI;
 import api.BVerifyProtocolServerAPI;
-import crpyto.CryptographicSignature;
-import pki.Account;
 import pki.PKIDirectory;
 import rmi.ClientProvider;
-import serialization.generated.BVerifyAPIMessageSerialization.Signature;
+import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
 
 public class BVerifyServer {
+	private static final Logger logger = Logger.getLogger(BVerifyServer.class.getName());
 	
 	/*
 	 * Public Key Infrastructure - for identifying clients. For now this is mocked,
@@ -51,7 +44,7 @@ public class BVerifyServer {
 	 * Updates are added as they are verified and commitments are batched 
 	 * for efficiency. 
 	 */
-	private BlockingQueue<Update> updatesToBeCommited;
+	private BlockingQueue<PerformUpdateRequest> updatesToBeCommited;
 	
 	
 	
@@ -63,9 +56,10 @@ public class BVerifyServer {
 	
 	public BVerifyServer(String base, String registryHost, int registryPort, int batchSize) {
 		this.pki = new PKIDirectory(base + "pki/");
-		System.out.println("loaded PKI");
+		logger.log(Level.INFO, "... loaded pki");
 		this.rmi = new ClientProvider(registryHost, registryPort);
-		
+		logger.log(Level.INFO, "... loaded rmi");
+
 		// setup the shared data
 		this.adsManager = new ADSManager(base, this.pki);
 		this.updatesToBeCommited = new LinkedBlockingQueue<>();
@@ -81,81 +75,18 @@ public class BVerifyServer {
 		// the RMI library handles the threading and 
 		// may invoke multiple methods concurrently on this 
 		// object
-		BVerifyServerRequestVerifier verifierForRMI = 
-				new BVerifyServerRequestVerifier(this.updatesToBeCommited, this.adsManager);
+		BVerifyServerUpdateVerifier verifierForRMI = 
+				new BVerifyServerUpdateVerifier(this.updatesToBeCommited, this.adsManager);
 		BVerifyProtocolServerAPI serverAPI;
 		try {
 			// port 0 = any free port
+			logger.log(Level.INFO, "... binding server on port: "+registryPort);
 			serverAPI = (BVerifyProtocolServerAPI) UnicastRemoteObject.exportObject(verifierForRMI, 0);
 			this.rmi.bindServer(serverAPI);
+			logger.log(Level.INFO, "... ready!");
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			throw new RuntimeException();
 		}
-	}
-
-	public boolean benchmarkEcho() {
-		Collection<Callable<Boolean>> approvals = new ArrayList<Callable<Boolean>>();
-		for(Account a : this.pki.getAllAccounts()) {
-			approvals.add(new Callable<Boolean>() {
-				@Override
-				public Boolean call() throws Exception {
-					System.out.println("Making call to client: "+a);
-					BVerifyProtocolClientAPI stub = rmi.getClient(a);
-					Boolean resp = Boolean.valueOf(stub.approveEchoBenchmark(true));
-					System.out.println("Response from client: "+a+" - "+resp);
-					return resp;
-				}
-				
-			});
-		}
-		boolean commit = true;
-		try {
-			List<Future<Boolean>> results = WORKERS.invokeAll(approvals, TIMEOUT, TimeUnit.SECONDS);
-			for (Future<Boolean> result : results) {
-				Boolean resultBool = result.get();
-				commit = commit && resultBool.booleanValue();
-			}
-		} catch (InterruptedException | ExecutionException e) {
-			commit = false;
-			e.printStackTrace();
-		}
-		System.out.println("DONE PROCESSING RESPONSES RESULT: "+commit);
-		return commit;
-	}
-	
-	public boolean benchmarkSigEcho() {
-		Collection<Callable<Boolean>> approvals = new ArrayList<Callable<Boolean>>();
-		for(Account a : this.pki.getAllAccounts()) {
-			approvals.add(new Callable<Boolean>() {
-				@Override
-				public Boolean call() throws Exception {
-					System.out.println("Making call to client: "+a);
-					BVerifyProtocolClientAPI stub = rmi.getClient(a);
-					byte[] message = "some message".getBytes();
-					byte[] resp = stub.approveSigEchoBenchmark(message);
-					Signature sig = Signature.parseFrom(resp);
-					System.out.println("Response from client: "+a+" signature - "+sig);
-					boolean valid = CryptographicSignature.verify(message, 
-							sig.getSignature().toByteArray(), a.getPublicKey());
-					System.out.println("Response from client: "+a+" signature valid? - "+valid);
-					return Boolean.valueOf(valid);
-				}
-				
-			});
-		}
-		boolean commit = true;
-		try {
-			List<Future<Boolean>> results = WORKERS.invokeAll(approvals, TIMEOUT, TimeUnit.SECONDS);
-			for (Future<Boolean> result : results) {
-				Boolean resultBool = result.get();
-				commit = commit && resultBool.booleanValue();
-			}
-		} catch (InterruptedException | ExecutionException e) {
-			commit = false;
-			e.printStackTrace();
-		}
-		System.out.println("DONE PROCESSING RESPONSES RESULT: "+commit);
-		return commit;
 	}
 }

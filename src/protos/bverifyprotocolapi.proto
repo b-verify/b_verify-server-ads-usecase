@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package serialization;
+package serialization.generated;
 import "protos/mpt.proto";
 option java_outer_classname = "BVerifyAPIMessageSerialization";
 
@@ -8,110 +8,47 @@ option java_outer_classname = "BVerifyAPIMessageSerialization";
 * OVERALL NOTES:
 *	-   an id is a string representing a unique user id 
 *		that allows each client to look up that user in a 
-* 		pki. 
+* 		pki.  
 */
-
-
-/**
-*   Receipt (this is a stand in for arbitrary data)
-*/
-message Receipt {
-    string warehouse_id = 1;
-    string depositor_id = 2;
-    string accountant = 3;
-    string category = 4;
-    string date = 5;
-    string insurance = 6;
-    double weight = 7;
-    double volume = 8;
-    double humidity = 9;
-    double price = 10;
-    string details = 11;
-}
-
-/**
-* 	Generic ADS Update 
-*/
-message ADSModificationRequest {
-	bytes ads_id = 1;
-	bytes new_value = 2;
-}
-
-/**
-* 	Generic signature message along with the 
-*	id of the signer
-*/
-message Signature {
-	bytes signature = 1;
-}
-
 
 /**
 *	Request that the server update the required ADSes
 *	Sent by any party to the server. Must include 
 * 	the ADS modifications desired along with the 
-* 	required signatures
+* 	required signatures.
 */
-message RequestADSUpdates {
-	repeated ADSModificationRequest modifications = 1;
-	repeated Signature signatures = 2;
+message PerformUpdateRequest {
+	Update update = 1;
+	repeated bytes signatures = 2;
+}
+
+message PerformUpdateResponse {
+	bool accepted = 1;
+}
+
+message ProveUpdateRequest {
+	repeated bytes ads_ids = 1;
+}
+
+message ProveUpdateResponse {
+	MerklePrefixTrie proof = 1;
 }
 
 
-/** 
-*		Application level messages sent among client 
-* 		to coordiante ADS updates
-**/
-
 /**
-* Request for the server to issue a receipt (initiated 
-* by a client)
+*	An update
 */
-message IssueReceiptRequest {
-	string issuer_id = 1;
-	string recepient_id = 2;
-	Receipt receipt = 3;
-}
-
-/**
-* Request for the server to redeem a receipt (initiated
-* by a client)
-*/
-message RedeemReceiptRequest {
-	string issuer_id = 1;
-	string owner_id = 2;
-	bytes receipt_hash = 3;
+message Update {
+	repeated ADSModification modifications = 1;
 }
 
 /**
-* Request for the server to transfer a receiept (intiated
-* by a client)
+* 	A Single ADS Modification
 */
-message TransferReceiptRequest {
-	string issuer_id = 1;
-	string current_owner_id = 2;
-	string new_owner_id = 3;
-	bytes receipt_hash = 4;
+message ADSModification {
+	bytes ads_id = 1;
+	bytes new_value = 2;
 }
-
-/** TO BE USED LATER **/
-
-/**
-* Request for the server to send updatess
-*/
-message GetUpdatesRequest {
-	int32 from_commit_number = 1;
-	repeated bytes keys = 2; 
-}
-
-/**
-* A sequence of updates (starting from the oldest)
-*/
-message Updates {
-	repeated MerklePrefixTrie update = 1;
-}
-
-
 
 
 
