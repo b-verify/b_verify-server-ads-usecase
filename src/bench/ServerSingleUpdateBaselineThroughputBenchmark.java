@@ -32,6 +32,7 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 	
 	private static final ExecutorService WORKERS = Executors.newCachedThreadPool();
 	private static final int TIMEOUT = 240;
+	private static final int MILLISECONDS_OF_RANDOM_DELAY = 5000;
 		
 	/*
 	 * Run this once to generate the data for the benchmark
@@ -97,8 +98,8 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 					@Override
 					public Boolean call() throws Exception {
 						// request the update
-						// Random rand = new Random();
-						// Thread.sleep(rand.nextInt(15)*1000);
+						Random rand = new Random();
+						Thread.sleep(rand.nextInt(MILLISECONDS_OF_RANDOM_DELAY));
 						byte[] responseBytes = rmi.getServer().performUpdate(updateRequestAsBytes);
 						PerformUpdateResponse response = PerformUpdateResponse.parseFrom(responseBytes);
 						return Boolean.valueOf(response.getAccepted());
@@ -109,6 +110,8 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 				@Override
 				public Boolean call() throws Exception {
 					// ask for a proof it was applied 
+					Random rand = new Random();
+					Thread.sleep(rand.nextInt(MILLISECONDS_OF_RANDOM_DELAY));
 					byte[] proofApplied = rmi.getServer().proveUpdate(proofRequestAsBytes);
 					ProveUpdateResponse up = ProveUpdateResponse.parseFrom(proofApplied);
 					// check the proof 

@@ -1,5 +1,6 @@
 package server;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,8 +51,7 @@ public class BVerifyServerUpdateApplier extends Thread {
 				// only commit once batch is large enough
 				if(uncommittedUpdates >= BATCH_SIZE) {
 					this.adsManager.commit();
-					long sysTime = System.currentTimeMillis();
-					logger.log(Level.INFO, "committing"+uncommittedUpdates+" at "+sysTime);
+					logger.log(Level.INFO, "committing -"+uncommittedUpdates+" at "+LocalDateTime.now());
 					uncommittedUpdates = 0;
 				}
 			}
