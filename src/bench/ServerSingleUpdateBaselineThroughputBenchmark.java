@@ -2,6 +2,7 @@ package bench;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,6 +22,7 @@ import mpt.dictionary.MPTDictionaryPartial;
 import rmi.ClientProvider;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSModification;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
+import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateResponse;
 import serialization.generated.BVerifyAPIMessageSerialization.ProveUpdateRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.ProveUpdateResponse;
 import server.BVerifyServer;
@@ -73,7 +75,8 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		// now throw requests at it
 		List<PerformUpdateRequest> requests = BootstrapMockSetup.loadPerformUpdateRequests(base);
 		
-		Collection<Callable<Boolean>> workerThreads = new ArrayList<Callable<Boolean>>();
+		Collection<Callable<Boolean>> makeUpdateRequestWorkers = new ArrayList<Callable<Boolean>>();
+		Collection<Callable<Boolean>> verifyUpdatePerformedWorkers = new ArrayList<Callable<Boolean>>();
 		
 		for(PerformUpdateRequest request : requests) {
 			// for now only one ADS Modification per request
@@ -90,38 +93,52 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 			byte[] proofRequestAsBytes = proofRequest.toByteArray();
 			
 			
-			workerThreads.add(new Callable<Boolean>() {
+			makeUpdateRequestWorkers.add(new Callable<Boolean>() {
 					@Override
 					public Boolean call() throws Exception {
 						// request the update
-						Random rand = new Random();
-						Thread.sleep(rand.nextInt(15)*1000);
-						rmi.getServer().performUpdate(updateRequestAsBytes);
-						Thread.sleep(30*1000);
-						
-						// ask for a proof it was applied 
-						byte[] proofApplied = rmi.getServer().proveUpdate(proofRequestAsBytes);
-						ProveUpdateResponse up = ProveUpdateResponse.parseFrom(proofApplied);
-						// check the proof 
-						MPTDictionaryPartial proof = MPTDictionaryPartial.deserialize(up.getProof());
-						byte[] value = proof.get(adsId);
-						boolean success = Arrays.equals(value, newAdsRoot);
-						if(!success){
-							logger.log(Level.WARNING, "PROOF FAILED!");
-						}
-						return Boolean.valueOf(success);
+						// Random rand = new Random();
+						// Thread.sleep(rand.nextInt(15)*1000);
+						byte[] responseBytes = rmi.getServer().performUpdate(updateRequestAsBytes);
+						PerformUpdateResponse response = PerformUpdateResponse.parseFrom(responseBytes);
+						return Boolean.valueOf(response.getAccepted());
 					}
 				});
+			
+			verifyUpdatePerformedWorkers.add(new Callable<Boolean>() {
+				@Override
+				public Boolean call() throws Exception {
+					// ask for a proof it was applied 
+					byte[] proofApplied = rmi.getServer().proveUpdate(proofRequestAsBytes);
+					ProveUpdateResponse up = ProveUpdateResponse.parseFrom(proofApplied);
+					// check the proof 
+					MPTDictionaryPartial proof = MPTDictionaryPartial.deserialize(up.getProof());
+					byte[] value = proof.get(adsId);
+					boolean success = Arrays.equals(value, newAdsRoot);
+					return Boolean.valueOf(success);
+				}
+			});
 		}
 		
 		Scanner sc = new Scanner(System.in);
 		logger.log(Level.INFO, "[Press enter to start client test]");
 		sc.nextLine();
 		sc.close();
+		logger.log(Level.INFO, "starting time: "+LocalDateTime.now());
 		long startTime = System.currentTimeMillis();
 		try {
-			List<Future<Boolean>> results = WORKERS.invokeAll(workerThreads, TIMEOUT, TimeUnit.SECONDS);
-			for (Future<Boolean> result : results) {
+			List<Future<Boolean>> updateResults = WORKERS.invokeAll(makeUpdateRequestWorkers, TIMEOUT, TimeUnit.SECONDS);
+			logger.log(Level.INFO, "...making update requests");
+			for (Future<Boolean> result : updateResults) {
+				Boolean resultBool = result.get();
+				if(!resultBool) {
+					logger.log(Level.WARNING, "UPDATE WAS NOT PERFORMED");
+				}
+			}
+			logger.log(Level.INFO, "...update requests accepted, asking for proof of updates");
+			List<Future<Boolean>> proofResults = WORKERS.invokeAll(verifyUpdatePerformedWorkers, TIMEOUT, TimeUnit.SECONDS);
+			logger.log(Level.INFO, "...making update requests");
+			for (Future<Boolean> result : proofResults) {
 				Boolean resultBool = result.get();
 				if(!resultBool) {
 					logger.log(Level.WARNING, "UPDATE WAS NOT PERFORMED");
@@ -134,8 +151,7 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		long duration = endTime-startTime;
 		String timeTaken = String.format("TOTAL TIME: %d seconds %d milliseconds", 
 			    TimeUnit.MILLISECONDS.toSeconds(duration),
-			    TimeUnit.MILLISECONDS.toMillis(duration) - 
-			    TimeUnit.MINUTES.toMillis(TimeUnit.MILLISECONDS.toSeconds(duration))
+			    duration - TimeUnit.MILLISECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(duration))
 			);
 		logger.log(Level.INFO, timeTaken);
 		logger.log(Level.INFO, "[TEST COMPLETE!]");
