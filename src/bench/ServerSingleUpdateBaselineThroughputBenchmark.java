@@ -30,16 +30,18 @@ import server.BVerifyServer;
 public class ServerSingleUpdateBaselineThroughputBenchmark {
 	private static final Logger logger = Logger.getLogger(ServerSingleUpdateBaselineThroughputBenchmark.class.getName());
 	
+	private static final int NUMBER_OF_THREADS = 5000;
+	private static final int TOTAL_TASK_TIMEOUT = 30;
+	
 	private static final ThreadPoolExecutor WORKERS = 
-			new ThreadPoolExecutor(100, // always keep 100 threads alive
-								   100, // pool of threads capped at 100
-								    60, // idle timeout
+			new ThreadPoolExecutor(NUMBER_OF_THREADS, // keep these threads alive even if idle
+								   NUMBER_OF_THREADS, // total size of thread pool
+								   30, // idle timeout
 								    TimeUnit.SECONDS,
 								    // can also queue up to 10k tasks
 								    new ArrayBlockingQueue<Runnable>(10000));
 	
-	private static final int TIMEOUT = 240;
-	private static final int MILLISECONDS_OF_RANDOM_DELAY = 5000;
+	private static final int MILLISECONDS_OF_RANDOM_DELAY = 1000;
 		
 	/*
 	 * Run this once to generate the data for the benchmark
@@ -138,7 +140,7 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		long startTime = System.currentTimeMillis();
 		try {
 			logger.log(Level.INFO, "...making update requests");
-			List<Future<Boolean>> updateResults = WORKERS.invokeAll(makeUpdateRequestWorkers, TIMEOUT, TimeUnit.SECONDS);
+			List<Future<Boolean>> updateResults = WORKERS.invokeAll(makeUpdateRequestWorkers, TOTAL_TASK_TIMEOUT, TimeUnit.SECONDS);
 			for (Future<Boolean> result : updateResults) {
 				Boolean resultBool = result.get();
 				if(!resultBool) {
@@ -146,7 +148,7 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 				}
 			}
 			logger.log(Level.INFO, "...update requests accepted, asking for proof of updates");
-			List<Future<Boolean>> proofResults = WORKERS.invokeAll(verifyUpdatePerformedWorkers, TIMEOUT, TimeUnit.SECONDS);
+			List<Future<Boolean>> proofResults = WORKERS.invokeAll(verifyUpdatePerformedWorkers, TOTAL_TASK_TIMEOUT, TimeUnit.SECONDS);
 			logger.log(Level.INFO, "...making update requests");
 			for (Future<Boolean> result : proofResults) {
 				Boolean resultBool = result.get();
