@@ -30,7 +30,7 @@ import server.BVerifyServer;
 public class ServerSingleUpdateBaselineThroughputBenchmark {
 	private static final Logger logger = Logger.getLogger(ServerSingleUpdateBaselineThroughputBenchmark.class.getName());
 	
-	private static final int NUMBER_OF_THREADS = 5000;
+	private static final int NUMBER_OF_THREADS = 2000;
 	private static final int TOTAL_TASK_TIMEOUT = 30;
 	
 	private static final ThreadPoolExecutor WORKERS = 
@@ -41,7 +41,7 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 								    // can also queue up to 10k tasks
 								    new ArrayBlockingQueue<Runnable>(10000));
 	
-	private static final int MILLISECONDS_OF_RANDOM_DELAY = 1000;
+	private static final int MILLISECONDS_OF_RANDOM_DELAY = 5000;
 		
 	/*
 	 * Run this once to generate the data for the benchmark
