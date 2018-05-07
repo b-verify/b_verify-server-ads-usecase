@@ -49,7 +49,7 @@ public class BVerifyServerRequestHandler implements BVerifyProtocolServerAPI {
 	@Override
 	public byte[] performUpdate(byte[] performUpdatesRequestMsg) {
 		try {
-			logger.log(Level.INFO, "perform update request recieved");
+			logger.log(Level.FINE, "perform update request recieved");
 			// #1 parse the message
 			PerformUpdateRequest request = PerformUpdateRequest.parseFrom(performUpdatesRequestMsg);
 						
@@ -58,7 +58,6 @@ public class BVerifyServerRequestHandler implements BVerifyProtocolServerAPI {
 			Set<Account> needToSign = new HashSet<>();
 			for(ADSModification adsModifcation : request.getUpdate().getModificationsList()) {
 				byte[] adsKey = adsModifcation.getAdsId().toByteArray();
-				byte[] adsValue = adsModifcation.getNewValue().toByteArray();
 				Set<Account> owners = this.adsManager.getADSOwners(adsKey);
 				needToSign.addAll(owners);
 			}
@@ -68,7 +67,7 @@ public class BVerifyServerRequestHandler implements BVerifyProtocolServerAPI {
 			List<Account> needToSignList = needToSign.stream().collect(Collectors.toList());
 			Collections.sort(needToSignList);
 			if(needToSign.size() != request.getSignaturesCount()) {
-				logger.log(Level.INFO, "update rejected... not enough signatures");
+				logger.log(Level.FINE, "update rejected... not enough signatures");
 				return REJECTED;
 			}
 			for(int i = 0; i < needToSign.size(); i++) {
@@ -78,7 +77,7 @@ public class BVerifyServerRequestHandler implements BVerifyProtocolServerAPI {
 				byte[] witness = CryptographicDigest.hash(request.getUpdate().toByteArray());
 				boolean signed = CryptographicSignature.verify(witness, sig, a.getPublicKey());
 				if(!signed) {
-					logger.log(Level.INFO, "update rejected... invalid signature");
+					logger.log(Level.FINE, "update rejected... invalid signature");
 					return REJECTED;
 				}
 			}
@@ -86,12 +85,12 @@ public class BVerifyServerRequestHandler implements BVerifyProtocolServerAPI {
 			// #5 if all signatures verify create the update and
 			// 	 schedule the update to be committed
 			this.updatesToBeCommited.add(request);
-			logger.log(Level.INFO, "update accepted");
+			logger.log(Level.FINE, "update accepted");
 			return ACCEPTED;
 			
 		} 	catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
-			logger.log(Level.INFO, "update rejected");
+			logger.log(Level.FINE, "update rejected");
 			return REJECTED;
 		}
 	}
@@ -99,7 +98,7 @@ public class BVerifyServerRequestHandler implements BVerifyProtocolServerAPI {
 	@Override
 	public byte[] proveUpdate(byte[] proveUpdateRequestMsg) throws RemoteException {
 		try {
-			logger.log(Level.INFO, "prove update request recieved");
+			logger.log(Level.FINE, "prove update request recieved");
 			ProveUpdateRequest request = ProveUpdateRequest.parseFrom(proveUpdateRequestMsg);
 			// parse the keys
 			List<byte[]> keys = request.getAdsIdsList().stream()

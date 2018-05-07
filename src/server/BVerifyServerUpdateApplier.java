@@ -46,11 +46,12 @@ public class BVerifyServerUpdateApplier extends Thread {
 				}
 				uncommittedUpdates++;
 				totalUpdates++;
-				logger.log(Level.INFO, "applying update #"+totalUpdates);
+				logger.log(Level.FINE, "applying update #"+totalUpdates);
 				// only commit once batch is large enough
 				if(uncommittedUpdates >= BATCH_SIZE) {
-					byte[] newCommitment = this.adsManager.commit();
-					logger.log(Level.INFO, "committing "+uncommittedUpdates+" updates");
+					this.adsManager.commit();
+					long sysTime = System.currentTimeMillis();
+					logger.log(Level.INFO, "committing"+uncommittedUpdates+" at "+sysTime);
 					uncommittedUpdates = 0;
 				}
 			}

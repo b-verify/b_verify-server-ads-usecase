@@ -42,10 +42,12 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 	}
 	
 	public static void runBenchmarkServer(String base, String host, int port, int batchSize) {
-		logger.log(Level.INFO, "...starting server on port: "+port);
+		logger.log(Level.INFO, "...starting server on host: "+host+" port: "+port);
 		// first create a registry on localhost
 		try {
-			 System.setProperty("java.rmi.server.hostname", host); 
+			if(host != null) {
+				 System.setProperty("java.rmi.server.hostname", host);
+			}
 			LocateRegistry.createRegistry(port);
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -63,6 +65,8 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 	}
 	
 	public static void runBenchmarkClients(String base, String host, int port) {
+		logger.log(Level.INFO, "...creating mock clients connected to b_verify server \n "
+				+ "on host: "+host+" port: "+port);
 		// first connect to the registry 
 		ClientProvider rmi = new ClientProvider(host, port);
 
@@ -128,10 +132,10 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		}
 		long endTime = System.currentTimeMillis();
 		long duration = endTime-startTime;
-		String timeTaken = String.format("TOTAL TIME: %d min, %d sec", 
-			    TimeUnit.MILLISECONDS.toMinutes(duration),
-			    TimeUnit.MILLISECONDS.toSeconds(duration) - 
-			    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))
+		String timeTaken = String.format("TOTAL TIME: %d seconds %d milliseconds", 
+			    TimeUnit.MILLISECONDS.toSeconds(duration),
+			    TimeUnit.MILLISECONDS.toMillis(duration) - 
+			    TimeUnit.MINUTES.toMillis(TimeUnit.MILLISECONDS.toSeconds(duration))
 			);
 		logger.log(Level.INFO, timeTaken);
 		logger.log(Level.INFO, "[TEST COMPLETE!]");
@@ -144,9 +148,18 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		int nTotalADSes = 1000000;
 		int nUpdates = 10000;
 		// generateTestData(base, nClients, nTotalADSes, nUpdates);
-		String host = "18.85.22.252";
-		int port = 1099;
-		//runBenchmarkServer(base, host, port, nUpdates);
-		runBenchmarkClients(base, host, port);
-	}
+		if (args.length != 3) {
+			logger.log(Level.INFO, "please provide <host> <port> [SERVER|CLIENT]");
+		}
+		String host = args[0];
+		int port = Integer.parseInt(args[1]);
+		if (args[2].equals("SERVER")) {
+			runBenchmarkServer(base, host, port, nUpdates);
+		}else if (args[2].equals("CLIENT")){
+			runBenchmarkClients(base, host, port);
+		}else {
+			logger.log(Level.INFO, "please provide <host> <port> [SERVER|CLIENT]");
+
+		}
+	}	
 }
