@@ -9,11 +9,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +30,14 @@ import server.BVerifyServer;
 public class ServerSingleUpdateBaselineThroughputBenchmark {
 	private static final Logger logger = Logger.getLogger(ServerSingleUpdateBaselineThroughputBenchmark.class.getName());
 	
-	private static final ExecutorService WORKERS = Executors.newCachedThreadPool();
+	private static final ThreadPoolExecutor WORKERS = 
+			new ThreadPoolExecutor(100, // always keep 100 threads alive
+								   100, // pool of threads capped at 100
+								    60, // idle timeout
+								    TimeUnit.SECONDS,
+								    // can also queue up to 10k tasks
+								    new ArrayBlockingQueue<Runnable>(10000));
+	
 	private static final int TIMEOUT = 240;
 	private static final int MILLISECONDS_OF_RANDOM_DELAY = 5000;
 		
@@ -130,8 +137,8 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 		logger.log(Level.INFO, "starting time: "+LocalDateTime.now());
 		long startTime = System.currentTimeMillis();
 		try {
-			List<Future<Boolean>> updateResults = WORKERS.invokeAll(makeUpdateRequestWorkers, TIMEOUT, TimeUnit.SECONDS);
 			logger.log(Level.INFO, "...making update requests");
+			List<Future<Boolean>> updateResults = WORKERS.invokeAll(makeUpdateRequestWorkers, TIMEOUT, TimeUnit.SECONDS);
 			for (Future<Boolean> result : updateResults) {
 				Boolean resultBool = result.get();
 				if(!resultBool) {
