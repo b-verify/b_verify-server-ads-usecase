@@ -2349,6 +2349,1042 @@ public final class BVerifyAPIMessageSerialization {
 
   }
 
+  public interface GetADSRootRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:serialization.generated.GetADSRootRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bytes ads_id = 1;</code>
+     */
+    com.google.protobuf.ByteString getAdsId();
+  }
+  /**
+   * Protobuf type {@code serialization.generated.GetADSRootRequest}
+   */
+  public  static final class GetADSRootRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:serialization.generated.GetADSRootRequest)
+      GetADSRootRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use GetADSRootRequest.newBuilder() to construct.
+    private GetADSRootRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private GetADSRootRequest() {
+      adsId_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private GetADSRootRequest(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+
+              adsId_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_GetADSRootRequest_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_GetADSRootRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest.class, serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest.Builder.class);
+    }
+
+    public static final int ADS_ID_FIELD_NUMBER = 1;
+    private com.google.protobuf.ByteString adsId_;
+    /**
+     * <code>bytes ads_id = 1;</code>
+     */
+    public com.google.protobuf.ByteString getAdsId() {
+      return adsId_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!adsId_.isEmpty()) {
+        output.writeBytes(1, adsId_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!adsId_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, adsId_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest)) {
+        return super.equals(obj);
+      }
+      serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest other = (serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest) obj;
+
+      boolean result = true;
+      result = result && getAdsId()
+          .equals(other.getAdsId());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ADS_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getAdsId().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code serialization.generated.GetADSRootRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:serialization.generated.GetADSRootRequest)
+        serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_GetADSRootRequest_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_GetADSRootRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest.class, serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest.Builder.class);
+      }
+
+      // Construct using serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        adsId_ = com.google.protobuf.ByteString.EMPTY;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_GetADSRootRequest_descriptor;
+      }
+
+      public serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest getDefaultInstanceForType() {
+        return serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest.getDefaultInstance();
+      }
+
+      public serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest build() {
+        serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest buildPartial() {
+        serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest result = new serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest(this);
+        result.adsId_ = adsId_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest) {
+          return mergeFrom((serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest other) {
+        if (other == serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest.getDefaultInstance()) return this;
+        if (other.getAdsId() != com.google.protobuf.ByteString.EMPTY) {
+          setAdsId(other.getAdsId());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private com.google.protobuf.ByteString adsId_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes ads_id = 1;</code>
+       */
+      public com.google.protobuf.ByteString getAdsId() {
+        return adsId_;
+      }
+      /**
+       * <code>bytes ads_id = 1;</code>
+       */
+      public Builder setAdsId(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        adsId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes ads_id = 1;</code>
+       */
+      public Builder clearAdsId() {
+        
+        adsId_ = getDefaultInstance().getAdsId();
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:serialization.generated.GetADSRootRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:serialization.generated.GetADSRootRequest)
+    private static final serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest();
+    }
+
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GetADSRootRequest>
+        PARSER = new com.google.protobuf.AbstractParser<GetADSRootRequest>() {
+      public GetADSRootRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new GetADSRootRequest(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<GetADSRootRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GetADSRootRequest> getParserForType() {
+      return PARSER;
+    }
+
+    public serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface GetADSRootResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:serialization.generated.GetADSRootResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+     */
+    boolean hasProof();
+    /**
+     * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+     */
+    serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof getProof();
+    /**
+     * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+     */
+    serialization.generated.BVerifyAPIMessageSerialization.ADSRootProofOrBuilder getProofOrBuilder();
+  }
+  /**
+   * Protobuf type {@code serialization.generated.GetADSRootResponse}
+   */
+  public  static final class GetADSRootResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:serialization.generated.GetADSRootResponse)
+      GetADSRootResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use GetADSRootResponse.newBuilder() to construct.
+    private GetADSRootResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private GetADSRootResponse() {
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private GetADSRootResponse(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.Builder subBuilder = null;
+              if (proof_ != null) {
+                subBuilder = proof_.toBuilder();
+              }
+              proof_ = input.readMessage(serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(proof_);
+                proof_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_GetADSRootResponse_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_GetADSRootResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse.class, serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse.Builder.class);
+    }
+
+    public static final int PROOF_FIELD_NUMBER = 1;
+    private serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof proof_;
+    /**
+     * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+     */
+    public boolean hasProof() {
+      return proof_ != null;
+    }
+    /**
+     * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+     */
+    public serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof getProof() {
+      return proof_ == null ? serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.getDefaultInstance() : proof_;
+    }
+    /**
+     * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+     */
+    public serialization.generated.BVerifyAPIMessageSerialization.ADSRootProofOrBuilder getProofOrBuilder() {
+      return getProof();
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (proof_ != null) {
+        output.writeMessage(1, getProof());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (proof_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getProof());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse)) {
+        return super.equals(obj);
+      }
+      serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse other = (serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse) obj;
+
+      boolean result = true;
+      result = result && (hasProof() == other.hasProof());
+      if (hasProof()) {
+        result = result && getProof()
+            .equals(other.getProof());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasProof()) {
+        hash = (37 * hash) + PROOF_FIELD_NUMBER;
+        hash = (53 * hash) + getProof().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code serialization.generated.GetADSRootResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:serialization.generated.GetADSRootResponse)
+        serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_GetADSRootResponse_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_GetADSRootResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse.class, serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse.Builder.class);
+      }
+
+      // Construct using serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (proofBuilder_ == null) {
+          proof_ = null;
+        } else {
+          proof_ = null;
+          proofBuilder_ = null;
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_GetADSRootResponse_descriptor;
+      }
+
+      public serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse getDefaultInstanceForType() {
+        return serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse.getDefaultInstance();
+      }
+
+      public serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse build() {
+        serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse buildPartial() {
+        serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse result = new serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse(this);
+        if (proofBuilder_ == null) {
+          result.proof_ = proof_;
+        } else {
+          result.proof_ = proofBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse) {
+          return mergeFrom((serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse other) {
+        if (other == serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse.getDefaultInstance()) return this;
+        if (other.hasProof()) {
+          mergeProof(other.getProof());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof proof_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof, serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.Builder, serialization.generated.BVerifyAPIMessageSerialization.ADSRootProofOrBuilder> proofBuilder_;
+      /**
+       * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+       */
+      public boolean hasProof() {
+        return proofBuilder_ != null || proof_ != null;
+      }
+      /**
+       * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+       */
+      public serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof getProof() {
+        if (proofBuilder_ == null) {
+          return proof_ == null ? serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.getDefaultInstance() : proof_;
+        } else {
+          return proofBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+       */
+      public Builder setProof(serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof value) {
+        if (proofBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          proof_ = value;
+          onChanged();
+        } else {
+          proofBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+       */
+      public Builder setProof(
+          serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.Builder builderForValue) {
+        if (proofBuilder_ == null) {
+          proof_ = builderForValue.build();
+          onChanged();
+        } else {
+          proofBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+       */
+      public Builder mergeProof(serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof value) {
+        if (proofBuilder_ == null) {
+          if (proof_ != null) {
+            proof_ =
+              serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.newBuilder(proof_).mergeFrom(value).buildPartial();
+          } else {
+            proof_ = value;
+          }
+          onChanged();
+        } else {
+          proofBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+       */
+      public Builder clearProof() {
+        if (proofBuilder_ == null) {
+          proof_ = null;
+          onChanged();
+        } else {
+          proof_ = null;
+          proofBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+       */
+      public serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.Builder getProofBuilder() {
+        
+        onChanged();
+        return getProofFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+       */
+      public serialization.generated.BVerifyAPIMessageSerialization.ADSRootProofOrBuilder getProofOrBuilder() {
+        if (proofBuilder_ != null) {
+          return proofBuilder_.getMessageOrBuilder();
+        } else {
+          return proof_ == null ?
+              serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.getDefaultInstance() : proof_;
+        }
+      }
+      /**
+       * <code>.serialization.generated.ADSRootProof proof = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof, serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.Builder, serialization.generated.BVerifyAPIMessageSerialization.ADSRootProofOrBuilder> 
+          getProofFieldBuilder() {
+        if (proofBuilder_ == null) {
+          proofBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof, serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.Builder, serialization.generated.BVerifyAPIMessageSerialization.ADSRootProofOrBuilder>(
+                  getProof(),
+                  getParentForChildren(),
+                  isClean());
+          proof_ = null;
+        }
+        return proofBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:serialization.generated.GetADSRootResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:serialization.generated.GetADSRootResponse)
+    private static final serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse();
+    }
+
+    public static serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<GetADSRootResponse>
+        PARSER = new com.google.protobuf.AbstractParser<GetADSRootResponse>() {
+      public GetADSRootResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new GetADSRootResponse(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<GetADSRootResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GetADSRootResponse> getParserForType() {
+      return PARSER;
+    }
+
+    public serialization.generated.BVerifyAPIMessageSerialization.GetADSRootResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface UpdateOrBuilder extends
       // @@protoc_insertion_point(interface_extends:serialization.generated.Update)
       com.google.protobuf.MessageOrBuilder {
@@ -3116,6 +4152,1154 @@ public final class BVerifyAPIMessageSerialization {
 
   }
 
+  public interface ADSRootProofOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:serialization.generated.ADSRootProof)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+     */
+    boolean hasLastUpdatedProof();
+    /**
+     * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+     */
+    serialization.generated.MptSerialization.MerklePrefixTrie getLastUpdatedProof();
+    /**
+     * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+     */
+    serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder getLastUpdatedProofOrBuilder();
+
+    /**
+     * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+     */
+    boolean hasLastUpdate();
+    /**
+     * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+     */
+    serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest getLastUpdate();
+    /**
+     * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+     */
+    serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequestOrBuilder getLastUpdateOrBuilder();
+
+    /**
+     * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+     */
+    java.util.List<serialization.generated.MptSerialization.MerklePrefixTrie> 
+        getFreshnessProofList();
+    /**
+     * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+     */
+    serialization.generated.MptSerialization.MerklePrefixTrie getFreshnessProof(int index);
+    /**
+     * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+     */
+    int getFreshnessProofCount();
+    /**
+     * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+     */
+    java.util.List<? extends serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder> 
+        getFreshnessProofOrBuilderList();
+    /**
+     * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+     */
+    serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder getFreshnessProofOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code serialization.generated.ADSRootProof}
+   */
+  public  static final class ADSRootProof extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:serialization.generated.ADSRootProof)
+      ADSRootProofOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ADSRootProof.newBuilder() to construct.
+    private ADSRootProof(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ADSRootProof() {
+      freshnessProof_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ADSRootProof(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownFieldProto3(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              serialization.generated.MptSerialization.MerklePrefixTrie.Builder subBuilder = null;
+              if (lastUpdatedProof_ != null) {
+                subBuilder = lastUpdatedProof_.toBuilder();
+              }
+              lastUpdatedProof_ = input.readMessage(serialization.generated.MptSerialization.MerklePrefixTrie.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(lastUpdatedProof_);
+                lastUpdatedProof_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 18: {
+              serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest.Builder subBuilder = null;
+              if (lastUpdate_ != null) {
+                subBuilder = lastUpdate_.toBuilder();
+              }
+              lastUpdate_ = input.readMessage(serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(lastUpdate_);
+                lastUpdate_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                freshnessProof_ = new java.util.ArrayList<serialization.generated.MptSerialization.MerklePrefixTrie>();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              freshnessProof_.add(
+                  input.readMessage(serialization.generated.MptSerialization.MerklePrefixTrie.parser(), extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          freshnessProof_ = java.util.Collections.unmodifiableList(freshnessProof_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_ADSRootProof_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_ADSRootProof_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.class, serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int LAST_UPDATED_PROOF_FIELD_NUMBER = 1;
+    private serialization.generated.MptSerialization.MerklePrefixTrie lastUpdatedProof_;
+    /**
+     * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+     */
+    public boolean hasLastUpdatedProof() {
+      return lastUpdatedProof_ != null;
+    }
+    /**
+     * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+     */
+    public serialization.generated.MptSerialization.MerklePrefixTrie getLastUpdatedProof() {
+      return lastUpdatedProof_ == null ? serialization.generated.MptSerialization.MerklePrefixTrie.getDefaultInstance() : lastUpdatedProof_;
+    }
+    /**
+     * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+     */
+    public serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder getLastUpdatedProofOrBuilder() {
+      return getLastUpdatedProof();
+    }
+
+    public static final int LAST_UPDATE_FIELD_NUMBER = 2;
+    private serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest lastUpdate_;
+    /**
+     * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+     */
+    public boolean hasLastUpdate() {
+      return lastUpdate_ != null;
+    }
+    /**
+     * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+     */
+    public serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest getLastUpdate() {
+      return lastUpdate_ == null ? serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest.getDefaultInstance() : lastUpdate_;
+    }
+    /**
+     * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+     */
+    public serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequestOrBuilder getLastUpdateOrBuilder() {
+      return getLastUpdate();
+    }
+
+    public static final int FRESHNESS_PROOF_FIELD_NUMBER = 3;
+    private java.util.List<serialization.generated.MptSerialization.MerklePrefixTrie> freshnessProof_;
+    /**
+     * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+     */
+    public java.util.List<serialization.generated.MptSerialization.MerklePrefixTrie> getFreshnessProofList() {
+      return freshnessProof_;
+    }
+    /**
+     * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+     */
+    public java.util.List<? extends serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder> 
+        getFreshnessProofOrBuilderList() {
+      return freshnessProof_;
+    }
+    /**
+     * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+     */
+    public int getFreshnessProofCount() {
+      return freshnessProof_.size();
+    }
+    /**
+     * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+     */
+    public serialization.generated.MptSerialization.MerklePrefixTrie getFreshnessProof(int index) {
+      return freshnessProof_.get(index);
+    }
+    /**
+     * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+     */
+    public serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder getFreshnessProofOrBuilder(
+        int index) {
+      return freshnessProof_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (lastUpdatedProof_ != null) {
+        output.writeMessage(1, getLastUpdatedProof());
+      }
+      if (lastUpdate_ != null) {
+        output.writeMessage(2, getLastUpdate());
+      }
+      for (int i = 0; i < freshnessProof_.size(); i++) {
+        output.writeMessage(3, freshnessProof_.get(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (lastUpdatedProof_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getLastUpdatedProof());
+      }
+      if (lastUpdate_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getLastUpdate());
+      }
+      for (int i = 0; i < freshnessProof_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, freshnessProof_.get(i));
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof)) {
+        return super.equals(obj);
+      }
+      serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof other = (serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof) obj;
+
+      boolean result = true;
+      result = result && (hasLastUpdatedProof() == other.hasLastUpdatedProof());
+      if (hasLastUpdatedProof()) {
+        result = result && getLastUpdatedProof()
+            .equals(other.getLastUpdatedProof());
+      }
+      result = result && (hasLastUpdate() == other.hasLastUpdate());
+      if (hasLastUpdate()) {
+        result = result && getLastUpdate()
+            .equals(other.getLastUpdate());
+      }
+      result = result && getFreshnessProofList()
+          .equals(other.getFreshnessProofList());
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasLastUpdatedProof()) {
+        hash = (37 * hash) + LAST_UPDATED_PROOF_FIELD_NUMBER;
+        hash = (53 * hash) + getLastUpdatedProof().hashCode();
+      }
+      if (hasLastUpdate()) {
+        hash = (37 * hash) + LAST_UPDATE_FIELD_NUMBER;
+        hash = (53 * hash) + getLastUpdate().hashCode();
+      }
+      if (getFreshnessProofCount() > 0) {
+        hash = (37 * hash) + FRESHNESS_PROOF_FIELD_NUMBER;
+        hash = (53 * hash) + getFreshnessProofList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code serialization.generated.ADSRootProof}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:serialization.generated.ADSRootProof)
+        serialization.generated.BVerifyAPIMessageSerialization.ADSRootProofOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_ADSRootProof_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_ADSRootProof_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.class, serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.Builder.class);
+      }
+
+      // Construct using serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getFreshnessProofFieldBuilder();
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (lastUpdatedProofBuilder_ == null) {
+          lastUpdatedProof_ = null;
+        } else {
+          lastUpdatedProof_ = null;
+          lastUpdatedProofBuilder_ = null;
+        }
+        if (lastUpdateBuilder_ == null) {
+          lastUpdate_ = null;
+        } else {
+          lastUpdate_ = null;
+          lastUpdateBuilder_ = null;
+        }
+        if (freshnessProofBuilder_ == null) {
+          freshnessProof_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+        } else {
+          freshnessProofBuilder_.clear();
+        }
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return serialization.generated.BVerifyAPIMessageSerialization.internal_static_serialization_generated_ADSRootProof_descriptor;
+      }
+
+      public serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof getDefaultInstanceForType() {
+        return serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.getDefaultInstance();
+      }
+
+      public serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof build() {
+        serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof buildPartial() {
+        serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof result = new serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (lastUpdatedProofBuilder_ == null) {
+          result.lastUpdatedProof_ = lastUpdatedProof_;
+        } else {
+          result.lastUpdatedProof_ = lastUpdatedProofBuilder_.build();
+        }
+        if (lastUpdateBuilder_ == null) {
+          result.lastUpdate_ = lastUpdate_;
+        } else {
+          result.lastUpdate_ = lastUpdateBuilder_.build();
+        }
+        if (freshnessProofBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            freshnessProof_ = java.util.Collections.unmodifiableList(freshnessProof_);
+            bitField0_ = (bitField0_ & ~0x00000004);
+          }
+          result.freshnessProof_ = freshnessProof_;
+        } else {
+          result.freshnessProof_ = freshnessProofBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof) {
+          return mergeFrom((serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof other) {
+        if (other == serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof.getDefaultInstance()) return this;
+        if (other.hasLastUpdatedProof()) {
+          mergeLastUpdatedProof(other.getLastUpdatedProof());
+        }
+        if (other.hasLastUpdate()) {
+          mergeLastUpdate(other.getLastUpdate());
+        }
+        if (freshnessProofBuilder_ == null) {
+          if (!other.freshnessProof_.isEmpty()) {
+            if (freshnessProof_.isEmpty()) {
+              freshnessProof_ = other.freshnessProof_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+            } else {
+              ensureFreshnessProofIsMutable();
+              freshnessProof_.addAll(other.freshnessProof_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.freshnessProof_.isEmpty()) {
+            if (freshnessProofBuilder_.isEmpty()) {
+              freshnessProofBuilder_.dispose();
+              freshnessProofBuilder_ = null;
+              freshnessProof_ = other.freshnessProof_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+              freshnessProofBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getFreshnessProofFieldBuilder() : null;
+            } else {
+              freshnessProofBuilder_.addAllMessages(other.freshnessProof_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private serialization.generated.MptSerialization.MerklePrefixTrie lastUpdatedProof_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.generated.MptSerialization.MerklePrefixTrie, serialization.generated.MptSerialization.MerklePrefixTrie.Builder, serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder> lastUpdatedProofBuilder_;
+      /**
+       * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+       */
+      public boolean hasLastUpdatedProof() {
+        return lastUpdatedProofBuilder_ != null || lastUpdatedProof_ != null;
+      }
+      /**
+       * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+       */
+      public serialization.generated.MptSerialization.MerklePrefixTrie getLastUpdatedProof() {
+        if (lastUpdatedProofBuilder_ == null) {
+          return lastUpdatedProof_ == null ? serialization.generated.MptSerialization.MerklePrefixTrie.getDefaultInstance() : lastUpdatedProof_;
+        } else {
+          return lastUpdatedProofBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+       */
+      public Builder setLastUpdatedProof(serialization.generated.MptSerialization.MerklePrefixTrie value) {
+        if (lastUpdatedProofBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          lastUpdatedProof_ = value;
+          onChanged();
+        } else {
+          lastUpdatedProofBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+       */
+      public Builder setLastUpdatedProof(
+          serialization.generated.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
+        if (lastUpdatedProofBuilder_ == null) {
+          lastUpdatedProof_ = builderForValue.build();
+          onChanged();
+        } else {
+          lastUpdatedProofBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+       */
+      public Builder mergeLastUpdatedProof(serialization.generated.MptSerialization.MerklePrefixTrie value) {
+        if (lastUpdatedProofBuilder_ == null) {
+          if (lastUpdatedProof_ != null) {
+            lastUpdatedProof_ =
+              serialization.generated.MptSerialization.MerklePrefixTrie.newBuilder(lastUpdatedProof_).mergeFrom(value).buildPartial();
+          } else {
+            lastUpdatedProof_ = value;
+          }
+          onChanged();
+        } else {
+          lastUpdatedProofBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+       */
+      public Builder clearLastUpdatedProof() {
+        if (lastUpdatedProofBuilder_ == null) {
+          lastUpdatedProof_ = null;
+          onChanged();
+        } else {
+          lastUpdatedProof_ = null;
+          lastUpdatedProofBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+       */
+      public serialization.generated.MptSerialization.MerklePrefixTrie.Builder getLastUpdatedProofBuilder() {
+        
+        onChanged();
+        return getLastUpdatedProofFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+       */
+      public serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder getLastUpdatedProofOrBuilder() {
+        if (lastUpdatedProofBuilder_ != null) {
+          return lastUpdatedProofBuilder_.getMessageOrBuilder();
+        } else {
+          return lastUpdatedProof_ == null ?
+              serialization.generated.MptSerialization.MerklePrefixTrie.getDefaultInstance() : lastUpdatedProof_;
+        }
+      }
+      /**
+       * <code>.serialization.generated.MerklePrefixTrie last_updated_proof = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.generated.MptSerialization.MerklePrefixTrie, serialization.generated.MptSerialization.MerklePrefixTrie.Builder, serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder> 
+          getLastUpdatedProofFieldBuilder() {
+        if (lastUpdatedProofBuilder_ == null) {
+          lastUpdatedProofBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              serialization.generated.MptSerialization.MerklePrefixTrie, serialization.generated.MptSerialization.MerklePrefixTrie.Builder, serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder>(
+                  getLastUpdatedProof(),
+                  getParentForChildren(),
+                  isClean());
+          lastUpdatedProof_ = null;
+        }
+        return lastUpdatedProofBuilder_;
+      }
+
+      private serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest lastUpdate_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest, serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest.Builder, serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequestOrBuilder> lastUpdateBuilder_;
+      /**
+       * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+       */
+      public boolean hasLastUpdate() {
+        return lastUpdateBuilder_ != null || lastUpdate_ != null;
+      }
+      /**
+       * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+       */
+      public serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest getLastUpdate() {
+        if (lastUpdateBuilder_ == null) {
+          return lastUpdate_ == null ? serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest.getDefaultInstance() : lastUpdate_;
+        } else {
+          return lastUpdateBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+       */
+      public Builder setLastUpdate(serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest value) {
+        if (lastUpdateBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          lastUpdate_ = value;
+          onChanged();
+        } else {
+          lastUpdateBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+       */
+      public Builder setLastUpdate(
+          serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest.Builder builderForValue) {
+        if (lastUpdateBuilder_ == null) {
+          lastUpdate_ = builderForValue.build();
+          onChanged();
+        } else {
+          lastUpdateBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+       */
+      public Builder mergeLastUpdate(serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest value) {
+        if (lastUpdateBuilder_ == null) {
+          if (lastUpdate_ != null) {
+            lastUpdate_ =
+              serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest.newBuilder(lastUpdate_).mergeFrom(value).buildPartial();
+          } else {
+            lastUpdate_ = value;
+          }
+          onChanged();
+        } else {
+          lastUpdateBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+       */
+      public Builder clearLastUpdate() {
+        if (lastUpdateBuilder_ == null) {
+          lastUpdate_ = null;
+          onChanged();
+        } else {
+          lastUpdate_ = null;
+          lastUpdateBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+       */
+      public serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest.Builder getLastUpdateBuilder() {
+        
+        onChanged();
+        return getLastUpdateFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+       */
+      public serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequestOrBuilder getLastUpdateOrBuilder() {
+        if (lastUpdateBuilder_ != null) {
+          return lastUpdateBuilder_.getMessageOrBuilder();
+        } else {
+          return lastUpdate_ == null ?
+              serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest.getDefaultInstance() : lastUpdate_;
+        }
+      }
+      /**
+       * <code>.serialization.generated.PerformUpdateRequest last_update = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest, serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest.Builder, serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequestOrBuilder> 
+          getLastUpdateFieldBuilder() {
+        if (lastUpdateBuilder_ == null) {
+          lastUpdateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest, serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest.Builder, serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequestOrBuilder>(
+                  getLastUpdate(),
+                  getParentForChildren(),
+                  isClean());
+          lastUpdate_ = null;
+        }
+        return lastUpdateBuilder_;
+      }
+
+      private java.util.List<serialization.generated.MptSerialization.MerklePrefixTrie> freshnessProof_ =
+        java.util.Collections.emptyList();
+      private void ensureFreshnessProofIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          freshnessProof_ = new java.util.ArrayList<serialization.generated.MptSerialization.MerklePrefixTrie>(freshnessProof_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          serialization.generated.MptSerialization.MerklePrefixTrie, serialization.generated.MptSerialization.MerklePrefixTrie.Builder, serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder> freshnessProofBuilder_;
+
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public java.util.List<serialization.generated.MptSerialization.MerklePrefixTrie> getFreshnessProofList() {
+        if (freshnessProofBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(freshnessProof_);
+        } else {
+          return freshnessProofBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public int getFreshnessProofCount() {
+        if (freshnessProofBuilder_ == null) {
+          return freshnessProof_.size();
+        } else {
+          return freshnessProofBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public serialization.generated.MptSerialization.MerklePrefixTrie getFreshnessProof(int index) {
+        if (freshnessProofBuilder_ == null) {
+          return freshnessProof_.get(index);
+        } else {
+          return freshnessProofBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public Builder setFreshnessProof(
+          int index, serialization.generated.MptSerialization.MerklePrefixTrie value) {
+        if (freshnessProofBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFreshnessProofIsMutable();
+          freshnessProof_.set(index, value);
+          onChanged();
+        } else {
+          freshnessProofBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public Builder setFreshnessProof(
+          int index, serialization.generated.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
+        if (freshnessProofBuilder_ == null) {
+          ensureFreshnessProofIsMutable();
+          freshnessProof_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          freshnessProofBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public Builder addFreshnessProof(serialization.generated.MptSerialization.MerklePrefixTrie value) {
+        if (freshnessProofBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFreshnessProofIsMutable();
+          freshnessProof_.add(value);
+          onChanged();
+        } else {
+          freshnessProofBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public Builder addFreshnessProof(
+          int index, serialization.generated.MptSerialization.MerklePrefixTrie value) {
+        if (freshnessProofBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFreshnessProofIsMutable();
+          freshnessProof_.add(index, value);
+          onChanged();
+        } else {
+          freshnessProofBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public Builder addFreshnessProof(
+          serialization.generated.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
+        if (freshnessProofBuilder_ == null) {
+          ensureFreshnessProofIsMutable();
+          freshnessProof_.add(builderForValue.build());
+          onChanged();
+        } else {
+          freshnessProofBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public Builder addFreshnessProof(
+          int index, serialization.generated.MptSerialization.MerklePrefixTrie.Builder builderForValue) {
+        if (freshnessProofBuilder_ == null) {
+          ensureFreshnessProofIsMutable();
+          freshnessProof_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          freshnessProofBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public Builder addAllFreshnessProof(
+          java.lang.Iterable<? extends serialization.generated.MptSerialization.MerklePrefixTrie> values) {
+        if (freshnessProofBuilder_ == null) {
+          ensureFreshnessProofIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, freshnessProof_);
+          onChanged();
+        } else {
+          freshnessProofBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public Builder clearFreshnessProof() {
+        if (freshnessProofBuilder_ == null) {
+          freshnessProof_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+        } else {
+          freshnessProofBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public Builder removeFreshnessProof(int index) {
+        if (freshnessProofBuilder_ == null) {
+          ensureFreshnessProofIsMutable();
+          freshnessProof_.remove(index);
+          onChanged();
+        } else {
+          freshnessProofBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public serialization.generated.MptSerialization.MerklePrefixTrie.Builder getFreshnessProofBuilder(
+          int index) {
+        return getFreshnessProofFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder getFreshnessProofOrBuilder(
+          int index) {
+        if (freshnessProofBuilder_ == null) {
+          return freshnessProof_.get(index);  } else {
+          return freshnessProofBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public java.util.List<? extends serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder> 
+           getFreshnessProofOrBuilderList() {
+        if (freshnessProofBuilder_ != null) {
+          return freshnessProofBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(freshnessProof_);
+        }
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public serialization.generated.MptSerialization.MerklePrefixTrie.Builder addFreshnessProofBuilder() {
+        return getFreshnessProofFieldBuilder().addBuilder(
+            serialization.generated.MptSerialization.MerklePrefixTrie.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public serialization.generated.MptSerialization.MerklePrefixTrie.Builder addFreshnessProofBuilder(
+          int index) {
+        return getFreshnessProofFieldBuilder().addBuilder(
+            index, serialization.generated.MptSerialization.MerklePrefixTrie.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .serialization.generated.MerklePrefixTrie freshness_proof = 3;</code>
+       */
+      public java.util.List<serialization.generated.MptSerialization.MerklePrefixTrie.Builder> 
+           getFreshnessProofBuilderList() {
+        return getFreshnessProofFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          serialization.generated.MptSerialization.MerklePrefixTrie, serialization.generated.MptSerialization.MerklePrefixTrie.Builder, serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder> 
+          getFreshnessProofFieldBuilder() {
+        if (freshnessProofBuilder_ == null) {
+          freshnessProofBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              serialization.generated.MptSerialization.MerklePrefixTrie, serialization.generated.MptSerialization.MerklePrefixTrie.Builder, serialization.generated.MptSerialization.MerklePrefixTrieOrBuilder>(
+                  freshnessProof_,
+                  ((bitField0_ & 0x00000004) == 0x00000004),
+                  getParentForChildren(),
+                  isClean());
+          freshnessProof_ = null;
+        }
+        return freshnessProofBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFieldsProto3(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:serialization.generated.ADSRootProof)
+    }
+
+    // @@protoc_insertion_point(class_scope:serialization.generated.ADSRootProof)
+    private static final serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof();
+    }
+
+    public static serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ADSRootProof>
+        PARSER = new com.google.protobuf.AbstractParser<ADSRootProof>() {
+      public ADSRootProof parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ADSRootProof(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ADSRootProof> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ADSRootProof> getParserForType() {
+      return PARSER;
+    }
+
+    public serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface ADSModificationOrBuilder extends
       // @@protoc_insertion_point(interface_extends:serialization.generated.ADSModification)
       com.google.protobuf.MessageOrBuilder {
@@ -3667,10 +5851,25 @@ public final class BVerifyAPIMessageSerialization {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_serialization_generated_ProveUpdateResponse_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_serialization_generated_GetADSRootRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_serialization_generated_GetADSRootRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_serialization_generated_GetADSRootResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_serialization_generated_GetADSRootResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_serialization_generated_Update_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_serialization_generated_Update_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_serialization_generated_ADSRootProof_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_serialization_generated_ADSRootProof_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_serialization_generated_ADSModification_descriptor;
   private static final 
@@ -3693,11 +5892,19 @@ public final class BVerifyAPIMessageSerialization {
       "cepted\030\001 \001(\010\"%\n\022ProveUpdateRequest\022\017\n\007ad" +
       "s_ids\030\001 \003(\014\"O\n\023ProveUpdateResponse\0228\n\005pr" +
       "oof\030\001 \001(\0132).serialization.generated.Merk" +
-      "lePrefixTrie\"I\n\006Update\022?\n\rmodifications\030" +
-      "\001 \003(\0132(.serialization.generated.ADSModif" +
-      "ication\"4\n\017ADSModification\022\016\n\006ads_id\030\001 \001" +
-      "(\014\022\021\n\tnew_value\030\002 \001(\014B B\036BVerifyAPIMessa" +
-      "geSerializationb\006proto3"
+      "lePrefixTrie\"#\n\021GetADSRootRequest\022\016\n\006ads" +
+      "_id\030\001 \001(\014\"J\n\022GetADSRootResponse\0224\n\005proof" +
+      "\030\001 \001(\0132%.serialization.generated.ADSRoot" +
+      "Proof\"I\n\006Update\022?\n\rmodifications\030\001 \003(\0132(" +
+      ".serialization.generated.ADSModification" +
+      "\"\335\001\n\014ADSRootProof\022E\n\022last_updated_proof\030" +
+      "\001 \001(\0132).serialization.generated.MerklePr" +
+      "efixTrie\022B\n\013last_update\030\002 \001(\0132-.serializ" +
+      "ation.generated.PerformUpdateRequest\022B\n\017" +
+      "freshness_proof\030\003 \003(\0132).serialization.ge" +
+      "nerated.MerklePrefixTrie\"4\n\017ADSModificat" +
+      "ion\022\016\n\006ads_id\030\001 \001(\014\022\021\n\tnew_value\030\002 \001(\014B " +
+      "B\036BVerifyAPIMessageSerializationb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3736,14 +5943,32 @@ public final class BVerifyAPIMessageSerialization {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_serialization_generated_ProveUpdateResponse_descriptor,
         new java.lang.String[] { "Proof", });
-    internal_static_serialization_generated_Update_descriptor =
+    internal_static_serialization_generated_GetADSRootRequest_descriptor =
       getDescriptor().getMessageTypes().get(4);
+    internal_static_serialization_generated_GetADSRootRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_serialization_generated_GetADSRootRequest_descriptor,
+        new java.lang.String[] { "AdsId", });
+    internal_static_serialization_generated_GetADSRootResponse_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_serialization_generated_GetADSRootResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_serialization_generated_GetADSRootResponse_descriptor,
+        new java.lang.String[] { "Proof", });
+    internal_static_serialization_generated_Update_descriptor =
+      getDescriptor().getMessageTypes().get(6);
     internal_static_serialization_generated_Update_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_serialization_generated_Update_descriptor,
         new java.lang.String[] { "Modifications", });
+    internal_static_serialization_generated_ADSRootProof_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_serialization_generated_ADSRootProof_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_serialization_generated_ADSRootProof_descriptor,
+        new java.lang.String[] { "LastUpdatedProof", "LastUpdate", "FreshnessProof", });
     internal_static_serialization_generated_ADSModification_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_serialization_generated_ADSModification_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_serialization_generated_ADSModification_descriptor,

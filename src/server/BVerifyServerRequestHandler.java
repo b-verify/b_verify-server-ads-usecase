@@ -17,6 +17,7 @@ import crpyto.CryptographicDigest;
 import crpyto.CryptographicSignature;
 import pki.Account;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSModification;
+import serialization.generated.BVerifyAPIMessageSerialization.GetADSRootRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateResponse;
 import serialization.generated.BVerifyAPIMessageSerialization.ProveUpdateRequest;
@@ -108,9 +109,21 @@ public class BVerifyServerRequestHandler implements BVerifyProtocolServerAPI {
 			return ProveUpdateResponse.newBuilder().setProof(mpt).build().toByteArray();
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
-			logger.log(Level.WARNING, "cannot prove update, something wrong");
+			logger.log(Level.WARNING, "bad request");
 			return null;
 		}
+	}
+
+	@Override
+	public byte[] getADSRoot(byte[] adsRootRequest) throws RemoteException {
+		try {
+			GetADSRootRequest request = GetADSRootRequest.parseFrom(adsRootRequest);
+		} catch (InvalidProtocolBufferException e) {
+			e.printStackTrace();
+			logger.log(Level.WARNING, "bad request");
+			return null;
+		}
+		return null;
 	}
 
 

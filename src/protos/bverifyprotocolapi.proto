@@ -34,12 +34,26 @@ message ProveUpdateResponse {
 	MerklePrefixTrie proof = 1;
 }
 
+message GetADSRootRequest {
+	bytes ads_id = 1;
+}
+
+message GetADSRootResponse {
+	ADSRootProof proof = 1;
+}
+
 
 /**
-*	An update
+*	An Update
 */
 message Update {
 	repeated ADSModification modifications = 1;
+}
+
+message ADSRootProof {
+	MerklePrefixTrie last_updated_proof = 1;
+	PerformUpdateRequest last_update = 2;
+	repeated MerklePrefixTrie freshness_proof = 3;
 }
 
 /**
