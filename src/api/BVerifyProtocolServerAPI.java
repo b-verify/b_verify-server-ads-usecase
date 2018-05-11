@@ -12,9 +12,7 @@ import java.rmi.RemoteException;
 public interface BVerifyProtocolServerAPI extends Remote {
 	
 	public byte[] performUpdate(byte[] adsUpdates) throws RemoteException;
-	
-	public byte[] proveUpdate(byte[] updateRequest)  throws RemoteException;
-	
-	public byte[] getADSRoot(byte[] adsRootRequest) throws RemoteException;
+		
+	public byte[] proveADSRoot(byte[] adsRootRequest) throws RemoteException;
 
 }

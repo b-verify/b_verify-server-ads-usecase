@@ -26,7 +26,6 @@ import pki.Account;
 import pki.PKIDirectory;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSModification;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
-import serialization.generated.BVerifyAPIMessageSerialization.ProveUpdateRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.Update;
 
 /**
@@ -81,7 +80,7 @@ public class BootstrapMockSetup {
 		       		// make an update if necessary
 		       		if(updateNumber < nUpdates) {
 			    		updateNumber++;
-						byte[] adsRootUpdatedValue = CryptographicDigest.hash((adsNumber+"START").getBytes());
+						byte[] adsRootUpdatedValue = CryptographicDigest.hash((adsNumber+"END").getBytes());
 						logger.log(Level.INFO, "...generating update #"+updateNumber+" of "+nUpdates);
 			    		ADSModification modification = ADSModification.newBuilder()
 			    				.setAdsId(ByteString.copyFrom(adsId))
@@ -89,6 +88,7 @@ public class BootstrapMockSetup {
 			    				.build();
 			    		Update update = Update.newBuilder()
 			    				.addModifications(modification)
+			    				.setValidAtCommitmentNumber(1)
 			    				.build();
 			    		PerformUpdateRequest request  = produceUpdateRequest(update, accounts);
 			    		updates.add(request);

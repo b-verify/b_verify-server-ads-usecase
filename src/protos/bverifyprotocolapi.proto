@@ -26,19 +26,11 @@ message PerformUpdateResponse {
 	bool accepted = 1;
 }
 
-message ProveUpdateRequest {
-	repeated bytes ads_ids = 1;
-}
-
-message ProveUpdateResponse {
-	MerklePrefixTrie proof = 1;
-}
-
-message GetADSRootRequest {
+message ProveADSRootRequest {
 	bytes ads_id = 1;
 }
 
-message GetADSRootResponse {
+message ProveADSRootResponse {
 	ADSRootProof proof = 1;
 }
 
@@ -48,6 +40,7 @@ message GetADSRootResponse {
 */
 message Update {
 	repeated ADSModification modifications = 1;
+	int32 valid_at_commitment_number = 2;
 }
 
 message ADSRootProof {

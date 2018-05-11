@@ -3,9 +3,9 @@ package server;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,14 +29,15 @@ public class BVerifyServer {
 	private final ClientProvider rmi;
 	
 	/** 
-	 * 			SHARED DATA
+	 * 			Comp DATA
 	 */
+	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 	
 	/*
 	 * ADS Manager used to update the authentication information
 	 * stored on the server. 
 	 */
-	protected final ADSManager adsManager;
+	private final ADSManager adsManager;
 
 	/*
 	 * This is a shared queue using the producer-consumer 
@@ -51,8 +52,6 @@ public class BVerifyServer {
 	/**
 	 * 			MISC
 	 */
-	private static final ExecutorService WORKERS = Executors.newCachedThreadPool();
-	private static final int TIMEOUT = 60;
 	
 	public BVerifyServer(String base, String registryHost, int registryPort, int batchSize) {
 		this.pki = new PKIDirectory(base + "pki/");
@@ -68,7 +67,8 @@ public class BVerifyServer {
 		
 		// this component runs as its own thread
 		BVerifyServerUpdateApplier applierThread = 
-				new BVerifyServerUpdateApplier(this.updatesToBeCommited, this.adsManager, batchSize);
+				new BVerifyServerUpdateApplier(this.lock,
+						this.updatesToBeCommited, this.adsManager, batchSize);
 		applierThread.start();
 		
 		// this is an object exposed to the RMI interface.
@@ -76,7 +76,7 @@ public class BVerifyServer {
 		// may invoke multiple methods concurrently on this 
 		// object
 		BVerifyServerRequestHandler verifierForRMI = 
-				new BVerifyServerRequestHandler(this.updatesToBeCommited, this.adsManager);
+				new BVerifyServerRequestHandler(this.lock, this.updatesToBeCommited, this.adsManager);
 		BVerifyProtocolServerAPI serverAPI;
 		try {
 			// port 0 = any free port

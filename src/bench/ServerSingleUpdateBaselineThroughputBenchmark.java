@@ -23,8 +23,8 @@ import rmi.ClientProvider;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSModification;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateResponse;
-import serialization.generated.BVerifyAPIMessageSerialization.ProveUpdateRequest;
-import serialization.generated.BVerifyAPIMessageSerialization.ProveUpdateResponse;
+import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootRequest;
+import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootResponse;
 import server.BVerifyServer;
 
 public class ServerSingleUpdateBaselineThroughputBenchmark {
@@ -95,8 +95,8 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 			byte[] newAdsRoot = singleModification.getNewValue().toByteArray();
 			
 			// construct the proof request
-			ProveUpdateRequest proofRequest = ProveUpdateRequest.newBuilder()
-					.addAdsIds(singleModification.getAdsId())
+			ProveADSRootRequest proofRequest = ProveADSRootRequest.newBuilder()
+					.setAdsId(singleModification.getAdsId())
 					.build();
 			
 			byte[] updateRequestAsBytes = request.toByteArray();
@@ -121,10 +121,11 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 					// ask for a proof it was applied 
 					Random rand = new Random();
 					Thread.sleep(rand.nextInt(MILLISECONDS_OF_RANDOM_DELAY));
-					byte[] proofApplied = rmi.getServer().proveUpdate(proofRequestAsBytes);
-					ProveUpdateResponse up = ProveUpdateResponse.parseFrom(proofApplied);
+					byte[] proofApplied = rmi.getServer().proveADSRoot(proofRequestAsBytes);
+					ProveADSRootResponse up = ProveADSRootResponse.parseFrom(proofApplied);
 					// check the proof 
-					MPTDictionaryPartial proof = MPTDictionaryPartial.deserialize(up.getProof());
+					MPTDictionaryPartial proof = MPTDictionaryPartial.deserialize(
+							up.getProof().getLastUpdatedProof());
 					byte[] value = proof.get(adsId);
 					boolean success = Arrays.equals(value, newAdsRoot);
 					return Boolean.valueOf(success);
