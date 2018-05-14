@@ -33,7 +33,17 @@ public class BVerifyServer {
 	private ClientProvider rmi;
 	
 	/** 
-	 * 			Comp DATA
+	 * 	 Components
+	 */
+	private final BVerifyServerRequestVerifier verifier;
+	private final BVerifyServerUpdateApplier applier;
+	
+	/**
+	 * Shared Data
+	 */
+	
+	/*
+	 * Lock is required for safety
 	 */
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 	
@@ -51,12 +61,6 @@ public class BVerifyServer {
 	 */
 	private BlockingQueue<PerformUpdateRequest> updatesToBeCommited;
 	
-	private final BVerifyServerRequestVerifier verifier;
-	private final BVerifyServerUpdateApplier applier;
-	
-	/**
-	 * 			MISC
-	 */
 	
 	public BVerifyServer(String base, String registryHost, int registryPort, int batchSize) {
 		this.pki = new PKIDirectory(base + "pki/");

@@ -48,7 +48,7 @@ public class BVerifyServerUpdateApplier extends Thread {
 
 		
 		try {
-			// process initial updates
+			// process any initializing updates - if any!
 			int initializingUpdates = 0;
 			while(!this.updates.isEmpty()) {
 				PerformUpdateRequest request = this.updates.take();
