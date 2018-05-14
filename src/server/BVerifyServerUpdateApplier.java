@@ -58,8 +58,8 @@ public class BVerifyServerUpdateApplier extends Thread {
 			}
 			logger.log(Level.INFO, "doing initial commit!");
 			this.adsManager.commit();
-			logger.log(Level.INFO, "initialized: "+initializingUpdates
-					+" [at "+LocalDateTime.now()+"]");
+			logger.log(Level.INFO, "initialized "+initializingUpdates
+					+" ADS_IDs [at "+LocalDateTime.now()+"]");
 		}catch(Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
@@ -98,7 +98,7 @@ public class BVerifyServerUpdateApplier extends Thread {
 					// commit!
 					this.adsManager.commit();
 					this.lock.writeLock().unlock();
-					logger.log(Level.INFO, "committing updates #"+uncommittedUpdates);
+					logger.log(Level.INFO, "committing "+uncommittedUpdates+" updates");
 					logger.log(Level.INFO, "total updates: "+totalUpdates
 							+" [at "+LocalDateTime.now()+"]");
 					this.uncommittedUpdates = 0;

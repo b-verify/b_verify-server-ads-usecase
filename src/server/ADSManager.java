@@ -197,7 +197,7 @@ public class ADSManager {
 			}
 		}
 		this.stagedUpdates.clear();
-		logger.log(Level.INFO, "commitment added: "+Utils.byteArrayAsHexString(commitment));
+		logger.log(Level.INFO, "added commitment #"+this.getCurrentCommitmentNumber()+": "+Utils.byteArrayAsHexString(commitment));
 		return commitment;
 	}
 	

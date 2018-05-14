@@ -40,25 +40,31 @@ public class Tester {
 	private final BVerifyServer server;
 	
 	// the actual mappings (stored so that we can check the server)
-	private final Map<ByteBuffer, byte[]> adsIdToValue;
 	private final Map<ByteBuffer, PerformUpdateRequest> adsIdToLastUpdate;
 	private final Map<ByteBuffer, List<Account>> adsIdToOwners;
 	
 	// commitments 
 	private List<byte[]> commitments;
+	
 	private int lastAcceptedCommitmentNumber;
 	
-	// batch size of 1 means that we get a new commitment every test
-	// this makes it easier to reason about
-	private final static int BATCH_SIZE = 1;
+	private final List<Entry<ByteBuffer, PerformUpdateRequest>> pendingUpdates;
+	private int pendingAcceptedCommitments;
+	private final int batchSize;
+	
+	private static final int RETRY_PROOF_INTERVAL_MS = 10;
 
 	private static final byte[] START_VALUE = CryptographicDigest.hash("STARTING".getBytes());
 	
-	public Tester(int nClients, int maxClientsPerADS) {
-		this.adsIdToValue = new HashMap<>();
+	public Tester(int nClients, int maxClientsPerADS, int batchSize) {
 		this.adsIdToLastUpdate = new HashMap<>();
 		this.adsIdToOwners = new HashMap<>();
 		this.commitments = new ArrayList<>();
+		
+		// batching
+		this.pendingUpdates = new ArrayList<>();
+		this.pendingAcceptedCommitments = 0;
+		this.batchSize = batchSize;
 						
 		List<Account> accounts = PKIDirectory.generateRandomAccounts(nClients);
 		int max = (int) Math.pow(2, nClients);
@@ -75,7 +81,6 @@ public class Tester {
 			logger.log(Level.FINE, "{"+adsAccounts+"} -> "+Utils.byteArrayAsHexString(adsId));
 			ByteBuffer adsIdBuffer = ByteBuffer.wrap(adsId);
 			
-			this.adsIdToValue.put(adsIdBuffer, START_VALUE);
 			this.adsIdToOwners.put(adsIdBuffer, adsAccounts);
 			
 			// create a request initializing this value
@@ -87,7 +92,7 @@ public class Tester {
 		logger.log(Level.INFO, "Number of ADSes: "+this.adsIdToOwners.size());
 				
 		logger.log(Level.INFO, "Starting the Server");
-		this.server = new BVerifyServer(pki, BATCH_SIZE, 
+		this.server = new BVerifyServer(pki, this.batchSize, 
 				adsIdToLastUpdate.values().stream().collect(Collectors.toSet()));
 		
 		this.lastAcceptedCommitmentNumber = 0;
@@ -100,7 +105,7 @@ public class Tester {
 	}
 	
 	public List<byte[]> getADSIds(){
-		return this.adsIdToValue.keySet().stream().map(x -> x.array()).collect(Collectors.toList());
+		return this.adsIdToLastUpdate.keySet().stream().map(x -> x.array()).collect(Collectors.toList());
 	}
 	
 	public boolean doUpdate(byte[] adsId, byte[] newValue) {
@@ -109,8 +114,22 @@ public class Tester {
 		boolean response  = parsePerformUpdateResponse(
 				this.server.getRequestHandler().performUpdate(updateRequest.toByteArray()));
 		if(response) {
-			this.adsIdToLastUpdate.put(ByteBuffer.wrap(adsId), updateRequest);
-			this.lastAcceptedCommitmentNumber++;
+			// add it to the pending updates
+			this.pendingUpdates.add(Map.entry(ByteBuffer.wrap(adsId), updateRequest));
+			this.pendingAcceptedCommitments++;
+			
+			// if have a complete batch 
+			// we should expect a new commitment
+			// with all the accepted updates
+			if(this.pendingAcceptedCommitments >= this.batchSize) {
+				// move all entries to the committed map
+				for(Map.Entry<ByteBuffer, PerformUpdateRequest> updatesApplied : this.pendingUpdates) {
+					this.adsIdToLastUpdate.put(updatesApplied.getKey(), updatesApplied.getValue());
+				}
+				this.pendingUpdates.clear();
+				this.lastAcceptedCommitmentNumber++;
+				this.pendingAcceptedCommitments = 0;
+			}
 		}
 		return response;
 	}
@@ -119,8 +138,7 @@ public class Tester {
 		// first get the commitments
 		this.waitAndGetNewCommitmnets();
 		// then for each adsId -> value map
-		for(Entry<ByteBuffer, byte[]> adsIdAndValue : this.adsIdToValue.entrySet()) {
-			byte[] adsId = adsIdAndValue.getKey().array();
+		for(byte[] adsId : this.getADSIds()) {
 			logger.log(Level.FINE, "asking for proof for ADS ID: "+Utils.byteArrayAsHexString(adsId));
 			ProveADSRootRequest request = this.createProveADSRootRequest(adsId);
 			try {
@@ -129,7 +147,7 @@ public class Tester {
 						this.server.getRequestHandler().proveADSRoot(request.toByteArray()));
 				ADSRootProof proof = proofResponse.getProof();
 				// check the proof
-				PerformUpdateRequest lastUpdateRequest = this.adsIdToLastUpdate.get(adsIdAndValue.getKey());
+				PerformUpdateRequest lastUpdateRequest = this.adsIdToLastUpdate.get(ByteBuffer.wrap(adsId));
 				boolean correctProof = this.checkProof(adsId, lastUpdateRequest, proof);
 				if(!correctProof) {
 					logger.log(Level.INFO, "proof failed for ADS ID: "+Utils.byteArrayAsHexString(adsId));
@@ -168,14 +186,14 @@ public class Tester {
 								throw new RuntimeException("bug on server - something wrong");
 							}
 						}else {
-							logger.log(Level.INFO, 
-									"new commitment #"+i+" = "+Utils.byteArrayAsHexString(commitments.get(i)));
+							logger.log(Level.FINE, "new commitment #"+i+": "+Utils.byteArrayAsHexString(commitments.get(i)));
 						}
 					}
 					this.commitments = commitments;
 				}else {
-					// otherwise sleep 100ms
-					Thread.sleep(100);
+					// otherwise sleep to give the server a chance
+					// to commit the entries
+					Thread.sleep(RETRY_PROOF_INTERVAL_MS);
 				}
 			}
 		} catch (RemoteException | InterruptedException e) {
