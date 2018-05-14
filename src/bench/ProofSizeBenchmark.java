@@ -27,6 +27,12 @@ public class ProofSizeBenchmark {
 		List<byte[]> adsIds = tester.getADSIds();
 		assert adsIds.size() == nADSes;
 		byte[] adsIdToNotUpdate = adsIds.get(0);
+		
+		// initial proof size
+		ProofSize size = tester.getProofSize(adsIdToNotUpdate);
+		rows.add(getCSVRowSingleADSProofSize(nADSes, 0, batchSize, size.getRawProofSize(), 
+				size.getUpdateSize(), size.getUpdateProofSize(), size.getFreshnessProofSize()));
+				
 		for(int update = 1; update <= nUpdates; update++) {
 			int adsToUpdate = rand.nextInt(adsIds.size()-1)+1;
 			byte[] adsIdToUpdate = adsIds.get(adsToUpdate);
@@ -35,9 +41,11 @@ public class ProofSizeBenchmark {
 			if(!accepted) {
 				throw new RuntimeException("something went wrong");
 			}
-			ProofSize size = tester.getProofSize(adsIdToNotUpdate);
-			rows.add(getCSVRowSingleADSProofSize(nADSes, update, batchSize, size.getRawProofSize(), 
-					size.getUpdateSize(), size.getUpdateProofSize(), size.getFreshnessProofSize()));
+			if((update % batchSize) == 0) {
+				size = tester.getProofSize(adsIdToNotUpdate);
+				rows.add(getCSVRowSingleADSProofSize(nADSes, update, batchSize, size.getRawProofSize(), 
+						size.getUpdateSize(), size.getUpdateProofSize(), size.getFreshnessProofSize()));
+			}
 		}
 		writeSingleADSProofSizeToCSV(rows, "./proofsizebenchmark.csv");
 	}

@@ -101,27 +101,22 @@ public class MockTester {
 		this.batchSize = batchSize;
 						
 		List<Account> accounts = PKIDirectory.generateRandomAccounts(nClients);
-		int ads = 0;
-		while(ads < nADSes) {
-			logger.log(Level.INFO, "ads "+ads+" of "+nADSes);
-			List<Account> adsAccounts = getSortedListOfAccounts(ads, maxClientsPerADS, accounts);
-			if(adsAccounts == null) {
-				continue;
-			}
-			byte[] adsId = CryptographicUtils.listOfAccountsToADSId(adsAccounts);
-			for(Account a : adsAccounts) {
+		List<List<Account>> adsAccounts = getSortedListsOfAccounts(accounts, maxClientsPerADS, 
+				nADSes);
+		for(List<Account> accountsInADS : adsAccounts) {
+			byte[] adsId = CryptographicUtils.listOfAccountsToADSId(accountsInADS);
+			for(Account a : accountsInADS) {
 				a.addADSKey(adsId);
 			}
 			logger.log(Level.FINE, "{"+adsAccounts+"} -> "+Utils.byteArrayAsHexString(adsId));
 			ByteBuffer adsIdBuffer = ByteBuffer.wrap(adsId);
 			
-			this.adsIdToOwners.put(adsIdBuffer, adsAccounts);
+			this.adsIdToOwners.put(adsIdBuffer, accountsInADS);
 			
 			// create a request initializing this value
 			PerformUpdateRequest initialUpdateRequest = this.createPerformUpdateRequest(adsId, startingValue, 
 					this.getNextCommitmentNumber());
 			this.adsIdToLastUpdate.put(adsIdBuffer, initialUpdateRequest);		
-			ads++;
 		}
 		PKIDirectory pki = new PKIDirectory(accounts);
 		logger.log(Level.INFO, "Number of ADSes: "+this.adsIdToOwners.size());
@@ -414,5 +409,37 @@ public class MockTester {
 		return subset;
 	}
 	
+	private static List<List<Account>> getSortedListsOfAccounts(List<Account> accounts, 
+			int maxClientsPerADS, int nADSes){
+		List<List<Account>> res = new ArrayList<>();
+		for(int k = 1; k <= maxClientsPerADS; k++) {
+			res.addAll(getSortedListsOfAccounts(accounts, k));
+		}
+		if(res.size() < nADSes) {
+			throw new RuntimeException("insufficient number of accounts");
+		}
+		return res.subList(0, nADSes);
+	}
 	
+	private static List<List<Account>> getSortedListsOfAccounts(List<Account> accounts, int k){
+		return processLargerSubsets(accounts, new ArrayList<>(), k, 0);
+	}
+
+	private static List<List<Account>> processLargerSubsets(List<Account> set, List<Account> subset, 
+			int targetSize, int nextIndex) {
+	    if (targetSize == subset.size()) {
+	    	// also sort the subset
+	    	Collections.sort(subset);
+	    	return Arrays.asList(subset);
+	    } else {
+	    	List<List<Account>> subsets = new ArrayList<>();
+	        for (int j = nextIndex; j < set.size(); j++) {
+	        	List<Account> newSubset = new ArrayList<>(subset);
+	        	newSubset.add(set.get(j));
+	        	subsets.addAll(
+	        			processLargerSubsets(set, newSubset, targetSize, j + 1));
+	        }
+	        return subsets;
+	    }
+	}
 }
