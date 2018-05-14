@@ -1,5 +1,6 @@
 package server;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,9 +49,8 @@ public class ADSManager {
 	// proof that an update was performed at a given time
 	// and the "freshness" proofs are calculated on demand
 	// using the saved deltas
-	private final Map<String, ADSRootProof> adsRootProofs;
+	private final Map<ByteBuffer, ADSRootProof> adsRootProofs;
 	private final List<MPTDictionaryDelta> deltas;
-	
 	
 	// for efficiency reasons we batch updates
 	// updates are added to the authentication tree as they occur
@@ -58,7 +58,6 @@ public class ADSManager {
 	// the full proof is delayed until commit() is called
 	private List<PerformUpdateRequest> stagedUpdates;
 	private MPTDictionaryFull serverAuthADS;
-	
 	
 	// we store a list of commitments
 	// normally these would be witnessed to Bitcoin
@@ -68,8 +67,8 @@ public class ADSManager {
 	// Java NOTE: cannot use byte[] as a key since
 	//				implements referential equality so
 	//				instead we wrap it with a string
-	private final Map<String, Set<Account>> adsIdToOwners;
-	private final Map<String, byte[]> adsIdStringToBytes;
+	// account list is canonically sorted 
+	private final Map<ByteBuffer, Set<Account>> adsIdToOwners;
 	
 	public ADSManager(String base, PKIDirectory pki) {
 		this.stagedUpdates = new ArrayList<>();
@@ -77,26 +76,22 @@ public class ADSManager {
 		this.deltas = new ArrayList<>();
 		this.commitments = new ArrayList<>();
 		
-		// (1) create a mapping from ADS_ID -> {owners}
+		// (1) create a mapping from ADS_ID -> sorted [owners]
 		this.adsIdToOwners = new HashMap<>();
-		this.adsIdStringToBytes = new HashMap<>();
 		Set<Account> accounts = pki.getAllAccounts();
 		for(Account a : accounts) {
 			Set<byte[]> adsIds = a.getADSKeys();
 			for(byte[] adsId : adsIds) {
-				// TODO check if other more efficient ways to map 
-				//		the id bytes to string 
-				String adsIdString = Utils.byteArrayAsHexString(adsId);
-				this.adsIdStringToBytes.put(adsIdString, adsId);
-				Set<Account> accs = this.adsIdToOwners.get(adsIdString);
+				ByteBuffer key = ByteBuffer.wrap(adsId);
+				Set<Account> accs = this.adsIdToOwners.get(key);
 				if(accs == null) {
 					accs = new HashSet<>();
 				}
 				accs.add(a);
-				this.adsIdToOwners.put(adsIdString, accs);
+				this.adsIdToOwners.put(key, accs);
 			}
 		}
-		logger.log(Level.INFO, "ads_id -> {owners} loaded");
+		logger.log(Level.INFO, "ads_id -> [owners] loaded");
 		
 		// (2) Second load the MASTER_ADS from disk
 		this.serverAuthADS = BootstrapMockSetup.loadServerADS(base);
@@ -107,15 +102,13 @@ public class ADSManager {
 		//		NOTE: that the initial values are fixed
 		//			  so they just include the 
 		//			  full path to the root
-		for(Map.Entry<String, byte[]> adsId : this.adsIdStringToBytes.entrySet()) {
-			byte[] adsIdByte = adsId.getValue();
-			String adsIdString = adsId.getKey();
-			AuthenticatedDictionaryClient mptPath = new MPTDictionaryPartial(this.serverAuthADS, adsIdByte);
+		for(ByteBuffer adsIdBuff : this.adsIdToOwners.keySet()) {
+			AuthenticatedDictionaryClient mptPath = new MPTDictionaryPartial(this.serverAuthADS, adsIdBuff.array());
 			MerklePrefixTrie mptPathProof = mptPath.serialize();
 			ADSRootProof proof = ADSRootProof.newBuilder()
 					.setLastUpdatedProof(mptPathProof)
 					.build();
-			this.adsRootProofs.put(adsIdString, proof);	
+			this.adsRootProofs.put(adsIdBuff, proof);	
 		}
 		logger.log(Level.INFO, "initial ads root proofs created");
 		
@@ -125,15 +118,43 @@ public class ADSManager {
 		
 	}
 	
+	// used for testing - should generally come bootstrapped with 
+	// initial values
+	public ADSManager(PKIDirectory pki) {
+		this.stagedUpdates = new ArrayList<>();
+		this.adsRootProofs = new HashMap<>();
+		this.deltas = new ArrayList<>();
+		this.commitments = new ArrayList<>();		
+		this.adsIdToOwners = new HashMap<>();
+		
+		// (1) create a mapping from ADS_ID -> sorted [owners]
+		Set<Account> accounts = pki.getAllAccounts();
+		for(Account a : accounts) {
+			Set<byte[]> adsIds = a.getADSKeys();
+			for(byte[] adsId : adsIds) {
+				ByteBuffer key = ByteBuffer.wrap(adsId);
+				Set<Account> accs = this.adsIdToOwners.get(key);
+				if(accs == null) {
+					accs = new HashSet<>();
+				}
+				accs.add(a);
+				this.adsIdToOwners.put(key, accs);
+			}
+		}
+		
+		// (2) create a fresh MPT Dictionary
+		this.serverAuthADS = new MPTDictionaryFull();
+		logger.log(Level.INFO, "EMPTY MPT Dictionary created");
+	}
+	
 	public Set<Account> getADSOwners(byte[] adsKey){
-		String key = Utils.byteArrayAsHexString(adsKey);
-		return new HashSet<Account>(this.adsIdToOwners.get(key));
+		return new HashSet<Account>(this.adsIdToOwners.get(ByteBuffer.wrap(adsKey)));
 	}
 		
 	public void stageUpdate(PerformUpdateRequest approvedUpdate) {
 		Update update = approvedUpdate.getUpdate();
 		// make the changes to the ADS data structure, but defer creating the 
-		// proof and comitting (to batch updates)
+		// proof and committing (to batch updates)
 		for(ADSModification modification : update.getModificationsList()) {
 			byte[] adsId = modification.getAdsId().toByteArray();
 			byte[] newRoot = modification.getNewValue().toByteArray();
@@ -171,19 +192,17 @@ public class ADSManager {
 					.setLastUpdatedProof(updatePerformedProof)
 					.build();
 			for(byte[] adsId : adsIds) {
-				String adsIdString = Utils.byteArrayAsHexString(adsId);
-				this.adsRootProofs.put(adsIdString, proof);
+				this.adsRootProofs.put(ByteBuffer.wrap(adsId), proof);
 			}
 		}
-		
+		this.stagedUpdates.clear();
 		logger.log(Level.INFO, "commitment added: "+Utils.byteArrayAsHexString(commitment));
 		return commitment;
 	}
 	
 	public ADSRootProof getADSRootProof(byte[] adsId) {
-		String adsIdString = Utils.byteArrayAsHexString(adsId);
 		// this copies the base proof from the map 
-		ADSRootProof.Builder proof = this.adsRootProofs.get(adsIdString).toBuilder();
+		ADSRootProof.Builder proof = this.adsRootProofs.get(ByteBuffer.wrap(adsId)).toBuilder();
 		int updateAtCommitmentNumber = proof.getLastUpdate().getUpdate().getValidAtCommitmentNumber();
 		int currentCommitmentNumber = this.getCurrentCommitmentNumber();
 		// add the update proofs
@@ -198,6 +217,10 @@ public class ADSManager {
 	
 	public int getCurrentCommitmentNumber() {
 		return this.commitments.size()-1;
+	}
+	
+	public List<byte[]> getCommitments(){
+		return new ArrayList<>(this.commitments);
 	}
 	
 }

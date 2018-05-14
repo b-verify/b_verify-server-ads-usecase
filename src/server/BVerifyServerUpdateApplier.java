@@ -45,6 +45,26 @@ public class BVerifyServerUpdateApplier extends Thread {
 		this.TARGET_BATCH_SIZE = batchSize;
 		this.totalUpdates = 0;
 		this.uncommittedUpdates = 0;
+
+		
+		try {
+			// process initial updates
+			int initializingUpdates = 0;
+			while(!this.updates.isEmpty()) {
+				PerformUpdateRequest request = this.updates.take();
+				this.adsManager.stageUpdate(request);
+				initializingUpdates++;
+				logger.log(Level.INFO, "initializing update #"+initializingUpdates);
+			}
+			logger.log(Level.INFO, "doing initial commit!");
+			this.adsManager.commit();
+			logger.log(Level.INFO, "initialized: "+initializingUpdates
+					+" [at "+LocalDateTime.now()+"]");
+		}catch(Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		
+		
 	}
 
 	@Override
@@ -55,6 +75,7 @@ public class BVerifyServerUpdateApplier extends Thread {
 				
 				PerformUpdateRequest updateRequest = this.updates.take();
 				this.adsManager.stageUpdate(updateRequest);
+				
 				uncommittedUpdates++;
 				totalUpdates++;
 				logger.log(Level.FINE, "staging update #"+totalUpdates);
@@ -76,6 +97,7 @@ public class BVerifyServerUpdateApplier extends Thread {
 					// once all outstanding updates are added
 					// commit!
 					this.adsManager.commit();
+					this.lock.writeLock().unlock();
 					logger.log(Level.INFO, "committing updates #"+uncommittedUpdates);
 					logger.log(Level.INFO, "total updates: "+totalUpdates
 							+" [at "+LocalDateTime.now()+"]");

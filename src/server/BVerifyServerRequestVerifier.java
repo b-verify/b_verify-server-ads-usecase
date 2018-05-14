@@ -34,8 +34,8 @@ import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootRespon
  * @author henryaspegren
  *
  */
-public class BVerifyServerRequestHandler implements BVerifyProtocolServerAPI {
-	private static final Logger logger = Logger.getLogger(BVerifyServerRequestHandler.class.getName());
+public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
+	private static final Logger logger = Logger.getLogger(BVerifyServerRequestVerifier.class.getName());
 	
 	/**
 	 * Shared data!
@@ -62,7 +62,7 @@ public class BVerifyServerRequestHandler implements BVerifyProtocolServerAPI {
 			.build()
 			.toByteArray();
 
-	public BVerifyServerRequestHandler(ReadWriteLock lock,
+	public BVerifyServerRequestVerifier(ReadWriteLock lock,
 			BlockingQueue<PerformUpdateRequest> update, ADSManager ads) {
 		this.lock = lock;
 		this.adsManager = ads;
@@ -127,7 +127,6 @@ public class BVerifyServerRequestHandler implements BVerifyProtocolServerAPI {
 			logger.log(Level.FINE, "update accepted");
 			this.lock.readLock().unlock();
 			return ACCEPTED;
-			
 		} 	catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
 			logger.log(Level.FINE, "update rejected");
@@ -153,6 +152,15 @@ public class BVerifyServerRequestHandler implements BVerifyProtocolServerAPI {
 			this.lock.readLock().unlock();
 			return null;
 		}
+	}
+
+	@Override
+	public List<byte[]> commitments() throws RemoteException {
+		logger.log(Level.FINE, "get commitments request recieved");
+		this.lock.readLock().lock();
+		List<byte[]> commitments = this.adsManager.getCommitments();
+		this.lock.readLock().unlock();
+		return commitments;
 	}
 
 

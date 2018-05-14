@@ -25,21 +25,25 @@ import com.github.javafaker.Faker;
 public class PKIDirectory {
 	
 	private final Map<UUID, Account> lookupTable;
-	private final List<UUID> uuids; 
 	
 	public PKIDirectory(String dir) {
 		this.lookupTable = new HashMap<>();
-		this.uuids = new ArrayList<>();
 		File folder = new File(dir);
 		File[] listOfFiles = folder.listFiles();
 		for(File f : listOfFiles) {
 			if(f.isFile()) {
 				Account a = Account.loafFromFile(f);
 				if(a != null) {
-					this.uuids.add(a.getId());
 					this.lookupTable.put(a.getId(), a);
 				}
 			}
+		}
+	}
+	
+	public PKIDirectory(List<Account> accounts) {
+		this.lookupTable = new HashMap<>();
+		for(Account a : accounts ) {
+			this.lookupTable.put(a.getId(), a);
 		}
 	}
 	
@@ -58,13 +62,6 @@ public class PKIDirectory {
 			res.add(a);
 		}
 		return res;
-	}
-	
-	public Account getAccount(int i) {
-		if(0 <= i && i < this.uuids.size()) {
-			return this.lookupTable.get(uuids.get(i));
-		}
-		return null;
 	}
 	
 	public Set<UUID> getAllAccountIDs(){

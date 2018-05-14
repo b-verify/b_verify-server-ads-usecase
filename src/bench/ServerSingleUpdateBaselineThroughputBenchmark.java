@@ -30,9 +30,15 @@ import server.BVerifyServer;
 public class ServerSingleUpdateBaselineThroughputBenchmark {
 	private static final Logger logger = Logger.getLogger(ServerSingleUpdateBaselineThroughputBenchmark.class.getName());
 	
-	private static final int NUMBER_OF_THREADS = 2000;
-	private static final int TOTAL_TASK_TIMEOUT = 30;
 	
+	/*
+	 * Adjust the number of threads, timeouts and delays 
+	 * based on how the test is being run and the number 
+	 * of cores / memory on the testing machine
+	 */
+	private static final int NUMBER_OF_THREADS = 2;
+	private static final int TOTAL_TASK_TIMEOUT = 30;
+	private static final int MILLISECONDS_OF_RANDOM_DELAY = 5;
 	private static final ThreadPoolExecutor WORKERS = 
 			new ThreadPoolExecutor(NUMBER_OF_THREADS, // keep these threads alive even if idle
 								   NUMBER_OF_THREADS, // total size of thread pool
@@ -41,7 +47,6 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 								    // can also queue up to 10k tasks
 								    new ArrayBlockingQueue<Runnable>(10000));
 	
-	private static final int MILLISECONDS_OF_RANDOM_DELAY = 5000;
 		
 	/*
 	 * Run this once to generate the data for the benchmark
@@ -173,12 +178,14 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 	
 	public static void main(String[] args) {
 		String base = System.getProperty("user.dir") + "/benchmark/throughput-simple-baseline/";
-		int nClients = 1000;
-		int nTotalADSes = 1000000;
-		int nUpdates = 10000;
-		// generateTestData(base, nClients, nTotalADSes, nUpdates);
-		if (args.length != 3) {
-			logger.log(Level.INFO, "please provide <host> <port> [SERVER|CLIENT]");
+		int nClients = 20;
+		int nTotalADSes = 1000;
+		int nUpdates = 100;
+		if (args.length != 4) {
+			logger.log(Level.INFO, "please provide <host> <port> [SERVER|CLIENT] [true|flase] \n true if should generate data for test");
+		}
+		if(Boolean.parseBoolean(args[3])) {
+			generateTestData(base, nClients, nTotalADSes, nUpdates);
 		}
 		String host = args[0];
 		int port = Integer.parseInt(args[1]);
@@ -188,7 +195,6 @@ public class ServerSingleUpdateBaselineThroughputBenchmark {
 			runBenchmarkClients(base, host, port);
 		}else {
 			logger.log(Level.INFO, "please provide <host> <port> [SERVER|CLIENT]");
-
 		}
 	}	
 }
