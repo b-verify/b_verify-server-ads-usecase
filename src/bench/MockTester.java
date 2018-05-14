@@ -33,9 +33,42 @@ import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRespo
 import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootResponse;
 import serialization.generated.BVerifyAPIMessageSerialization.Update;
+import serialization.generated.MptSerialization.MerklePrefixTrie;
 import server.BVerifyServer;
 
 public class MockTester {
+	
+	public class ProofSize{
+		private final int rawProofSize;
+		private final int updateSize; 
+		private final int updateProofSize;
+		private final int freshnessProofSize;
+		
+		public ProofSize(int raw, int update, int updateProof, int freshProof) {
+			this.rawProofSize = raw;
+			this.updateSize = update;
+			this.updateProofSize = updateProof;
+			this.freshnessProofSize = freshProof;
+		}
+
+		public int getRawProofSize() {
+			return rawProofSize;
+		}
+
+		public int getUpdateSize() {
+			return updateSize;
+		}
+
+		public int getUpdateProofSize() {
+			return updateProofSize;
+		}
+
+		public int getFreshnessProofSize() {
+			return freshnessProofSize;
+		}
+		
+	}
+	
 	private static final Logger logger = Logger.getLogger(MockTester.class.getName());
 
 	// server - for testing.
@@ -167,32 +200,24 @@ public class MockTester {
 		}
 		return true;
 	}
-	
-	public List<Integer> getProofSizes(){
-		List<Integer> sizes = new ArrayList<>();
-		for(byte[] adsId : this.getADSIds()) {
-			logger.log(Level.FINE, "asking for proof for ADS ID: "+Utils.byteArrayAsHexString(adsId));
-			ProveADSRootRequest request = this.createProveADSRootRequest(adsId);
-			try {
-				// request a proof
-				// and record the length
-				byte[] proof = this.server.getRequestHandler().proveADSRoot(request.toByteArray());
-				sizes.add(proof.length);
-			} catch (RemoteException e) {
-				e.printStackTrace();
-				throw new RuntimeException(e.getMessage());
-			}
-		}
-		return sizes;
-	}
-	
-	public int getProofSize(byte[] adsId) {
+		
+	public ProofSize getProofSize(byte[] adsId) {
 		ProveADSRootRequest request = this.createProveADSRootRequest(adsId);
 		try {
 			// request a proof
 			// and record the length
 			byte[] proof = this.server.getRequestHandler().proveADSRoot(request.toByteArray());
-			return proof.length;
+			
+			int rawProofSize = proof.length;
+			ProveADSRootResponse proofResponse = parseProveADSResponse(proof);
+			int sizeUpdate = proofResponse.getProof().getLastUpdate().getSerializedSize();
+			int sizeUpdateProof = proofResponse.getProof().getLastUpdatedProof().getSerializedSize();
+			int sizeFreshnessProof = 0;
+			for(MerklePrefixTrie mpt : proofResponse.getProof().getFreshnessProofList()) {
+				sizeFreshnessProof+= mpt.getSerializedSize();
+			}
+			return new ProofSize(rawProofSize, sizeUpdate, sizeUpdateProof, sizeFreshnessProof);
+			
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());

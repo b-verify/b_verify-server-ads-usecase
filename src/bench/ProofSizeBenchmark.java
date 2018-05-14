@@ -12,6 +12,7 @@ import java.util.Random;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
+import bench.MockTester.ProofSize;
 import crpyto.CryptographicDigest;
 
 public class ProofSizeBenchmark {
@@ -34,21 +35,26 @@ public class ProofSizeBenchmark {
 			if(!accepted) {
 				throw new RuntimeException("something went wrong");
 			}
-			int proofSize = tester.getProofSize(adsIdToNotUpdate);
-			rows.add(getCSVRowSingleADSProofSize(nADSes, update, batchSize, proofSize));
+			ProofSize size = tester.getProofSize(adsIdToNotUpdate);
+			rows.add(getCSVRowSingleADSProofSize(nADSes, update, batchSize, size.getRawProofSize(), 
+					size.getUpdateSize(), size.getUpdateProofSize(), size.getFreshnessProofSize()));
 		}
 		writeSingleADSProofSizeToCSV(rows, "./proofsizebenchmark.csv");
 	}
 	
-	public static List<String> getCSVRowSingleADSProofSize(int nADSes, int nUpdates, int batchSize, int proofSize) {
+	public static List<String> getCSVRowSingleADSProofSize(int nADSes, int nUpdates, int batchSize, 
+			int proofSize, int updateSize, int updateProofSize, int freshnessProofSize) {
 		return Arrays.asList(String.valueOf(nADSes), String.valueOf(nUpdates), 
-				String.valueOf(batchSize), String.valueOf(proofSize));
+				String.valueOf(batchSize), String.valueOf(proofSize),
+				String.valueOf(updateSize), String.valueOf(updateProofSize),
+				String.valueOf(freshnessProofSize));
 	}
 	
 	public static void writeSingleADSProofSizeToCSV(List<List<String>> results, String csvFile) {
 		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(csvFile));
 				CSVPrinter csvPrinter = new CSVPrinter(writer, 
-						CSVFormat.DEFAULT.withHeader("nADSes", "nUpdates", "batchSize", "proofSize"));) {
+						CSVFormat.DEFAULT.withHeader("nADSes", "nUpdates", "batchSize", 
+								"proofSizeTotal", "updateSize", "updateProofSize", "freshnessProofSize"));) {
 			for(List<String> resultRow : results) {
 				csvPrinter.printRecord(resultRow);
 			}
@@ -60,6 +66,6 @@ public class ProofSizeBenchmark {
 	}
 	
 	public static void main(String[] args) {
-		runProofSizeSingleADS(10, 1, 10, 1);
+		runProofSizeSingleADS(1000, 10, 100, 1);
 	}
 }
