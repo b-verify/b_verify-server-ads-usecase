@@ -66,6 +66,6 @@ public class ProofSizeBenchmark {
 	}
 	
 	public static void main(String[] args) {
-		runProofSizeSingleADS(1000, 2, 500000, 250000, 10000);
+		runProofSizeSingleADS(120, 2, 5000, 2500, 100);
 	}
 }

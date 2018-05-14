@@ -103,6 +103,7 @@ public class MockTester {
 		List<Account> accounts = PKIDirectory.generateRandomAccounts(nClients);
 		int ads = 0;
 		while(ads < nADSes) {
+			logger.log(Level.INFO, "ads "+ads+" of "+nADSes);
 			List<Account> adsAccounts = getSortedListOfAccounts(ads, maxClientsPerADS, accounts);
 			if(adsAccounts == null) {
 				continue;
