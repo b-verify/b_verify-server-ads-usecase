@@ -46,8 +46,10 @@ public class Tester {
 	
 	// commitments 
 	private List<byte[]> commitments;
+	private int lastAcceptedCommitmentNumber;
 	
 	// batch size of 1 means that we get a new commitment every test
+	// this makes it easier to reason about
 	private final static int BATCH_SIZE = 1;
 
 	private static final byte[] START_VALUE = CryptographicDigest.hash("STARTING".getBytes());
@@ -57,7 +59,7 @@ public class Tester {
 		this.adsIdToLastUpdate = new HashMap<>();
 		this.adsIdToOwners = new HashMap<>();
 		this.commitments = new ArrayList<>();
-				
+						
 		List<Account> accounts = PKIDirectory.generateRandomAccounts(nClients);
 		int max = (int) Math.pow(2, nClients);
 		logger.log(Level.INFO, "generating mock setup with : "+nClients);
@@ -70,22 +72,25 @@ public class Tester {
 			for(Account a : adsAccounts) {
 				a.addADSKey(adsId);
 			}
-			logger.log(Level.INFO, "{"+adsAccounts+"} -> "+Utils.byteArrayAsHexString(adsId));
+			logger.log(Level.FINE, "{"+adsAccounts+"} -> "+Utils.byteArrayAsHexString(adsId));
 			ByteBuffer adsIdBuffer = ByteBuffer.wrap(adsId);
 			
 			this.adsIdToValue.put(adsIdBuffer, START_VALUE);
 			this.adsIdToOwners.put(adsIdBuffer, adsAccounts);
 			
 			// create a request initializing this value
-			PerformUpdateRequest initialUpdateRequest = this.createPerformUpdateRequest(adsId, START_VALUE, 0);
+			PerformUpdateRequest initialUpdateRequest = this.createPerformUpdateRequest(adsId, START_VALUE, 
+					this.getNextCommitmentNumber());
 			this.adsIdToLastUpdate.put(adsIdBuffer, initialUpdateRequest);			
 		}
 		PKIDirectory pki = new PKIDirectory(accounts);
 		logger.log(Level.INFO, "Number of ADSes: "+this.adsIdToOwners.size());
-		
+				
 		logger.log(Level.INFO, "Starting the Server");
 		this.server = new BVerifyServer(pki, BATCH_SIZE, 
 				adsIdToLastUpdate.values().stream().collect(Collectors.toSet()));
+		
+		this.lastAcceptedCommitmentNumber = 0;
 		
 		logger.log(Level.INFO, "Asking for initial proofs");
 		boolean initialProofs = this.getAndCheckProofs();
@@ -105,17 +110,18 @@ public class Tester {
 				this.server.getRequestHandler().performUpdate(updateRequest.toByteArray()));
 		if(response) {
 			this.adsIdToLastUpdate.put(ByteBuffer.wrap(adsId), updateRequest);
+			this.lastAcceptedCommitmentNumber++;
 		}
 		return response;
 	}
 	
 	public boolean getAndCheckProofs() {
 		// first get the commitments
-		this.getCommitments();
+		this.waitAndGetNewCommitmnets();
 		// then for each adsId -> value map
 		for(Entry<ByteBuffer, byte[]> adsIdAndValue : this.adsIdToValue.entrySet()) {
 			byte[] adsId = adsIdAndValue.getKey().array();
-			logger.log(Level.INFO, "asking for proof for ADS ID: "+Utils.byteArrayAsHexString(adsId));
+			logger.log(Level.FINE, "asking for proof for ADS ID: "+Utils.byteArrayAsHexString(adsId));
 			ProveADSRootRequest request = this.createProveADSRootRequest(adsId);
 			try {
 				// request a proof
@@ -126,7 +132,7 @@ public class Tester {
 				PerformUpdateRequest lastUpdateRequest = this.adsIdToLastUpdate.get(adsIdAndValue.getKey());
 				boolean correctProof = this.checkProof(adsId, lastUpdateRequest, proof);
 				if(!correctProof) {
-					logger.log(Level.INFO, "proof failed!");
+					logger.log(Level.INFO, "proof failed for ADS ID: "+Utils.byteArrayAsHexString(adsId));
 					return false;
 				}
 			} catch (RemoteException e) {
@@ -137,26 +143,42 @@ public class Tester {
 		return true;
 	}
 	
-	public int getNextCommitmentNumber() {
+	private int getNextCommitmentNumber() {
 		return this.commitments.size();
 	}
 	
-	private void getCommitments() {
-		List<byte[]> commitments;
+	private int getCurrentCommitmentNumber() {
+		return this.commitments.size()-1;
+	}
+	
+	private byte[] getCommitment(int commitmentNumber) {
+		return this.commitments.get(commitmentNumber);
+	}
+	
+	private void waitAndGetNewCommitmnets() {
 		try {
-			commitments = this.server.getRequestHandler().commitments();
-			for(int i = 0 ; i < commitments.size(); i++) {
-				if(i < this.commitments.size()) {
-					if(!Arrays.equals(this.commitments.get(i), commitments.get(i))) {
-						throw new RuntimeException("bug on server - something wrong");
+			// if there are outstanding commitments...
+			while(this.lastAcceptedCommitmentNumber != this.getCurrentCommitmentNumber()) {
+				List<byte[]> commitments = this.server.getRequestHandler().commitments();
+				// if new commitments
+				if(commitments.size()-1 != this.getCurrentCommitmentNumber()) {
+					for(int i = 0 ; i < commitments.size(); i++) {
+						if(i < this.commitments.size()) {
+							if(!Arrays.equals(this.commitments.get(i), commitments.get(i))) {
+								throw new RuntimeException("bug on server - something wrong");
+							}
+						}else {
+							logger.log(Level.INFO, 
+									"new commitment #"+i+" = "+Utils.byteArrayAsHexString(commitments.get(i)));
+						}
 					}
+					this.commitments = commitments;
 				}else {
-					logger.log(Level.INFO, 
-							"new commitment #"+i+" = "+Utils.byteArrayAsHexString(commitments.get(i)));
+					// otherwise sleep 100ms
+					Thread.sleep(100);
 				}
 			}
-			this.commitments = commitments;
-		} catch (RemoteException e) {
+		} catch (RemoteException | InterruptedException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
 		}
@@ -164,6 +186,7 @@ public class Tester {
 	
 	private boolean checkProof(byte[] adsId, PerformUpdateRequest correctLastUpdateRequest, 
 			ADSRootProof proof) {
+		byte[] adsValue = null;
 		logger.log(Level.FINE, "checking proof for ADS ID: "+Utils.byteArrayAsHexString(adsId));
 		// first check the last update is correct 
 		logger.log(Level.FINE, "...checking that last update is correct");
@@ -175,28 +198,56 @@ public class Tester {
 		Update lastUpdate = correctLastUpdateRequest.getUpdate();
 		try {
 			MPTDictionaryPartial updateProof = MPTDictionaryPartial.deserialize(proof.getLastUpdatedProof());
-			int updateCommitment = lastUpdate.getValidAtCommitmentNumber();
-			byte[] commitment = this.commitments.get(updateCommitment);
-			byte[] proofCommitment = updateProof.commitment();
-			if(!Arrays.equals(commitment, updateProof.commitment())) {
-				logger.log(Level.INFO, "proof commitment: "+Utils.byteArrayAsHexString(proofCommitment)+
-										"\n witnessed commitment: "+Utils.byteArrayAsHexString(commitment));
+			final int updateCommitmentNumber = lastUpdate.getValidAtCommitmentNumber();
+			byte[] witnessedUpdateCommitment = this.getCommitment(updateCommitmentNumber);
+			byte[] proofUpdateCommitment = updateProof.commitment();
+			if(!Arrays.equals(witnessedUpdateCommitment, proofUpdateCommitment)) {
+				logger.log(Level.INFO, "proof update commitment: "+Utils.byteArrayAsHexString(proofUpdateCommitment)+
+										"\n witnessed update commitment: "+Utils.byteArrayAsHexString(witnessedUpdateCommitment));
 				return false;
 			}
 			for(ADSModification adsModification : lastUpdate.getModificationsList()) {
+				byte[] id = adsModification.getAdsId().toByteArray();
 				byte[] value = updateProof.get(adsModification.getAdsId().toByteArray());
 				if(!Arrays.equals(value, adsModification.getNewValue().toByteArray())) {
-					logger.log(Level.INFO, "ads modification for last update not applied");
+					logger.log(Level.INFO, "ads modification for last update not applied for: "+
+								Utils.byteArrayAsHexString(id));
 					return false;
 				}
+				if(Arrays.equals(adsId, id)) {
+					adsValue = value;
+				}
 			}
+			if(adsValue == null) {
+				logger.log(Level.INFO, "no ads value provided for adsid: "+
+						Utils.byteArrayAsHexString(adsId));
+				return false;
+			}
+			
 			// now check the freshness proof 
-			int sizeOfFreshnessProof = (this.commitments.size()-1)-updateCommitment;
+			int sizeOfFreshnessProof = this.getCurrentCommitmentNumber()-updateCommitmentNumber;
 			if(proof.getFreshnessProofCount() != sizeOfFreshnessProof) {
 				logger.log(Level.INFO, "incomplete freshness proof");
 				return false;
 			}
-			// TODO check freshness proof correctly
+			// check freshness proof
+			for(int i = 0; i < sizeOfFreshnessProof; i++) {
+				int commitmentNumber = updateCommitmentNumber+1+i;
+				byte[] witnessedCommitment = this.getCommitment(commitmentNumber);
+				updateProof.processUpdates(proof.getFreshnessProof(i));
+				byte[] freshnessProofValue = updateProof.get(adsId);
+				byte[] freshnessProofCommitment = updateProof.commitment();
+				if(!Arrays.equals(adsValue, freshnessProofValue)){
+					logger.log(Level.INFO, "ads value: "+Utils.byteArrayAsHexString(adsValue)+
+							"\n freshness proof value: "+Utils.byteArrayAsHexString(freshnessProofValue));
+				}
+				if(!Arrays.equals(witnessedCommitment, freshnessProofCommitment)) {
+					logger.log(Level.INFO, "witnessed commitment: "+Utils.byteArrayAsHexString(witnessedCommitment)+
+							"\n freshness proof commitment: "+Utils.byteArrayAsHexString(freshnessProofCommitment));
+					return false;
+				}
+			}
+				
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

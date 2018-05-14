@@ -54,7 +54,7 @@ public class BVerifyServerUpdateApplier extends Thread {
 				PerformUpdateRequest request = this.updates.take();
 				this.adsManager.stageUpdate(request);
 				initializingUpdates++;
-				logger.log(Level.INFO, "initializing update #"+initializingUpdates);
+				logger.log(Level.FINE, "initializing update #"+initializingUpdates);
 			}
 			logger.log(Level.INFO, "doing initial commit!");
 			this.adsManager.commit();

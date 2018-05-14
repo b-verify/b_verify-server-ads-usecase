@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.github.javafaker.Faker;
 
@@ -23,6 +25,8 @@ import com.github.javafaker.Faker;
  *
  */
 public class PKIDirectory {
+	
+	private final static  Logger logger = Logger.getLogger(PKIDirectory.class.getName());
 	
 	private final Map<UUID, Account> lookupTable;
 	
@@ -76,7 +80,7 @@ public class PKIDirectory {
 			String lastName = faker.name().lastName(); 
 			Account account = new Account(firstName, lastName);
 			accounts.add(account);
-			System.out.println("generating account "+(i+1)+
+			logger.log(Level.FINE, "generating account "+(i+1)+
 					" - of - "+numberOfAccounts+"("+faker.name().fullName()+")");
 		}
 		return accounts;

@@ -3,6 +3,7 @@ package integrationtest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import crpyto.CryptographicDigest;
@@ -22,12 +23,17 @@ public class BVerifyServerTest {
 		
 		
 		logger.log(Level.INFO, "UPDATING ADS ID: "+Utils.byteArrayAsHexString(adsIds.get(0)));
-		System.out.println("updated: "+tester.doUpdate(adsIds.get(0), newValue));
-		System.out.println("proofs: "+tester.getAndCheckProofs());
+	
+		boolean accepetedUpdate1 = tester.doUpdate(adsIds.get(0), newValue);
+		boolean proofsUpdate1 = tester.getAndCheckProofs();
+		Assert.assertTrue("Update # 1 should be accepted", accepetedUpdate1);
+		Assert.assertTrue("Proof for update # 1 should be accepted", proofsUpdate1);
 		
 		logger.log(Level.INFO, "UPDATING ADS ID: "+Utils.byteArrayAsHexString(adsIds.get(1)));
-		System.out.println("updated: "+tester.doUpdate(adsIds.get(1), newValue));
-		System.out.println("proofs: "+tester.getAndCheckProofs());
+		boolean accepetedUpdate2 = tester.doUpdate(adsIds.get(1), newValue);
+		boolean proofsUpdate2 = tester.getAndCheckProofs();
+		Assert.assertTrue("Update # 2 should be accepted", accepetedUpdate2);
+		Assert.assertTrue("Proof for update # 2 should be accepted", proofsUpdate2);
 	}
 	
 	

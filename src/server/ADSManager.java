@@ -141,10 +141,11 @@ public class ADSManager {
 				this.adsIdToOwners.put(key, accs);
 			}
 		}
+		logger.log(Level.INFO, "ads_id -> [owners] loaded");
 		
 		// (2) create a fresh MPT Dictionary
 		this.serverAuthADS = new MPTDictionaryFull();
-		logger.log(Level.INFO, "EMPTY MPT Dictionary created");
+		logger.log(Level.INFO, "initializing an empty auth ads");
 	}
 	
 	public Set<Account> getADSOwners(byte[] adsKey){
