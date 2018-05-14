@@ -88,7 +88,9 @@ public class MockTester {
 	
 	private static final int RETRY_PROOF_INTERVAL_MS = 10;
 	
-	public MockTester(int nClients, int maxClientsPerADS, int batchSize, byte[] startingValue) {
+	public MockTester(int nClients, int maxClientsPerADS, int nADSes, int batchSize, byte[] startingValue) {
+		logger.log(Level.INFO, "generating mock setup with "+nClients+" clients, "+nADSes+
+				" ADSes (max per ADS "+maxClientsPerADS+")"+" batch size: "+batchSize);
 		this.adsIdToLastUpdate = new HashMap<>();
 		this.adsIdToOwners = new HashMap<>();
 		this.commitments = new ArrayList<>();
@@ -99,10 +101,9 @@ public class MockTester {
 		this.batchSize = batchSize;
 						
 		List<Account> accounts = PKIDirectory.generateRandomAccounts(nClients);
-		int max = (int) Math.pow(2, nClients);
-		logger.log(Level.INFO, "generating mock setup with : "+nClients);
-		for(int i = 1; i < max; i++) {
-			List<Account> adsAccounts = getSortedListOfAccounts(i, maxClientsPerADS, accounts);
+		int ads = 0;
+		while(ads < nADSes) {
+			List<Account> adsAccounts = getSortedListOfAccounts(ads, maxClientsPerADS, accounts);
 			if(adsAccounts == null) {
 				continue;
 			}
@@ -118,7 +119,8 @@ public class MockTester {
 			// create a request initializing this value
 			PerformUpdateRequest initialUpdateRequest = this.createPerformUpdateRequest(adsId, startingValue, 
 					this.getNextCommitmentNumber());
-			this.adsIdToLastUpdate.put(adsIdBuffer, initialUpdateRequest);			
+			this.adsIdToLastUpdate.put(adsIdBuffer, initialUpdateRequest);		
+			ads++;
 		}
 		PKIDirectory pki = new PKIDirectory(accounts);
 		logger.log(Level.INFO, "Number of ADSes: "+this.adsIdToOwners.size());

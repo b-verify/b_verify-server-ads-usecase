@@ -19,13 +19,13 @@ public class ProofSizeBenchmark {
 	
 	private static final byte[] START_VALUE = CryptographicDigest.hash("STARTING".getBytes());
 
-	public static void runProofSizeSingleADS(int nClients, int nClientsPerAdsMax, int nUpdates, int batchSize) {
+	public static void runProofSizeSingleADS(int nClients, int nClientsPerAdsMax, int nADSes, int nUpdates, int batchSize) {
 		List<List<String>> rows = new ArrayList<>();
 		// set a deterministic prng for repeatable tests
 		Random rand = new Random(91012);
-		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, batchSize, START_VALUE);
+		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADSes, batchSize, START_VALUE);
 		List<byte[]> adsIds = tester.getADSIds();
-		int nADSes = adsIds.size();
+		assert adsIds.size() == nADSes;
 		byte[] adsIdToNotUpdate = adsIds.get(0);
 		for(int update = 1; update <= nUpdates; update++) {
 			int adsToUpdate = rand.nextInt(adsIds.size()-1)+1;
@@ -66,6 +66,6 @@ public class ProofSizeBenchmark {
 	}
 	
 	public static void main(String[] args) {
-		runProofSizeSingleADS(1000, 2, 250000, 10000);
+		runProofSizeSingleADS(1000, 2, 500000, 250000, 10000);
 	}
 }
