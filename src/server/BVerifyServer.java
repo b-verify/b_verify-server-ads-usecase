@@ -78,6 +78,7 @@ public class BVerifyServer {
 		this.applier = 
 				new BVerifyServerUpdateApplier(this.lock,
 						this.updatesToBeCommited, this.adsManager, batchSize);
+		this.applier.setDaemon(true);
 		this.applier.start();
 		
 		// this is an object exposed to the RMI interface.
@@ -98,7 +99,7 @@ public class BVerifyServer {
 			throw new RuntimeException();
 		}
 	}
-	
+		
 	// for testing only
 	public BVerifyServer(PKIDirectory pki, int batchSize, Set<PerformUpdateRequest> initializingUpdates) {
 		this.pki = pki;
@@ -125,6 +126,7 @@ public class BVerifyServer {
 		this.applier = 
 				new BVerifyServerUpdateApplier(this.lock,
 						this.updatesToBeCommited, this.adsManager, batchSize);
+		this.applier.setDaemon(true);
 		this.applier.start();
 
 	}

@@ -1,4 +1,4 @@
-package integrationtest;
+package bench;
 
 import java.nio.ByteBuffer;
 import java.rmi.RemoteException;
@@ -7,9 +7,11 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -33,8 +35,8 @@ import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootRespon
 import serialization.generated.BVerifyAPIMessageSerialization.Update;
 import server.BVerifyServer;
 
-public class Tester {
-	private static final Logger logger = Logger.getLogger(Tester.class.getName());
+public class MockTester {
+	private static final Logger logger = Logger.getLogger(MockTester.class.getName());
 
 	// server - for testing.
 	private final BVerifyServer server;
@@ -45,18 +47,15 @@ public class Tester {
 	
 	// commitments 
 	private List<byte[]> commitments;
-	
-	private int lastAcceptedCommitmentNumber;
-	
-	private final List<Entry<ByteBuffer, PerformUpdateRequest>> pendingUpdates;
+		
+	private final List<Entry<byte[], PerformUpdateRequest>> pendingUpdates;
 	private int pendingAcceptedCommitments;
+	private int lastAcceptedCommitmentNumber;
 	private final int batchSize;
 	
 	private static final int RETRY_PROOF_INTERVAL_MS = 10;
-
-	private static final byte[] START_VALUE = CryptographicDigest.hash("STARTING".getBytes());
 	
-	public Tester(int nClients, int maxClientsPerADS, int batchSize) {
+	public MockTester(int nClients, int maxClientsPerADS, int batchSize, byte[] startingValue) {
 		this.adsIdToLastUpdate = new HashMap<>();
 		this.adsIdToOwners = new HashMap<>();
 		this.commitments = new ArrayList<>();
@@ -84,7 +83,7 @@ public class Tester {
 			this.adsIdToOwners.put(adsIdBuffer, adsAccounts);
 			
 			// create a request initializing this value
-			PerformUpdateRequest initialUpdateRequest = this.createPerformUpdateRequest(adsId, START_VALUE, 
+			PerformUpdateRequest initialUpdateRequest = this.createPerformUpdateRequest(adsId, startingValue, 
 					this.getNextCommitmentNumber());
 			this.adsIdToLastUpdate.put(adsIdBuffer, initialUpdateRequest);			
 		}
@@ -96,6 +95,7 @@ public class Tester {
 				adsIdToLastUpdate.values().stream().collect(Collectors.toSet()));
 		
 		this.lastAcceptedCommitmentNumber = 0;
+		this.waitAndGetNewCommitments();
 		
 		logger.log(Level.INFO, "Asking for initial proofs");
 		boolean initialProofs = this.getAndCheckProofs();
@@ -108,36 +108,43 @@ public class Tester {
 		return this.adsIdToLastUpdate.keySet().stream().map(x -> x.array()).collect(Collectors.toList());
 	}
 	
-	public boolean doUpdate(byte[] adsId, byte[] newValue) {
-		PerformUpdateRequest updateRequest = this.createPerformUpdateRequest(adsId, newValue, 
-				this.getNextCommitmentNumber());
+	public boolean doUpdate(List<Map.Entry<byte[], byte[]>> adsModifications) {
+		PerformUpdateRequest updateRequest = this.createPerformUpdateRequest(adsModifications, this.getNextCommitmentNumber());
 		boolean response  = parsePerformUpdateResponse(
 				this.server.getRequestHandler().performUpdate(updateRequest.toByteArray()));
 		if(response) {
 			// add it to the pending updates
-			this.pendingUpdates.add(Map.entry(ByteBuffer.wrap(adsId), updateRequest));
+			for(Map.Entry<byte[], byte[]> adsModification : adsModifications) {
+				this.pendingUpdates.add(Map.entry(adsModification.getKey(), updateRequest));
+			}
 			this.pendingAcceptedCommitments++;
 			
 			// if have a complete batch 
 			// we should expect a new commitment
 			// with all the accepted updates
-			if(this.pendingAcceptedCommitments >= this.batchSize) {
+			if(this.pendingAcceptedCommitments == this.batchSize) {
 				// move all entries to the committed map
-				for(Map.Entry<ByteBuffer, PerformUpdateRequest> updatesApplied : this.pendingUpdates) {
-					this.adsIdToLastUpdate.put(updatesApplied.getKey(), updatesApplied.getValue());
+				for(Map.Entry<byte[], PerformUpdateRequest> updatesApplied : this.pendingUpdates) {
+					this.adsIdToLastUpdate.put(ByteBuffer.wrap(updatesApplied.getKey()), 
+							updatesApplied.getValue());
 				}
 				this.pendingUpdates.clear();
 				this.lastAcceptedCommitmentNumber++;
 				this.pendingAcceptedCommitments = 0;
+				
+				// get new commitments;
+				this.waitAndGetNewCommitments();
 			}
 		}
 		return response;
 	}
 	
+	public boolean doUpdate(byte[] adsId, byte[] newValue) {
+		return this.doUpdate(Arrays.asList(Map.entry(adsId, newValue)));
+	}
+	
 	public boolean getAndCheckProofs() {
-		// first get the commitments
-		this.waitAndGetNewCommitmnets();
-		// then for each adsId -> value map
+		// get a proof for each ADS_ID
 		for(byte[] adsId : this.getADSIds()) {
 			logger.log(Level.FINE, "asking for proof for ADS ID: "+Utils.byteArrayAsHexString(adsId));
 			ProveADSRootRequest request = this.createProveADSRootRequest(adsId);
@@ -161,6 +168,37 @@ public class Tester {
 		return true;
 	}
 	
+	public List<Integer> getProofSizes(){
+		List<Integer> sizes = new ArrayList<>();
+		for(byte[] adsId : this.getADSIds()) {
+			logger.log(Level.FINE, "asking for proof for ADS ID: "+Utils.byteArrayAsHexString(adsId));
+			ProveADSRootRequest request = this.createProveADSRootRequest(adsId);
+			try {
+				// request a proof
+				// and record the length
+				byte[] proof = this.server.getRequestHandler().proveADSRoot(request.toByteArray());
+				sizes.add(proof.length);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e.getMessage());
+			}
+		}
+		return sizes;
+	}
+	
+	public int getProofSize(byte[] adsId) {
+		ProveADSRootRequest request = this.createProveADSRootRequest(adsId);
+		try {
+			// request a proof
+			// and record the length
+			byte[] proof = this.server.getRequestHandler().proveADSRoot(request.toByteArray());
+			return proof.length;
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
 	private int getNextCommitmentNumber() {
 		return this.commitments.size();
 	}
@@ -173,7 +211,7 @@ public class Tester {
 		return this.commitments.get(commitmentNumber);
 	}
 	
-	private void waitAndGetNewCommitmnets() {
+	private void waitAndGetNewCommitments() {
 		try {
 			// if there are outstanding commitments...
 			while(this.lastAcceptedCommitmentNumber != this.getCurrentCommitmentNumber()) {
@@ -274,21 +312,29 @@ public class Tester {
 	}
 	
 	
-	private PerformUpdateRequest createPerformUpdateRequest(byte[] adsId, byte[] newValue, int validAt) {
-		ADSModification modification = ADSModification.newBuilder()
-				.setAdsId(ByteString.copyFrom(adsId))
-				.setNewValue(ByteString.copyFrom(newValue))
-				.build();
-		Update update = Update.newBuilder()
-				.addModifications(modification)
-				.setValidAtCommitmentNumber(validAt)
-				.build();
-		List<Account> accounts = this.adsIdToOwners.get(ByteBuffer.wrap(adsId));
-		PerformUpdateRequest request  = createPerformUpdateRequest(update, accounts);
+	private PerformUpdateRequest createPerformUpdateRequest(List<Map.Entry<byte[], byte[]>> adsModifications, int validAt) {
+		Update.Builder update = Update.newBuilder()
+				.setValidAtCommitmentNumber(validAt);
+		Set<Account> accounts = new HashSet<>();
+		for(Map.Entry<byte[], byte[]> adsModification : adsModifications) {
+			ADSModification modification = ADSModification.newBuilder()
+					.setAdsId(ByteString.copyFrom(adsModification.getKey()))
+					.setNewValue(ByteString.copyFrom(adsModification.getValue()))
+					.build();
+			update.addModifications(modification);
+			accounts.addAll(this.adsIdToOwners.get(ByteBuffer.wrap(adsModification.getKey())));
+		}
+		PerformUpdateRequest request = createPerformUpdateRequest(update.build(), 
+				accounts.stream().collect(Collectors.toList()));
 		return request;
 	}
+	
+	
+	private PerformUpdateRequest createPerformUpdateRequest(byte[] adsId, byte[] newValue, int validAt) {
+		return createPerformUpdateRequest(Arrays.asList(Map.entry(adsId, newValue)), validAt);
+	}
 			
-	private PerformUpdateRequest createPerformUpdateRequest(Update update, List<Account> accounts) {
+	private static PerformUpdateRequest createPerformUpdateRequest(Update update, List<Account> accounts) {
 		// calculate the witness
 		byte[] witness = CryptographicDigest.hash(update.toByteArray());
 		Collections.sort(accounts);

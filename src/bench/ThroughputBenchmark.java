@@ -27,8 +27,8 @@ import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootReques
 import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootResponse;
 import server.BVerifyServer;
 
-public class ServerSingleUpdateBaselineThroughputBenchmark {
-	private static final Logger logger = Logger.getLogger(ServerSingleUpdateBaselineThroughputBenchmark.class.getName());
+public class ThroughputBenchmark {
+	private static final Logger logger = Logger.getLogger(ThroughputBenchmark.class.getName());
 	
 	
 	/*

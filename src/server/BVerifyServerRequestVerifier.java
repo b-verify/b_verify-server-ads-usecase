@@ -84,7 +84,7 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 			int nextCommitment = this.adsManager.getCurrentCommitmentNumber()+1;
 			int validAt = request.getUpdate().getValidAtCommitmentNumber();
 			if(nextCommitment != validAt) {
-				logger.log(Level.FINE, "update rejected... valid only at commitment: "+
+				logger.log(Level.WARNING, "update rejected... valid only at commitment: "+
 							validAt+" but next commitment is: "+nextCommitment);
 				this.lock.readLock().unlock();
 				return REJECTED;
@@ -104,7 +104,7 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 			// canonically sort accounts
 			Collections.sort(needToSignList);
 			if(needToSign.size() != request.getSignaturesCount()) {
-				logger.log(Level.FINE, "update rejected... not enough signatures");
+				logger.log(Level.WARNING, "update rejected... not enough signatures");
 				this.lock.readLock().unlock();
 				return REJECTED;
 			}
@@ -115,7 +115,7 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 				byte[] witness = CryptographicDigest.hash(request.getUpdate().toByteArray());
 				boolean signed = CryptographicSignature.verify(witness, sig, a.getPublicKey());
 				if(!signed) {
-					logger.log(Level.FINE, "update rejected... invalid signature");
+					logger.log(Level.WARNING, "update rejected... invalid signature");
 					this.lock.readLock().unlock();
 					return REJECTED;
 				}
