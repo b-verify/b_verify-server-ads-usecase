@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.IntStream;
 
 import com.github.javafaker.Faker;
 
@@ -74,15 +75,18 @@ public class PKIDirectory {
 	
 	public static List<Account> generateRandomAccounts(int numberOfAccounts) {
 		List<Account> accounts = new ArrayList<>();
-		for(int i = 0; i < numberOfAccounts; i++) {
+		// generates accounts in parallel - I love java 8
+		IntStream.range(0,numberOfAccounts).parallel().forEach(x -> {
 			Faker faker = new Faker();
 			String firstName = faker.name().firstName(); 
 			String lastName = faker.name().lastName(); 
 			Account account = new Account(firstName, lastName);
-			accounts.add(account);
-			logger.log(Level.FINE, "generating account "+(i+1)+
+			synchronized (accounts) {
+				accounts.add(account);
+			};
+			logger.log(Level.FINE, "generating account "+(x+1)+
 					" - of - "+numberOfAccounts+"("+faker.name().fullName()+")");
-		}
+		});
 		return accounts;
 	}
 	
