@@ -1,7 +1,6 @@
 package bench;
 
 public class ProofSize{
-	
 	private final int rawProofSize;
 	private final int updateSize; 
 	private final int updateProofSize;

@@ -69,6 +69,7 @@ public class MockTester {
 		this.batchSize = batchSize;
 						
 		List<Account> accounts = PKIDirectory.generateRandomAccounts(nClients);
+		logger.log(Level.INFO, accounts.size()+" accounts generated");
 		List<List<Account>> adsAccounts = getSortedListsOfAccounts(accounts, maxClientsPerADS, 
 				nADSes);
 		for(List<Account> accountsInADS : adsAccounts) {
