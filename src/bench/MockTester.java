@@ -165,7 +165,7 @@ public class MockTester {
 	
 	public boolean getAndCheckProofs() {
 		// get a proof for each ADS_ID
-		for(byte[] adsId : this.getADSIds()) {
+		boolean result = this.getADSIds().parallelStream().map(adsId -> {
 			logger.log(Level.FINE, "asking for proof for ADS ID: "+Utils.byteArrayAsHexString(adsId));
 			ProveADSRootRequest request = this.createProveADSRootRequest(adsId);
 			try {
@@ -184,8 +184,10 @@ public class MockTester {
 				e.printStackTrace();
 				throw new RuntimeException(e.getMessage());
 			}
-		}
-		return true;
+			return true;
+		}).reduce(Boolean::logicalAnd).get().booleanValue();
+		
+		return result;
 	}
 		
 	public ProofSize getProofSize(byte[] adsId) {

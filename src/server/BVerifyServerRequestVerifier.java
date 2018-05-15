@@ -2,14 +2,13 @@ package server;
 
 import java.rmi.RemoteException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -17,7 +16,6 @@ import api.BVerifyProtocolServerAPI;
 import crpyto.CryptographicDigest;
 import crpyto.CryptographicSignature;
 import pki.Account;
-import serialization.generated.BVerifyAPIMessageSerialization.ADSModification;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateResponse;
@@ -102,17 +100,16 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 			if(this.requireSignatures && nextCommitment != 0 ) {	
 				// #3 go through all the ADS modifications
 				//		and determine who must sign the update
-				Set<Account> needToSign = new HashSet<>();
-				for(ADSModification adsModifcation : request.getUpdate().getModificationsList()) {
-					byte[] adsKey = adsModifcation.getAdsId().toByteArray();
-					Set<Account> owners = this.adsManager.getADSOwners(adsKey);
-					needToSign.addAll(owners);
-				}
 				
-				// #4 verify the signatures
-				List<Account> needToSignList = needToSign.stream().collect(Collectors.toList());
+				List<Account> needToSign = request.getUpdate().getModificationsList().stream().flatMap( 
+						adsModification -> {
+							byte[] adsKey = adsModification.getAdsId().toByteArray();
+							return this.adsManager.getADSOwners(adsKey).stream();
+						}).collect(Collectors.toSet()).stream().collect(Collectors.toList());
 				// canonically sort accounts
-				Collections.sort(needToSignList);
+				Collections.sort(needToSign);
+
+				// #4 verify the signatures
 				if(needToSign.size() != request.getSignaturesCount()) {
 					logger.log(Level.WARNING, "update rejected... not enough signatures");
 					this.lock.readLock().unlock();
@@ -121,15 +118,19 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 				
 				// witness is the entire update 
 				byte[] witness = CryptographicDigest.hash(request.getUpdate().toByteArray());
-				for(int i = 0; i < needToSign.size(); i++) {
-					Account a = needToSignList.get(i);
+				boolean result = IntStream.range(0, needToSign.size()).mapToObj(i -> {
+					Account a = needToSign.get(i);
 					byte[] sig = request.getSignatures(i).toByteArray();
 					boolean signed = CryptographicSignature.verify(witness, sig, a.getPublicKey());
 					if(!signed) {
-						logger.log(Level.WARNING, "update rejected... invalid signature");
-						this.lock.readLock().unlock();
-						return REJECTED;
+						logger.log(Level.WARNING, "update account "+a+" signature invalid");
 					}
+					return signed;
+				}).reduce(Boolean::logicalAnd).get().booleanValue();
+				if(!result) {
+					logger.log(Level.WARNING, "request: "+request+" rejected!");
+					this.lock.readLock().unlock();
+					return REJECTED;
 				}
 			}
 			
