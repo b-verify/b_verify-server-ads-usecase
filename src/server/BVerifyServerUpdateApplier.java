@@ -66,11 +66,11 @@ public class BVerifyServerUpdateApplier extends Thread {
 		
 		
 	}
-
+	
 	@Override
 	public void run() {
 		try {
-			while(true) {
+			while(!Thread.interrupted()) {
 				// block and wait for an update
 				
 				PerformUpdateRequest updateRequest = this.updates.take();
