@@ -48,6 +48,7 @@ public class ProofSizeBenchmark {
 			}
 		}
 		writeSingleADSProofSizeToCSV(rows, "./proofsizebenchmark.csv");
+		tester.shutdown();
 	}
 	
 	public static List<String> getCSVRowSingleADSProofSize(int nADSes, int nUpdates, int batchSize, 

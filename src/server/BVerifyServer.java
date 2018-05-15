@@ -4,7 +4,10 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
@@ -37,6 +40,7 @@ public class BVerifyServer {
 	 */
 	private final BVerifyServerRequestVerifier verifier;
 	private final BVerifyServerUpdateApplier applier;
+	private final ExecutorService applierExecutor;
 	
 	/**
 	 * Shared Data
@@ -73,20 +77,21 @@ public class BVerifyServer {
 		this.updatesToBeCommited = new LinkedBlockingQueue<>();
 
 		// setup the components 
-		
-		// this component runs as its own thread
-		this.applier = 
-				new BVerifyServerUpdateApplier(this.lock,
-						this.updatesToBeCommited, this.adsManager, batchSize);
-		this.applier.setDaemon(true);
-		this.applier.start();
-		
 		// this is an object exposed to the RMI interface.
 		// the RMI library handles the threading and 
 		// may invoke multiple methods concurrently on this 
 		// object
 		this.verifier = 
 				new BVerifyServerRequestVerifier(this.lock, this.updatesToBeCommited, this.adsManager);
+		
+		// now start up the applier 
+		// which will automatically apply the initializing updates 
+		this.applier = new BVerifyServerUpdateApplier(this.lock,
+						this.updatesToBeCommited, this.adsManager, batchSize);
+		
+		this.applierExecutor = Executors.newSingleThreadExecutor();
+		this.applierExecutor.submit(this.applier);
+		
 		BVerifyProtocolServerAPI serverAPI;
 		try {
 			// port 0 = any free port
@@ -123,16 +128,27 @@ public class BVerifyServer {
 		}
 		// now start up the applier 
 		// which will automatically apply the initializing updates 
-		this.applier = 
-				new BVerifyServerUpdateApplier(this.lock,
+		this.applier = new BVerifyServerUpdateApplier(this.lock,
 						this.updatesToBeCommited, this.adsManager, batchSize);
-		this.applier.setDaemon(true);
-		this.applier.start();
-
+		
+		this.applierExecutor = Executors.newSingleThreadExecutor();
+		this.applierExecutor.submit(this.applier);
+		
+	}
+	
+	public void shutdown() {
+		this.applierExecutor.shutdown();
+		try {
+			this.applierExecutor.awaitTermination(10, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 	
 	// for testing only
 	public BVerifyServerRequestVerifier getRequestHandler() {
 		return this.verifier;
 	}
+
 }

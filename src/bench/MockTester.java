@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -133,6 +132,10 @@ public class MockTester {
 		if(!initialProofs) {
 			throw new RuntimeException("not correctly set up");
 		}
+	}
+	
+	public void shutdown() {
+		this.server.shutdown();
 	}
 	
 	public List<byte[]> getADSIds(){
@@ -392,21 +395,6 @@ public class MockTester {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
 		}
-	}
-		
-	private static List<Account> getSortedListOfAccounts(int i, int maxClientsPerADS, 
-			List<Account> accounts){
-		BitSet bs = BitSet.valueOf(new long[]{i});
-		if(bs.cardinality() > maxClientsPerADS) {
-			return null;
-		}
-		List<Account> subset = new ArrayList<>();
-		for(int idx = 0; idx < bs.length(); idx++) {
-			if(bs.get(idx)) {
-				subset.add(accounts.get(idx));
-			}
-		}
-		return subset;
 	}
 	
 	private static List<List<Account>> getSortedListsOfAccounts(List<Account> accounts, 

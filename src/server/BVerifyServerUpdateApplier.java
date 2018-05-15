@@ -17,7 +17,7 @@ import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateReque
  * @author henryaspegren
  *
  */
-public class BVerifyServerUpdateApplier extends Thread {
+public class BVerifyServerUpdateApplier implements Runnable {
 	private static final Logger logger = Logger.getLogger(BVerifyServerUpdateApplier.class.getName());
 
 	/**
@@ -70,7 +70,7 @@ public class BVerifyServerUpdateApplier extends Thread {
 	@Override
 	public void run() {
 		try {
-			while(!Thread.interrupted()) {
+			while(!Thread.currentThread().isInterrupted()) {
 				// block and wait for an update
 				
 				PerformUpdateRequest updateRequest = this.updates.take();
