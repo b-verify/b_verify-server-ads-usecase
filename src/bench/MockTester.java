@@ -5,12 +5,12 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -64,8 +64,13 @@ public class MockTester {
 			boolean requireSignatures) {
 		logger.log(Level.INFO, "generating mock setup with "+nClients+" clients, "+nADSes+
 				" ADSes (max per ADS "+maxClientsPerADS+")"+" batch size: "+batchSize);
-		this.adsIdToLastUpdate = new HashMap<>();
-		this.adsIdToOwners = new HashMap<>();
+		
+		// we use concurrent maps, since we want to generate 
+		// test data and updates in parallel wherever possible
+		this.adsIdToLastUpdate = new ConcurrentHashMap<>();
+		this.adsIdToOwners = new ConcurrentHashMap<>();
+		
+		
 		this.commitments = new ArrayList<>();
 		this.requireSignatures = requireSignatures;
 		
@@ -78,25 +83,25 @@ public class MockTester {
 		logger.log(Level.INFO, accounts.size()+" accounts generated");
 		List<List<Account>> adsAccounts = getSortedListsOfAccounts(accounts, maxClientsPerADS, 
 				nADSes);
-		for(List<Account> accountsInADS : adsAccounts) {
-			byte[] adsId = CryptographicUtils.listOfAccountsToADSId(accountsInADS);
-			for(Account a : accountsInADS) {
+		
+		// in parallel 
+		adsAccounts.parallelStream().forEach(x -> {
+			byte[] adsId = CryptographicUtils.listOfAccountsToADSId(x);
+			for(Account a : x) {
 				a.addADSKey(adsId);
 			}
-			logger.log(Level.FINE, "{"+adsAccounts+"} -> "+Utils.byteArrayAsHexString(adsId));
+			logger.log(Level.FINE, "{"+x+"} -> "+Utils.byteArrayAsHexString(adsId));
 			ByteBuffer adsIdBuffer = ByteBuffer.wrap(adsId);
 			
-			this.adsIdToOwners.put(adsIdBuffer, accountsInADS);
+			this.adsIdToOwners.put(adsIdBuffer, x);
 			
 			// create a request initializing this value
 			PerformUpdateRequest initialUpdateRequest = this.createPerformUpdateRequest(adsId, startingValue, 
 					this.getNextCommitmentNumber(), this.requireSignatures);
 			this.adsIdToLastUpdate.put(adsIdBuffer, initialUpdateRequest);	
-			
-			if((this.adsIdToLastUpdate.size() % 1000) == 0) {
-				logger.log(Level.INFO, this.adsIdToLastUpdate.size()+" ADSes created so far");
 			}
-		}
+		);
+		
 		PKIDirectory pki = new PKIDirectory(accounts);
 		logger.log(Level.INFO, "Number of ADSes: "+this.adsIdToOwners.size());
 				
