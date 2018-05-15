@@ -2,6 +2,7 @@ package server;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,9 +72,10 @@ public class BVerifyServerUpdateApplier implements Runnable {
 	public void run() {
 		try {
 			while(!Thread.currentThread().isInterrupted()) {
-				// block and wait for an update
-				
-				PerformUpdateRequest updateRequest = this.updates.take();
+				PerformUpdateRequest updateRequest = this.updates.poll(1, TimeUnit.SECONDS);
+				if(updateRequest == null) {
+					continue;
+				}
 				this.adsManager.stageUpdate(updateRequest);
 				
 				uncommittedUpdates++;
