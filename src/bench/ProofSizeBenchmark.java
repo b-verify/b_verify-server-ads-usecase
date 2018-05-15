@@ -19,7 +19,8 @@ public class ProofSizeBenchmark {
 	
 	private static final byte[] START_VALUE = CryptographicDigest.hash("STARTING".getBytes());
 
-	public static void runProofSizeSingleADS(int nClients, int nClientsPerAdsMax, int nADSes, int nUpdates, int batchSize) {
+	public static void runProofSizeSingleADS(int nClients, int nClientsPerAdsMax, int nADSes, int nUpdates, int batchSize,
+			String fileName) {
 		List<List<String>> rows = new ArrayList<>();
 		// set a deterministic prng for repeatable tests
 		Random rand = new Random(91012);
@@ -47,7 +48,7 @@ public class ProofSizeBenchmark {
 						size.getUpdateSize(), size.getUpdateProofSize(), size.getFreshnessProofSize()));
 			}
 		}
-		writeSingleADSProofSizeToCSV(rows, "./proofsizebenchmark.csv");
+		writeSingleADSProofSizeToCSV(rows, fileName);
 		tester.shutdown();
 	}
 	
@@ -75,6 +76,16 @@ public class ProofSizeBenchmark {
 	}
 	
 	public static void main(String[] args) {
-		runProofSizeSingleADS(120, 2, 5000, 2500, 100);
+		
+		// small test: 100000 ADS, update is 1% (1k) of ADSes
+		//						   and 10 updates total (total ~10% of ADSes updated)
+		String smallTest = System.getProperty("user.dir")+"small_proof_size_test.csv";
+		runProofSizeSingleADS(500, 2, 100000, 10000, 1000, smallTest);
+	
+		
+		// medium test: 1M ADS - each update is 1% (10k) of ADSes
+		//				         and 10 updates (total ~ 10% of ADSes updated)
+		String mediumTest = System.getProperty("user.dir")+"medium_proof_size_test.csv";
+		runProofSizeSingleADS(1500, 2, 1000000, 100000, 10000, mediumTest);
 	}
 }

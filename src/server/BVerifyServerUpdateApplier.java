@@ -71,6 +71,9 @@ public class BVerifyServerUpdateApplier implements Runnable {
 		
 	}
 	
+	/**
+	 * Call this method to safely shutdown the update applier thread
+	 */
 	public void setShutdown() {
 		this.shutdown = true;
 	}
@@ -79,6 +82,8 @@ public class BVerifyServerUpdateApplier implements Runnable {
 	public void run() {
 		try {
 			while(!this.shutdown) {
+				// we use poll here to make sure that the shutdown condition is checked 
+				// at least once a second
 				PerformUpdateRequest updateRequest = this.updates.poll(1, TimeUnit.SECONDS);
 				if(updateRequest == null) {
 					continue;
