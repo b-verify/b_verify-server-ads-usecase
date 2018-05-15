@@ -37,6 +37,8 @@ public class BVerifyServerUpdateApplier implements Runnable {
 	private final BlockingQueue<PerformUpdateRequest> updates;
 	private final ADSManager adsManager;
 	
+	private boolean shutdown;
+	
 	public BVerifyServerUpdateApplier(ReadWriteLock lock, BlockingQueue<PerformUpdateRequest> updates, 
 			ADSManager adsManager, 
 			int batchSize) {
@@ -46,6 +48,7 @@ public class BVerifyServerUpdateApplier implements Runnable {
 		this.TARGET_BATCH_SIZE = batchSize;
 		this.totalUpdates = 0;
 		this.uncommittedUpdates = 0;
+		this.shutdown = false;
 
 		
 		try {
@@ -68,10 +71,14 @@ public class BVerifyServerUpdateApplier implements Runnable {
 		
 	}
 	
+	public void setShutdown() {
+		this.shutdown = true;
+	}
+	
 	@Override
 	public void run() {
 		try {
-			while(!Thread.currentThread().isInterrupted()) {
+			while(!this.shutdown) {
 				PerformUpdateRequest updateRequest = this.updates.poll(1, TimeUnit.SECONDS);
 				if(updateRequest == null) {
 					continue;

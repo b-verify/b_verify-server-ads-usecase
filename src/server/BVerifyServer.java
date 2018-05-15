@@ -137,6 +137,7 @@ public class BVerifyServer {
 	}
 	
 	public void shutdown() {
+		this.applier.setShutdown();
 		this.applierExecutor.shutdown();
 		try {
 			this.applierExecutor.awaitTermination(10, TimeUnit.SECONDS);
