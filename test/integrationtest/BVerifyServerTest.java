@@ -25,7 +25,7 @@ public class BVerifyServerTest {
 		int nClientsPerAdsMax = 3;
 		int nADS = 100;
 		int batchSize = 1;
-		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE);
+		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE, true);
 		List<byte[]> adsIds = tester.getADSIds();
 		logger.log(Level.INFO, "testing updating each entry once, total updates : "+adsIds.size());
 		byte[] newValue = CryptographicDigest.hash("some new value".getBytes());
@@ -44,7 +44,7 @@ public class BVerifyServerTest {
 		int nADS = 100;
 		// batch size is now 25!
 		int batchSize = 25;
-		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE);
+		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE, true);
 		List<byte[]> adsIds = tester.getADSIds();
 		logger.log(Level.INFO, "testing updating each entry once, total updates : "+adsIds.size());
 		byte[] newValue = CryptographicDigest.hash("some new value".getBytes());
@@ -66,7 +66,7 @@ public class BVerifyServerTest {
 		int nClientsPerAdsMax = 3;
 		int batchSize = 1;
 		int nADS = 100;
-		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE);
+		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE, true);
 		List<byte[]> adsIds = tester.getADSIds();
 		List<byte[]> adsIdsToUpdate = new ArrayList<>(adsIds);
 		adsIdsToUpdate.addAll(new ArrayList<>(adsIds));
@@ -94,7 +94,7 @@ public class BVerifyServerTest {
 		int nClientsPerAdsMax = 3;
 		int batchSize = 25;
 		int nADS = 100;
-		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE);
+		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE, true);
 		List<byte[]> adsIds = tester.getADSIds();
 		List<byte[]> adsIdsToUpdate = new ArrayList<>(adsIds);
 		adsIdsToUpdate.addAll(new ArrayList<>(adsIds));
@@ -118,7 +118,7 @@ public class BVerifyServerTest {
 		int nClientsPerAdsMax = 3;
 		int batchSize = 1;
 		int nADS = 100;
-		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE);
+		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE, true);
 		List<byte[]> adsIds = tester.getADSIds();
 		// updates
 		List<Map.Entry<byte[], byte[]>> updates = new ArrayList<>();
@@ -138,7 +138,7 @@ public class BVerifyServerTest {
 		int nClientsPerAdsMax = 3;
 		int batchSize = 1;
 		int nADS = 100;
-		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE);
+		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE, true);
 		List<byte[]> adsIds = tester.getADSIds();
 		
 		List<Map.Entry<byte[], byte[]>> updates = new ArrayList<>();
@@ -160,10 +160,6 @@ public class BVerifyServerTest {
 			}			
 		}
 		
-	}
-	
-	
-	
-	
+	}	
 	
 }

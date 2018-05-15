@@ -24,7 +24,10 @@ public class ProofSizeBenchmark {
 		List<List<String>> rows = new ArrayList<>();
 		// set a deterministic prng for repeatable tests
 		Random rand = new Random(91012);
-		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADSes, batchSize, START_VALUE);
+		
+		// we disable signatures checking 
+		// for the benchmarks - speeds things up dramatically 
+		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADSes, batchSize, START_VALUE, false);
 		List<byte[]> adsIds = tester.getADSIds();
 		assert adsIds.size() == nADSes;
 		byte[] adsIdToNotUpdate = adsIds.get(0);

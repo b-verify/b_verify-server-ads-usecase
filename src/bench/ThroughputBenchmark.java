@@ -73,7 +73,7 @@ public class ThroughputBenchmark {
 		
 		// start up the server (also on localhost)
 		@SuppressWarnings("unused")
-		BVerifyServer server = new BVerifyServer(base, null, port, batchSize);
+		BVerifyServer server = new BVerifyServer(base, null, port, batchSize, true);
 		logger.log(Level.INFO, "...ready!");
 		Scanner sc = new Scanner(System.in);
 		logger.log(Level.INFO, "[Press enter to kill sever]");

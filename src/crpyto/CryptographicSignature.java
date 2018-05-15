@@ -123,46 +123,6 @@ public class CryptographicSignature {
 		
 	}
 	
-	private static String getHexString(byte[] b) {
-		String result = "";
-		for (int i = 0; i < b.length; i++) {
-			result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
-		}
-		return result;
-	}
-	
-	public static void main(String[] args) {
-		KeyPair key = CryptographicSignature.generateNewKeyPair();
-		PrivateKey privKey = key.getPrivate();
-		PublicKey pubKey = key.getPublic();
-		System.out.println("pubkey: "+CryptographicSignature.getHexString(privKey.getEncoded()));
-		System.out.println("privkey: "+CryptographicSignature.getHexString(pubKey.getEncoded()));
-		
-		// save the keys
-		CryptographicSignature.savePrivateKey("privkey", privKey);
-		CryptographicSignature.savePublicKey("pubkey", pubKey);
-		
-		// now load them
-		PrivateKey privKeyFromFile = CryptographicSignature.loadPrivateKey("privkey");
-		PublicKey pubKeyFromFile = CryptographicSignature.loadPublicKey("pubkey");
-		System.out.println("pubkey from file: "+CryptographicSignature.getHexString(pubKeyFromFile.getEncoded()));
-		System.out.println("privkey from file: "+CryptographicSignature.getHexString(privKeyFromFile.getEncoded()));
-		
-		// now try a sign 
-		byte[] message = "ATTACK AT DAWN".getBytes();
-		byte[] signature = CryptographicSignature.sign(message, privKey);
-		byte[] signatureFromFile = CryptographicSignature.sign(message, privKeyFromFile);
-
-		
-		// all signatures should be verified
-		System.out.println("verified "+CryptographicSignature.verify(message, signature, pubKey));
-		System.out.println("verified "+CryptographicSignature.verify(message, signature, pubKeyFromFile));
-		System.out.println("verified "+CryptographicSignature.verify(message, signatureFromFile, pubKey));
-		System.out.println("verified "+CryptographicSignature.verify(message, signatureFromFile, pubKeyFromFile));
-
-	}
-
-	
 }
 
 

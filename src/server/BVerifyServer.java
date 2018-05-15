@@ -66,7 +66,7 @@ public class BVerifyServer {
 	private BlockingQueue<PerformUpdateRequest> updatesToBeCommited;
 	
 	
-	public BVerifyServer(String base, String registryHost, int registryPort, int batchSize) {
+	public BVerifyServer(String base, String registryHost, int registryPort, int batchSize, boolean requireSignatures) {
 		this.pki = new PKIDirectory(base + "pki/");
 		logger.log(Level.INFO, "... loaded pki");
 		this.rmi = new ClientProvider(registryHost, registryPort);
@@ -82,7 +82,8 @@ public class BVerifyServer {
 		// may invoke multiple methods concurrently on this 
 		// object
 		this.verifier = 
-				new BVerifyServerRequestVerifier(this.lock, this.updatesToBeCommited, this.adsManager);
+				new BVerifyServerRequestVerifier(this.lock, this.updatesToBeCommited, this.adsManager, 
+						requireSignatures);
 		
 		// now start up the applier 
 		// which will automatically apply the initializing updates 
@@ -106,12 +107,14 @@ public class BVerifyServer {
 	}
 		
 	// for testing only
-	public BVerifyServer(PKIDirectory pki, int batchSize, Set<PerformUpdateRequest> initializingUpdates) {
+	public BVerifyServer(PKIDirectory pki, int batchSize, Set<PerformUpdateRequest> initializingUpdates,
+			boolean requireSignatures) {
 		this.pki = pki;
 		this.adsManager = new ADSManager(this.pki);
 		this.updatesToBeCommited = new LinkedBlockingQueue<>();
 		this.verifier = 
-				new BVerifyServerRequestVerifier(this.lock, this.updatesToBeCommited, this.adsManager);
+				new BVerifyServerRequestVerifier(this.lock, this.updatesToBeCommited, this.adsManager,
+						requireSignatures);
 		for(PerformUpdateRequest initializingUpdate : initializingUpdates) {
 			PerformUpdateResponse response;
 			try {

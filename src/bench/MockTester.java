@@ -54,14 +54,20 @@ public class MockTester {
 	private int lastAcceptedCommitmentNumber;
 	private final int batchSize;
 	
+	// signatures may be omitted (saves time when generating large
+	// test cases)
+	private final boolean requireSignatures;
+	
 	private static final int RETRY_PROOF_INTERVAL_MS = 10;
 	
-	public MockTester(int nClients, int maxClientsPerADS, int nADSes, int batchSize, byte[] startingValue) {
+	public MockTester(int nClients, int maxClientsPerADS, int nADSes, int batchSize, byte[] startingValue, 
+			boolean requireSignatures) {
 		logger.log(Level.INFO, "generating mock setup with "+nClients+" clients, "+nADSes+
 				" ADSes (max per ADS "+maxClientsPerADS+")"+" batch size: "+batchSize);
 		this.adsIdToLastUpdate = new HashMap<>();
 		this.adsIdToOwners = new HashMap<>();
 		this.commitments = new ArrayList<>();
+		this.requireSignatures = requireSignatures;
 		
 		// batching
 		this.pendingUpdates = new ArrayList<>();
@@ -84,11 +90,11 @@ public class MockTester {
 			
 			// create a request initializing this value
 			PerformUpdateRequest initialUpdateRequest = this.createPerformUpdateRequest(adsId, startingValue, 
-					this.getNextCommitmentNumber());
+					this.getNextCommitmentNumber(), this.requireSignatures);
 			this.adsIdToLastUpdate.put(adsIdBuffer, initialUpdateRequest);	
 			
 			if((this.adsIdToLastUpdate.size() % 1000) == 0) {
-				logger.log(Level.INFO, this.adsIdToLastUpdate.size()+" ADSes created");
+				logger.log(Level.INFO, this.adsIdToLastUpdate.size()+" ADSes created so far");
 			}
 		}
 		PKIDirectory pki = new PKIDirectory(accounts);
@@ -96,7 +102,7 @@ public class MockTester {
 				
 		logger.log(Level.INFO, "Starting the Server");
 		this.server = new BVerifyServer(pki, this.batchSize, 
-				adsIdToLastUpdate.values().stream().collect(Collectors.toSet()));
+				adsIdToLastUpdate.values().stream().collect(Collectors.toSet()), requireSignatures);
 		
 		this.lastAcceptedCommitmentNumber = 0;
 		this.waitAndGetNewCommitments();
@@ -117,7 +123,8 @@ public class MockTester {
 	}
 	
 	public boolean doUpdate(List<Map.Entry<byte[], byte[]>> adsModifications) {
-		PerformUpdateRequest updateRequest = this.createPerformUpdateRequest(adsModifications, this.getNextCommitmentNumber());
+		PerformUpdateRequest updateRequest = this.createPerformUpdateRequest(adsModifications, this.getNextCommitmentNumber(),
+				this.requireSignatures);
 		boolean response  = parsePerformUpdateResponse(
 				this.server.getRequestHandler().performUpdate(updateRequest.toByteArray()));
 		if(response) {
@@ -165,7 +172,7 @@ public class MockTester {
 				PerformUpdateRequest lastUpdateRequest = this.adsIdToLastUpdate.get(ByteBuffer.wrap(adsId));
 				boolean correctProof = this.checkProof(adsId, lastUpdateRequest, proof);
 				if(!correctProof) {
-					logger.log(Level.INFO, "proof failed for ADS ID: "+Utils.byteArrayAsHexString(adsId));
+					logger.log(Level.WARNING, "proof failed for ADS ID: "+Utils.byteArrayAsHexString(adsId));
 					return false;
 				}
 			} catch (RemoteException e) {
@@ -258,7 +265,7 @@ public class MockTester {
 			byte[] witnessedUpdateCommitment = this.getCommitment(updateCommitmentNumber);
 			byte[] proofUpdateCommitment = updateProof.commitment();
 			if(!Arrays.equals(witnessedUpdateCommitment, proofUpdateCommitment)) {
-				logger.log(Level.INFO, "proof update commitment: "+Utils.byteArrayAsHexString(proofUpdateCommitment)+
+				logger.log(Level.WARNING, "proof update commitment: "+Utils.byteArrayAsHexString(proofUpdateCommitment)+
 										"\n witnessed update commitment: "+Utils.byteArrayAsHexString(witnessedUpdateCommitment));
 				return false;
 			}
@@ -266,7 +273,7 @@ public class MockTester {
 				byte[] id = adsModification.getAdsId().toByteArray();
 				byte[] value = updateProof.get(adsModification.getAdsId().toByteArray());
 				if(!Arrays.equals(value, adsModification.getNewValue().toByteArray())) {
-					logger.log(Level.INFO, "ads modification for last update not applied for: "+
+					logger.log(Level.WARNING, "ads modification for last update not applied for: "+
 								Utils.byteArrayAsHexString(id));
 					return false;
 				}
@@ -275,7 +282,7 @@ public class MockTester {
 				}
 			}
 			if(adsValue == null) {
-				logger.log(Level.INFO, "no ads value provided for adsid: "+
+				logger.log(Level.WARNING, "no ads value provided for adsid: "+
 						Utils.byteArrayAsHexString(adsId));
 				return false;
 			}
@@ -283,7 +290,7 @@ public class MockTester {
 			// now check the freshness proof 
 			int sizeOfFreshnessProof = this.getCurrentCommitmentNumber()-updateCommitmentNumber;
 			if(proof.getFreshnessProofCount() != sizeOfFreshnessProof) {
-				logger.log(Level.INFO, "incomplete freshness proof");
+				logger.log(Level.WARNING, "incomplete freshness proof");
 				return false;
 			}
 			// check freshness proof
@@ -294,11 +301,11 @@ public class MockTester {
 				byte[] freshnessProofValue = updateProof.get(adsId);
 				byte[] freshnessProofCommitment = updateProof.commitment();
 				if(!Arrays.equals(adsValue, freshnessProofValue)){
-					logger.log(Level.INFO, "ads value: "+Utils.byteArrayAsHexString(adsValue)+
+					logger.log(Level.WARNING, "ads value: "+Utils.byteArrayAsHexString(adsValue)+
 							"\n freshness proof value: "+Utils.byteArrayAsHexString(freshnessProofValue));
 				}
 				if(!Arrays.equals(witnessedCommitment, freshnessProofCommitment)) {
-					logger.log(Level.INFO, "witnessed commitment: "+Utils.byteArrayAsHexString(witnessedCommitment)+
+					logger.log(Level.WARNING, "witnessed commitment: "+Utils.byteArrayAsHexString(witnessedCommitment)+
 							"\n freshness proof commitment: "+Utils.byteArrayAsHexString(freshnessProofCommitment));
 					return false;
 				}
@@ -311,30 +318,44 @@ public class MockTester {
 		return true;
 	}
 	
-	
-	private PerformUpdateRequest createPerformUpdateRequest(List<Map.Entry<byte[], byte[]>> adsModifications, int validAt) {
+			
+	private PerformUpdateRequest createPerformUpdateRequest(List<Map.Entry<byte[], byte[]>> adsModifications, int validAt, 
+			boolean includeSignatures) {
 		Update.Builder update = Update.newBuilder()
 				.setValidAtCommitmentNumber(validAt);
-		Set<Account> accounts = new HashSet<>();
+		// if include signatures, need to calculate signers, the witness
+		// and actually have each person sign
+		if(includeSignatures) {
+			Set<Account> accounts = new HashSet<>();
+			for(Map.Entry<byte[], byte[]> adsModification : adsModifications) {
+				ADSModification modification = ADSModification.newBuilder()
+						.setAdsId(ByteString.copyFrom(adsModification.getKey()))
+						.setNewValue(ByteString.copyFrom(adsModification.getValue()))
+						.build();
+				update.addModifications(modification);
+				accounts.addAll(this.adsIdToOwners.get(ByteBuffer.wrap(adsModification.getKey())));
+			}
+			PerformUpdateRequest request = calculateAndAddSignatures(update.build(), 
+					accounts.stream().collect(Collectors.toList()));
+			return request;
+		}
+		// if no signatures, just leave this blank
 		for(Map.Entry<byte[], byte[]> adsModification : adsModifications) {
 			ADSModification modification = ADSModification.newBuilder()
 					.setAdsId(ByteString.copyFrom(adsModification.getKey()))
 					.setNewValue(ByteString.copyFrom(adsModification.getValue()))
 					.build();
 			update.addModifications(modification);
-			accounts.addAll(this.adsIdToOwners.get(ByteBuffer.wrap(adsModification.getKey())));
 		}
-		PerformUpdateRequest request = createPerformUpdateRequest(update.build(), 
-				accounts.stream().collect(Collectors.toList()));
-		return request;
+  		PerformUpdateRequest request = PerformUpdateRequest.newBuilder().setUpdate(update).build();
+  		return request;
 	}
 	
-	
-	private PerformUpdateRequest createPerformUpdateRequest(byte[] adsId, byte[] newValue, int validAt) {
-		return createPerformUpdateRequest(Arrays.asList(Map.entry(adsId, newValue)), validAt);
+	private PerformUpdateRequest createPerformUpdateRequest(byte[] adsId, byte[] newValue, int validAt, boolean includeSignatures) {
+		return createPerformUpdateRequest(Arrays.asList(Map.entry(adsId, newValue)), validAt, includeSignatures);
 	}
 			
-	private static PerformUpdateRequest createPerformUpdateRequest(Update update, List<Account> accounts) {
+	private static PerformUpdateRequest calculateAndAddSignatures(Update update, List<Account> accounts) {
 		// calculate the witness
 		byte[] witness = CryptographicDigest.hash(update.toByteArray());
 		Collections.sort(accounts);
@@ -376,7 +397,7 @@ public class MockTester {
 		List<List<Account>> res = new ArrayList<>();
 		for(int k = 1; k <= maxClientsPerADS; k++) {
 			res.addAll(getSortedListsOfAccounts(accounts, k));
-			logger.log(Level.INFO, res.size()+"- sets of accounts generated so far");
+			logger.log(Level.INFO, res.size()+" sets of accounts generated so far");
 		}
 		if(res.size() < nADSes) {
 			throw new RuntimeException("insufficient number of accounts");

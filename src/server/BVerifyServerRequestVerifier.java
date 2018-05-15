@@ -61,12 +61,18 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 			.setAccepted(false)
 			.build()
 			.toByteArray();
+	
+	/**
+	 * Optionally can disable the checking of signatures to speed test cases 
+	 */
+	private final boolean requireSignatures;
 
 	public BVerifyServerRequestVerifier(ReadWriteLock lock,
-			BlockingQueue<PerformUpdateRequest> update, ADSManager ads) {
+			BlockingQueue<PerformUpdateRequest> update, ADSManager ads, boolean requireSignatures) {
 		this.lock = lock;
 		this.adsManager = ads;
 		this.updatesToBeCommited = update;
+		this.requireSignatures = requireSignatures;
 	}
 	
 	@Override
@@ -90,34 +96,40 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 				return REJECTED;
 			}
 			
-			// #3 go through all the ADS modifications
-			//		and determine who must sign the update
-			Set<Account> needToSign = new HashSet<>();
-			for(ADSModification adsModifcation : request.getUpdate().getModificationsList()) {
-				byte[] adsKey = adsModifcation.getAdsId().toByteArray();
-				Set<Account> owners = this.adsManager.getADSOwners(adsKey);
-				needToSign.addAll(owners);
-			}
-			
-			// #4 verify the signatures
-			List<Account> needToSignList = needToSign.stream().collect(Collectors.toList());
-			// canonically sort accounts
-			Collections.sort(needToSignList);
-			if(needToSign.size() != request.getSignaturesCount()) {
-				logger.log(Level.WARNING, "update rejected... not enough signatures");
-				this.lock.readLock().unlock();
-				return REJECTED;
-			}
-			for(int i = 0; i < needToSign.size(); i++) {
-				Account a = needToSignList.get(i);
-				byte[] sig = request.getSignatures(i).toByteArray();
-				// witness is the entire update 
-				byte[] witness = CryptographicDigest.hash(request.getUpdate().toByteArray());
-				boolean signed = CryptographicSignature.verify(witness, sig, a.getPublicKey());
-				if(!signed) {
-					logger.log(Level.WARNING, "update rejected... invalid signature");
+			// we skip checking signatures IF signature checks are on and it 
+			// is a non-initial update (we skip checking signatures for the initial updates
+			// to speed up tests)
+			if(this.requireSignatures && nextCommitment != 0 ) {	
+				// #3 go through all the ADS modifications
+				//		and determine who must sign the update
+				Set<Account> needToSign = new HashSet<>();
+				for(ADSModification adsModifcation : request.getUpdate().getModificationsList()) {
+					byte[] adsKey = adsModifcation.getAdsId().toByteArray();
+					Set<Account> owners = this.adsManager.getADSOwners(adsKey);
+					needToSign.addAll(owners);
+				}
+				
+				// #4 verify the signatures
+				List<Account> needToSignList = needToSign.stream().collect(Collectors.toList());
+				// canonically sort accounts
+				Collections.sort(needToSignList);
+				if(needToSign.size() != request.getSignaturesCount()) {
+					logger.log(Level.WARNING, "update rejected... not enough signatures");
 					this.lock.readLock().unlock();
 					return REJECTED;
+				}
+				
+				// witness is the entire update 
+				byte[] witness = CryptographicDigest.hash(request.getUpdate().toByteArray());
+				for(int i = 0; i < needToSign.size(); i++) {
+					Account a = needToSignList.get(i);
+					byte[] sig = request.getSignatures(i).toByteArray();
+					boolean signed = CryptographicSignature.verify(witness, sig, a.getPublicKey());
+					if(!signed) {
+						logger.log(Level.WARNING, "update rejected... invalid signature");
+						this.lock.readLock().unlock();
+						return REJECTED;
+					}
 				}
 			}
 			
