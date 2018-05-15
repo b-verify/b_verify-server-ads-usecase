@@ -12,7 +12,7 @@ import java.util.Random;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
-import bench.MockTester.ProofSize;
+import bench.ProofSize;
 import crpyto.CryptographicDigest;
 
 public class ProofSizeBenchmark {
@@ -79,13 +79,13 @@ public class ProofSizeBenchmark {
 		
 		// small test: 100000 ADS, update is 1% (1k) of ADSes
 		//						   and 10 updates total (total ~10% of ADSes updated)
-		String smallTest = System.getProperty("user.dir")+"small_proof_size_test.csv";
+		String smallTest = System.getProperty("user.dir")+"/benchmarks/proof-sizes/data/"+"small_proof_size_test.csv";
 		runProofSizeSingleADS(500, 2, 100000, 10000, 1000, smallTest);
 	
 		
 		// medium test: 1M ADS - each update is 1% (10k) of ADSes
 		//				         and 10 updates (total ~ 10% of ADSes updated)
-		String mediumTest = System.getProperty("user.dir")+"medium_proof_size_test.csv";
+		String mediumTest = System.getProperty("user.dir")+"/benchmarks/proof-sizes/data/"+"medium_proof_size_test.csv";
 		runProofSizeSingleADS(1500, 2, 1000000, 100000, 10000, mediumTest);
 	}
 }

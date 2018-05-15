@@ -37,37 +37,6 @@ import server.BVerifyServer;
 
 public class MockTester {
 	
-	public class ProofSize{
-		private final int rawProofSize;
-		private final int updateSize; 
-		private final int updateProofSize;
-		private final int freshnessProofSize;
-		
-		public ProofSize(int raw, int update, int updateProof, int freshProof) {
-			this.rawProofSize = raw;
-			this.updateSize = update;
-			this.updateProofSize = updateProof;
-			this.freshnessProofSize = freshProof;
-		}
-
-		public int getRawProofSize() {
-			return rawProofSize;
-		}
-
-		public int getUpdateSize() {
-			return updateSize;
-		}
-
-		public int getUpdateProofSize() {
-			return updateProofSize;
-		}
-
-		public int getFreshnessProofSize() {
-			return freshnessProofSize;
-		}
-		
-	}
-	
 	private static final Logger logger = Logger.getLogger(MockTester.class.getName());
 
 	// server - for testing.
@@ -115,7 +84,11 @@ public class MockTester {
 			// create a request initializing this value
 			PerformUpdateRequest initialUpdateRequest = this.createPerformUpdateRequest(adsId, startingValue, 
 					this.getNextCommitmentNumber());
-			this.adsIdToLastUpdate.put(adsIdBuffer, initialUpdateRequest);		
+			this.adsIdToLastUpdate.put(adsIdBuffer, initialUpdateRequest);	
+			
+			if((this.adsIdToLastUpdate.size() % 1000) == 0) {
+				logger.log(Level.INFO, this.adsIdToLastUpdate.size()+" ADSes created");
+			}
 		}
 		PKIDirectory pki = new PKIDirectory(accounts);
 		logger.log(Level.INFO, "Number of ADSes: "+this.adsIdToOwners.size());
@@ -402,6 +375,7 @@ public class MockTester {
 		List<List<Account>> res = new ArrayList<>();
 		for(int k = 1; k <= maxClientsPerADS; k++) {
 			res.addAll(getSortedListsOfAccounts(accounts, k));
+			logger.log(Level.INFO, res.size()+"- sets of accounts generated so far");
 		}
 		if(res.size() < nADSes) {
 			throw new RuntimeException("insufficient number of accounts");
