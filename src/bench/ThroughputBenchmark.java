@@ -30,11 +30,10 @@ import server.BVerifyServer;
 public class ThroughputBenchmark {
 	private static final Logger logger = Logger.getLogger(ThroughputBenchmark.class.getName());
 	
-	
 	/*
 	 * Adjust the number of threads, timeouts and delays 
 	 * based on how the test is being run and the number 
-	 * of cores / memory on the testing machine
+	 * of cores & memory on the testing machine
 	 */
 	private static final int NUMBER_OF_THREADS = 2;
 	private static final int TOTAL_TASK_TIMEOUT = 30;
@@ -79,6 +78,7 @@ public class ThroughputBenchmark {
 		logger.log(Level.INFO, "[Press enter to kill sever]");
 		sc.nextLine();
 		sc.close();
+		server.shutdown();
 	}
 	
 	public static void runBenchmarkClients(String base, String host, int port) {

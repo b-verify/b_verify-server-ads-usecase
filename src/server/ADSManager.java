@@ -98,18 +98,20 @@ public class ADSManager {
 		logger.log(Level.INFO, "master ads loaded");
 
 		// (3) Create initial update proofs 
-		//		for each ADS
+		//		for each ADS in parallel
 		//		NOTE: that the initial values are fixed
 		//			  so they just include the 
 		//			  full path to the root
-		for(ByteBuffer adsIdBuff : this.adsIdToOwners.keySet()) {
+		this.adsIdToOwners.keySet().parallelStream().forEach(adsIdBuff -> {
 			AuthenticatedDictionaryClient mptPath = new MPTDictionaryPartial(this.serverAuthADS, adsIdBuff.array());
 			MerklePrefixTrie mptPathProof = mptPath.serialize();
 			ADSRootProof proof = ADSRootProof.newBuilder()
 					.setLastUpdatedProof(mptPathProof)
 					.build();
-			this.adsRootProofs.put(adsIdBuff, proof);	
-		}
+			synchronized(this.adsRootProofs) {
+				this.adsRootProofs.put(adsIdBuff, proof);	
+			}
+		});
 		logger.log(Level.INFO, "initial ads root proofs created");
 		
 		// (4) Do an initial commitment
@@ -176,26 +178,30 @@ public class ADSManager {
 		byte[] commitment = this.serverAuthADS.commitment();
 		this.commitments.add(commitment);
 
-		// create the proofs:
+		// create the proofs (in parallel for speed):
 		// go through each update and 
 		// create and save a proof 
 		// for all ADS_IDs that have changed
-		logger.log(Level.FINE, "generating the proofs");
-		for(PerformUpdateRequest approvedUpdate : this.stagedUpdates) {
+		logger.log(Level.FINE, "generating the proofs in parallel");
+		this.stagedUpdates.parallelStream().forEach(approvedUpdate -> {
 			Update update = approvedUpdate.getUpdate();
 			List<byte[]> adsIds = update.getModificationsList().stream()
 					.map(x -> x.getAdsId().toByteArray())
 					.collect(Collectors.toList());
+			// safe for concurrent path generation
 			MPTDictionaryPartial paths = new MPTDictionaryPartial(this.serverAuthADS, adsIds);
 			MerklePrefixTrie updatePerformedProof = paths.serialize();
 			ADSRootProof proof = ADSRootProof.newBuilder()
 					.setLastUpdate(approvedUpdate)
 					.setLastUpdatedProof(updatePerformedProof)
 					.build();
-			for(byte[] adsId : adsIds) {
-				this.adsRootProofs.put(ByteBuffer.wrap(adsId), proof);
+			// map is not safe for concurrent puts
+			synchronized(this.adsRootProofs) {
+				for(byte[] adsId : adsIds) {
+					this.adsRootProofs.put(ByteBuffer.wrap(adsId), proof);
+				}
 			}
-		}
+		});
 		this.stagedUpdates.clear();
 		logger.log(Level.INFO, "added commitment #"+this.getCurrentCommitmentNumber()+": "+Utils.byteArrayAsHexString(commitment));
 		return commitment;

@@ -19,8 +19,6 @@ public class BVerifyServerTest {
 
 	@Test
 	public void testSingleADSUpdatesEveryEntryOnce() {
-		// test has 175 distinct ADSes, all of which 
-		// are updated once!
 		int nClients = 10;
 		int nClientsPerAdsMax = 3;
 		int nADS = 100;
@@ -32,7 +30,7 @@ public class BVerifyServerTest {
 		for(byte[] adsId : adsIds) {
 			boolean updateAccepted = tester.doUpdate(adsId, newValue);
 			Assert.assertTrue("Update should be accepted", updateAccepted);
-			boolean proofsValid = tester.getAndCheckProofs();
+			boolean proofsValid = tester.getAndCheckProofsAllADSIds();
 			Assert.assertTrue("Proofs should be valid", proofsValid);
 		}
 	}
@@ -51,17 +49,13 @@ public class BVerifyServerTest {
 		for(byte[] adsId : adsIds) {
 			boolean updateAccepted = tester.doUpdate(adsId, newValue);
 			Assert.assertTrue("Update should be accepted", updateAccepted);
-			boolean proofsValid = tester.getAndCheckProofs();
+			boolean proofsValid = tester.getAndCheckProofsAllADSIds();
 			Assert.assertTrue("Proofs should be valid", proofsValid);
 		}
 	}
 	
 	@Test
 	public void testSingleADSUpdatesMultipleTimes() {
-		// test has 175 distinct ADSes, all of which 
-		// are updated three times, 
-		// but the updates are shuffled 
-		// so the order is random
 		int nClients = 10;
 		int nClientsPerAdsMax = 3;
 		int batchSize = 1;
@@ -78,7 +72,7 @@ public class BVerifyServerTest {
 			byte[] newValue = CryptographicDigest.hash(("some new value"+i).getBytes());
 			boolean updateAccepted = tester.doUpdate(adsId, newValue);
 			Assert.assertTrue("Update should be accepted", updateAccepted);
-			boolean proofsValid = tester.getAndCheckProofs();
+			boolean proofsValid = tester.getAndCheckProofsAllADSIds();
 			Assert.assertTrue("Proofs should be valid", proofsValid);
 			i++;
 		}
@@ -86,27 +80,32 @@ public class BVerifyServerTest {
 	
 	@Test
 	public void testUpdateMultipleTimesBatched() {
-		// test has 175 distinct ADSes, all of which 
-		// are updated three times, 
-		// but the updates are shuffled 
-		// so the order is random
+
 		int nClients = 10;
 		int nClientsPerAdsMax = 3;
 		int batchSize = 25;
 		int nADS = 100;
 		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE, true);
-		List<byte[]> adsIds = tester.getADSIds();
-		List<byte[]> adsIdsToUpdate = new ArrayList<>(adsIds);
-		adsIdsToUpdate.addAll(new ArrayList<>(adsIds));
-		adsIdsToUpdate.addAll(new ArrayList<>(adsIds));
+		List<byte[]>adsIds = tester.getADSIds();
+		
+		List<byte[]> adsIdsToUpdate = new ArrayList<>();
+		// 300 updates done in 25 update batches
+		for(int i = 0; i < 3; i++) {
+			// we only shuffle within a batch
+			// NOTE IF a batch updates the same adsId multiple times,
+			// the server does not make any ordering guarantees
+			// we need to make sure that this doesn't happen 
+			// for ease of testing
+			Collections.shuffle(adsIds);
+			adsIdsToUpdate.addAll(new ArrayList<>(adsIds));
+		}
 		logger.log(Level.INFO, "testing updates multiple times, total updates: "+adsIdsToUpdate.size());
-		Collections.shuffle(adsIdsToUpdate);
 		int i = 0;
 		for(byte[] adsId : adsIdsToUpdate) {
 			byte[] newValue = CryptographicDigest.hash(("some new value"+i).getBytes());
 			boolean updateAccepted = tester.doUpdate(adsId, newValue);
 			Assert.assertTrue("Update should be accepted", updateAccepted);
-			boolean proofsValid = tester.getAndCheckProofs();
+			boolean proofsValid = tester.getAndCheckProofsAllADSIds();
 			Assert.assertTrue("Proofs should be valid", proofsValid);
 			i++;
 		}
@@ -128,7 +127,7 @@ public class BVerifyServerTest {
 		}
 		boolean updateAccepted = tester.doUpdate(updates);
 		Assert.assertTrue("Update should be accepted", updateAccepted);
-		boolean proofsValid = tester.getAndCheckProofs();
+		boolean proofsValid = tester.getAndCheckProofsAllADSIds();
 		Assert.assertTrue("Proofs should be valid", proofsValid);	
 	}
 	
@@ -153,7 +152,7 @@ public class BVerifyServerTest {
 			if(updateSize == update) {
 				boolean updateAccepted = tester.doUpdate(updates);
 				Assert.assertTrue("Update should be accepted", updateAccepted);
-				boolean proofsValid = tester.getAndCheckProofs();
+				boolean proofsValid = tester.getAndCheckProofsAllADSIds();
 				Assert.assertTrue("Proofs should be valid", proofsValid);	
 				update = 0;
 				updates.clear();
