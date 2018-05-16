@@ -111,7 +111,6 @@ public class BVerifyServer {
 		}
 	}
 		
-	// for testing only
 	public BVerifyServer(StartingData initializingData, int batchSize, boolean requireSignatures) {
 		this.pki = initializingData.getPKI();
 		this.adsManager = new ADSManager(this.pki);

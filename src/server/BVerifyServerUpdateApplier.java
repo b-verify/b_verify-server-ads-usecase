@@ -1,5 +1,7 @@
 package server;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +67,7 @@ public class BVerifyServerUpdateApplier implements Runnable {
 				logger.log(Level.FINE, "initializing update #"+initializingUpdates);
 			}
 			logger.log(Level.INFO, "doing initial commit!");
-			this.adsManager.commit();
+			this.adsManager.commit();			
 			logger.log(Level.INFO, "initialized "+initializingUpdates
 					+" ADS_IDs [at "+LocalDateTime.now()+"]");
 		}catch(Exception e) {
@@ -115,9 +117,14 @@ public class BVerifyServerUpdateApplier implements Runnable {
 					// once all outstanding updates are added
 					// commit!
 					logger.log(Level.INFO, "starting commit");
+					long startTime = System.currentTimeMillis();
 					this.adsManager.commit();
+					long endTime = System.currentTimeMillis();
 					this.lock.writeLock().unlock();
-					logger.log(Level.INFO, "committed "+uncommittedUpdates+" updates");
+					long duration = endTime - startTime;
+					NumberFormat formatter = new DecimalFormat("#0.000");
+					String timeTaken = formatter.format(duration / 1000d)+ " seconds";
+					logger.log(Level.INFO, "committed "+uncommittedUpdates+" updates in "+timeTaken);
 					logger.log(Level.INFO, "total updates: "+totalUpdates
 							+" [at "+LocalDateTime.now()+"]");
 					this.uncommittedUpdates = 0;

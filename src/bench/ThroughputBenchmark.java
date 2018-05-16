@@ -3,7 +3,8 @@ package bench;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.time.LocalDateTime;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +29,7 @@ import server.StartingData;
 public class ThroughputBenchmark {
 	private static final Logger logger = Logger.getLogger(ThroughputBenchmark.class.getName());
 	private static final byte[] START_VALUE = CryptographicDigest.hash("STARTING".getBytes());
+	private static final NumberFormat formatter = new DecimalFormat("#0.000");
 
 	/*
 	 * Adjust the number of threads, timeouts and delays 
@@ -93,7 +95,6 @@ public class ThroughputBenchmark {
 		Collection<Callable<Boolean>> makeUpdateRequestWorkers = new ArrayList<Callable<Boolean>>();
 		Collection<Callable<Boolean>> verifyUpdatePerformedWorkers = new ArrayList<Callable<Boolean>>();
 		
-		
 		List<byte[]> adsIds = request.getADSIds();
 		Collections.shuffle(adsIds);
 		for(int update = 0; update < batchSize; update++) {
@@ -129,13 +130,15 @@ public class ThroughputBenchmark {
 		}
 		
 		Scanner sc = new Scanner(System.in);
-		logger.log(Level.INFO, "[Press enter to start client test]");
-		sc.nextLine();
-		sc.close();
-		logger.log(Level.INFO, "starting time: "+LocalDateTime.now());
-		long startTime = System.currentTimeMillis();
 		try {
-			logger.log(Level.INFO, "...making update requests");
+			
+			/*
+			 * Test #1 - make requests 
+			 */
+			logger.log(Level.INFO, "[Press enter to make requests]");
+			sc.nextLine();
+			logger.log(Level.INFO, "... making update requests");
+			long startTime1 = System.currentTimeMillis();
 			List<Future<Boolean>> updateResults = WORKERS.invokeAll(makeUpdateRequestWorkers, TOTAL_TASK_TIMEOUT, TimeUnit.SECONDS);
 			for (Future<Boolean> result : updateResults) {
 				Boolean resultBool = result.get();
@@ -143,7 +146,17 @@ public class ThroughputBenchmark {
 					logger.log(Level.WARNING, "UPDATE WAS NOT PERFORMED");
 				}
 			}
-			logger.log(Level.INFO, "...update requests accepted, asking for proof of updates");
+			long endTime1 = System.currentTimeMillis();
+			long duration1 = endTime1 - startTime1;
+			String timeTaken1 = formatter.format(duration1 / 1000d)+ " seconds";
+			
+			/*
+			 * Test #2 - ask for proofs that a request has been performed
+			 */
+			logger.log(Level.INFO, "[Press enter to ask for proofs]");
+			sc.nextLine();
+			logger.log(Level.INFO, "... making proof requests");
+			long startTime2 = System.currentTimeMillis();
 			List<Future<Boolean>> proofResults = WORKERS.invokeAll(verifyUpdatePerformedWorkers, TOTAL_TASK_TIMEOUT, TimeUnit.SECONDS);
 			logger.log(Level.INFO, "...making update requests");
 			for (Future<Boolean> result : proofResults) {
@@ -152,17 +165,19 @@ public class ThroughputBenchmark {
 					logger.log(Level.WARNING, "UPDATE WAS NOT PERFORMED");
 				}
 			}
+			long endTime2 = System.currentTimeMillis();
+			long duration2 = endTime2 - startTime2;
+			String timeTaken2 = formatter.format(duration2 / 1000d)+ " seconds";
+			
+			logger.log(Level.INFO, "Time taken to request updates: "+timeTaken1);
+			logger.log(Level.INFO, "Time taken to verify updates: "+timeTaken2);
+			logger.log(Level.INFO, "[TEST COMPLETE!]");
+			sc.close();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
+			sc.close();
 		}
-		long endTime = System.currentTimeMillis();
-		long duration = endTime-startTime;
-		String timeTaken = String.format("TOTAL TIME: %d seconds %d milliseconds", 
-			    TimeUnit.MILLISECONDS.toSeconds(duration),
-			    duration - TimeUnit.MILLISECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(duration))
-			);
-		logger.log(Level.INFO, timeTaken);
-		logger.log(Level.INFO, "[TEST COMPLETE!]");
+
 	}
 	
 	
