@@ -54,10 +54,14 @@ public class BVerifyServerUpdateApplier implements Runnable {
 		try {
 			// process any initializing updates - if any!
 			int initializingUpdates = 0;
+			logger.log(Level.INFO, "... processing "+this.updates.size()+" initial updates");
 			while(!this.updates.isEmpty()) {
 				PerformUpdateRequest request = this.updates.take();
 				this.adsManager.stageUpdate(request);
 				initializingUpdates++;
+				if(initializingUpdates % 1000000 == 0) {
+					logger.log(Level.INFO, "..."+initializingUpdates+" initialized");
+				}
 				logger.log(Level.FINE, "initializing update #"+initializingUpdates);
 			}
 			logger.log(Level.INFO, "doing initial commit!");
@@ -110,9 +114,10 @@ public class BVerifyServerUpdateApplier implements Runnable {
 					}
 					// once all outstanding updates are added
 					// commit!
+					logger.log(Level.INFO, "starting commit");
 					this.adsManager.commit();
 					this.lock.writeLock().unlock();
-					logger.log(Level.INFO, "committing "+uncommittedUpdates+" updates");
+					logger.log(Level.INFO, "committed "+uncommittedUpdates+" updates");
 					logger.log(Level.INFO, "total updates: "+totalUpdates
 							+" [at "+LocalDateTime.now()+"]");
 					this.uncommittedUpdates = 0;

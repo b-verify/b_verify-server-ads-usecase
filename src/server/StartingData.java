@@ -39,12 +39,12 @@ public class StartingData implements Serializable {
 				" clients, "+nADSes+" (max "+maxClientsPerADS+" clients per ADS)");
 		// (1) generate accounts 
 		List<Account> accounts = PKIDirectory.generateRandomAccounts(nClients);		
-		logger.log(Level.INFO, accounts.size()+"...accounts generated");
+		logger.log(Level.INFO, "..."+accounts.size()+" accounts generated");
 		
 		// (2) choose subsets, each subset is mapped to an ADS_ID
 		List<List<Account>> adsAccounts = getSortedListsOfAccounts(accounts, maxClientsPerADS, 
 				nADSes);
-		logger.log(Level.INFO, accounts.size()+"...subsets selected");
+		logger.log(Level.INFO, "..."+accounts.size()+" subsets selected");
 		
 		// (3) create the initializing updates
 		this.initializingUpdates = new HashSet<>();
@@ -62,9 +62,12 @@ public class StartingData implements Serializable {
 				this.initializingUpdates.add(initialUpdateRequest);
 			}
 		});
+		logger.log(Level.INFO, "..."+this.initializingUpdates.size()+" initializing updates created");
 		
 		// (4) create the PKI
 		this.pki = new PKIDirectory(accounts);
+		logger.log(Level.INFO, "...pki created");
+		logger.log(Level.INFO, "created: "+this.toString());
 	}
 	
 	public PKIDirectory getPKI() {

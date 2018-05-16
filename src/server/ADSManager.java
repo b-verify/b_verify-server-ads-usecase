@@ -94,6 +94,7 @@ public class ADSManager {
 		// (2) create a fresh MPT Dictionary
 		this.serverAuthADS = new MPTDictionaryFull();
 		logger.log(Level.INFO, "...initializing an empty auth ads");
+		logger.log(Level.INFO, "ads manager created");
 	}
 	
 	public Set<Account> getADSOwners(byte[] adsKey){
