@@ -32,13 +32,18 @@ public class ThroughputBenchmark {
 	private static final NumberFormat formatter = new DecimalFormat("#0.000");
 
 	/*
-	 * Adjust the number of threads, timeouts and delays 
+	 * SIMULATION:
+	 * 
+	 * Adjust the number of threads, timeouts and delays
+	 * to simulate different client loads. 
+	 * 
+	 * Note that these parameters are constrained 
 	 * based on how the test is being run and the number 
 	 * of cores & memory on the testing machine
 	 */
-	private static final int NUMBER_OF_THREADS = 100;
-	private static final int TOTAL_TASK_TIMEOUT = 120;
-	private static final int MILLISECONDS_OF_RANDOM_DELAY = 100;
+	private static final int NUMBER_OF_THREADS = 500;
+	private static final int TOTAL_TASK_TIMEOUT = 60;
+	private static final int MILLISECONDS_OF_RANDOM_DELAY = 50;
 	private static final ThreadPoolExecutor WORKERS = 
 			new ThreadPoolExecutor(NUMBER_OF_THREADS, // keep these threads alive even if idle
 								   NUMBER_OF_THREADS, // total size of thread pool
