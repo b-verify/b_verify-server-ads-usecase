@@ -120,8 +120,6 @@ public class ADSManager {
 		
 	}
 	
-	// used for testing - should generally come bootstrapped with 
-	// initial values
 	public ADSManager(PKIDirectory pki) {
 		this.stagedUpdates = new ArrayList<>();
 		this.adsRootProofs = new HashMap<>();
@@ -143,11 +141,11 @@ public class ADSManager {
 				this.adsIdToOwners.put(key, accs);
 			}
 		}
-		logger.log(Level.INFO, "ads_id -> [owners] loaded");
+		logger.log(Level.INFO, "...ads_id -> {owners} loaded");
 		
 		// (2) create a fresh MPT Dictionary
 		this.serverAuthADS = new MPTDictionaryFull();
-		logger.log(Level.INFO, "initializing an empty auth ads");
+		logger.log(Level.INFO, "...initializing an empty auth ads");
 	}
 	
 	public Set<Account> getADSOwners(byte[] adsKey){
@@ -168,7 +166,7 @@ public class ADSManager {
 	}
 	
 	public byte[] commit() {
-		
+		logger.log(Level.FINE, "committing!");
 		// save delta and clear any changes
 		MPTDictionaryDelta delta = new MPTDictionaryDelta(this.serverAuthADS);
 		this.deltas.add(delta);
@@ -182,7 +180,7 @@ public class ADSManager {
 		// go through each update and 
 		// create and save a proof 
 		// for all ADS_IDs that have changed
-		logger.log(Level.FINE, "generating the proofs in parallel");
+		logger.log(Level.FINE, "...generating the proofs in parallel");
 		this.stagedUpdates.parallelStream().forEach(approvedUpdate -> {
 			Update update = approvedUpdate.getUpdate();
 			List<byte[]> adsIds = update.getModificationsList().stream()

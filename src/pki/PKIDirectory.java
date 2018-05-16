@@ -1,6 +1,7 @@
 package pki;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,8 +26,9 @@ import com.github.javafaker.Faker;
  * @author henryaspegren
  *
  */
-public class PKIDirectory {
-	
+public class PKIDirectory implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private final static  Logger logger = Logger.getLogger(PKIDirectory.class.getName());
 	
 	private final Map<UUID, Account> lookupTable;

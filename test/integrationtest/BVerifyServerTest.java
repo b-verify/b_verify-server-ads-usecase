@@ -8,22 +8,31 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import bench.MockTester;
+import bench.StartingData;
 import crpyto.CryptographicDigest;
 
 public class BVerifyServerTest {
 	private static final Logger logger = Logger.getLogger(BVerifyServerTest.class.getName());
 	private static final byte[] START_VALUE = CryptographicDigest.hash("STARTING".getBytes());
 
-	@Test
-	public void testSingleADSUpdatesEveryEntryOnce() {
+	private static StartingData STARTING_DATA;
+	
+	@BeforeClass
+	public static void setup(){
 		int nClients = 10;
 		int nClientsPerAdsMax = 3;
 		int nADS = 100;
+		STARTING_DATA = new StartingData(nClients, nClientsPerAdsMax, nADS, START_VALUE);
+	}
+	
+	@Test
+	public void testSingleADSUpdatesEveryEntryOnce() {
 		int batchSize = 1;
-		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE, true);
+		MockTester tester = new MockTester(STARTING_DATA, batchSize, true);
 		List<byte[]> adsIds = tester.getADSIds();
 		logger.log(Level.INFO, "testing updating each entry once, total updates : "+adsIds.size());
 		byte[] newValue = CryptographicDigest.hash("some new value".getBytes());
@@ -37,12 +46,9 @@ public class BVerifyServerTest {
 	
 	@Test
 	public void testSingleADSUpdatesEveryEntryOnceBatched() {
-		int nClients = 10;
-		int nClientsPerAdsMax = 3;
-		int nADS = 100;
 		// batch size is now 25!
 		int batchSize = 25;
-		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE, true);
+		MockTester tester = new MockTester(STARTING_DATA, batchSize, true);
 		List<byte[]> adsIds = tester.getADSIds();
 		logger.log(Level.INFO, "testing updating each entry once, total updates : "+adsIds.size());
 		byte[] newValue = CryptographicDigest.hash("some new value".getBytes());
@@ -56,11 +62,8 @@ public class BVerifyServerTest {
 	
 	@Test
 	public void testSingleADSUpdatesMultipleTimes() {
-		int nClients = 10;
-		int nClientsPerAdsMax = 3;
 		int batchSize = 1;
-		int nADS = 100;
-		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE, true);
+		MockTester tester = new MockTester(STARTING_DATA, batchSize, true);
 		List<byte[]> adsIds = tester.getADSIds();
 		List<byte[]> adsIdsToUpdate = new ArrayList<>(adsIds);
 		adsIdsToUpdate.addAll(new ArrayList<>(adsIds));
@@ -80,14 +83,9 @@ public class BVerifyServerTest {
 	
 	@Test
 	public void testUpdateMultipleTimesBatched() {
-
-		int nClients = 10;
-		int nClientsPerAdsMax = 3;
 		int batchSize = 25;
-		int nADS = 100;
-		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE, true);
+		MockTester tester = new MockTester(STARTING_DATA, batchSize, true);
 		List<byte[]>adsIds = tester.getADSIds();
-		
 		List<byte[]> adsIdsToUpdate = new ArrayList<>();
 		// 300 updates done in 25 update batches
 		for(int i = 0; i < 3; i++) {
@@ -113,11 +111,8 @@ public class BVerifyServerTest {
 	
 	@Test
 	public void testMultipleADSUpdates() {
-		int nClients = 10;
-		int nClientsPerAdsMax = 3;
 		int batchSize = 1;
-		int nADS = 100;
-		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE, true);
+		MockTester tester = new MockTester(STARTING_DATA, batchSize, true);
 		List<byte[]> adsIds = tester.getADSIds();
 		// updates
 		List<Map.Entry<byte[], byte[]>> updates = new ArrayList<>();
@@ -133,11 +128,8 @@ public class BVerifyServerTest {
 	
 	@Test
 	public void testMultipleADSUpdatesMultipleUpdates() {
-		int nClients = 10;
-		int nClientsPerAdsMax = 3;
 		int batchSize = 1;
-		int nADS = 100;
-		MockTester tester = new MockTester(nClients, nClientsPerAdsMax, nADS, batchSize, START_VALUE, true);
+		MockTester tester = new MockTester(STARTING_DATA, batchSize, true);
 		List<byte[]> adsIds = tester.getADSIds();
 		
 		List<Map.Entry<byte[], byte[]>> updates = new ArrayList<>();

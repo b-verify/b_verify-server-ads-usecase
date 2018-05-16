@@ -1,14 +1,11 @@
 package bench;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +21,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import crpyto.CryptographicDigest;
 import crpyto.CryptographicSignature;
-import crpyto.CryptographicUtils;
 import mpt.core.Utils;
 import mpt.dictionary.MPTDictionaryPartial;
 import pki.Account;
@@ -65,10 +61,8 @@ public class MockTester {
 	
 	private static final int RETRY_PROOF_INTERVAL_MS = 10;
 	
-	public MockTester(int nClients, int maxClientsPerADS, int nADSes, int batchSize, byte[] startingValue, 
-			boolean requireSignatures) {
-		logger.log(Level.INFO, "generating mock setup with "+nClients+" clients, "+nADSes+
-				" ADSes (max per ADS "+maxClientsPerADS+")"+" batch size: "+batchSize);
+	public MockTester(StartingData initialData, int batchSize, boolean requireSignatures) {
+		logger.log(Level.INFO, ""+" batch size: "+batchSize);
 		
 		// we use concurrent maps, since we want to generate 
 		// test data and updates in parallel wherever possible
@@ -86,37 +80,39 @@ public class MockTester {
 		this.pendingAcceptedCommitments = 0;
 		this.batchSize = batchSize;
 						
-		List<Account> accounts = PKIDirectory.generateRandomAccounts(nClients);
+		this.pki = initialData.getPKI();
 		
-		logger.log(Level.INFO, accounts.size()+" accounts generated");
-		List<List<Account>> adsAccounts = getSortedListsOfAccounts(accounts, maxClientsPerADS, 
-				nADSes);
-		
-		// in parallel calculate ADS_IDs and 
-		adsAccounts.parallelStream().forEach(x -> {
-			byte[] adsId = CryptographicUtils.listOfAccountsToADSId(x);
-			for(Account a : x) {
-				synchronized(a) {
-					a.addADSKey(adsId);
+		// (1) create a mapping from ADS_ID -> sorted [owners]
+		Map<ByteBuffer, Set<Account>> toOwners = new HashMap<>();
+		for(Account a : pki.getAllAccounts()) {
+			Set<byte[]> adsIds = a.getADSKeys();
+			for(byte[] adsId : adsIds) {
+				ByteBuffer key = ByteBuffer.wrap(adsId);
+				Set<Account> accs = toOwners.get(key);
+				if(accs == null) {
+					accs = new HashSet<>();
 				}
+				accs.add(a);
+				toOwners.put(key, accs);
 			}
-			logger.log(Level.FINE, "{"+x+"} -> "+Utils.byteArrayAsHexString(adsId));
-			ByteBuffer adsIdBuffer = ByteBuffer.wrap(adsId);
-			
-			this.adsIdToOwners.put(adsIdBuffer, x);
-			
-			// create a request initializing this value
-			PerformUpdateRequest initialUpdateRequest = this.createPerformUpdateRequest(
-					adsId, startingValue);
-			this.adsIdToLastUpdate.put(adsIdBuffer, initialUpdateRequest);	
-		});
+		}
+		for(Map.Entry<ByteBuffer, Set<Account>> entry : toOwners.entrySet()) {
+			List<Account> owners = entry.getValue().stream().collect(Collectors.toList());
+			Collections.sort(owners);
+			this.adsIdToOwners.put(entry.getKey(), owners);
+		}
 		
-		this.pki = new PKIDirectory(accounts);
-		logger.log(Level.INFO, "Number of ADSes: "+this.adsIdToOwners.size());
-				
+		// (2) for each ADS_ID store the initial update
+		for(PerformUpdateRequest initialUpdate : initialData.getInitialUpdates()) {
+			for(ADSModification mod : initialUpdate.getUpdate().getModificationsList()) {
+				this.adsIdToLastUpdate.put(ByteBuffer.wrap(mod.getAdsId().toByteArray()),
+						initialUpdate);
+			}
+		}
+		
 		logger.log(Level.INFO, "Starting the Server");
 		this.server = new BVerifyServer(this.pki, this.batchSize, 
-				this.adsIdToLastUpdate.values().stream().collect(Collectors.toSet()), requireSignatures);
+				initialData.getInitialUpdates(), requireSignatures);
 		
 		this.lastAcceptedCommitmentNumber = 0;
 		this.waitAndGetNewCommitments();
@@ -422,63 +418,5 @@ public class MockTester {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-	
-	
-	private static List<List<Account>> getSortedListsOfAccounts(List<Account> accounts, 
-			int maxClientsPerADS, int nADSes){
-		List<List<Account>> res = new ArrayList<>();
-		for(int k = 1; k <= maxClientsPerADS; k++) {
-			res.addAll(getSortedListsOfAccounts(accounts, k));
-			logger.log(Level.INFO, res.size()+" sets of accounts generated so far");
-		}
-		if(res.size() < nADSes) {
-			throw new RuntimeException("insufficient number of accounts");
-		}
-		return res.subList(0, nADSes);
-	}
-	
-	private static List<List<Account>> getSortedListsOfAccounts(List<Account> accounts, int k){
-		return processLargerSubsets(accounts, new ArrayList<>(), k, 0);
-	}
 
-	private static List<List<Account>> processLargerSubsets(List<Account> set, List<Account> subset, 
-			int targetSize, int nextIndex) {
-	    if (targetSize == subset.size()) {
-	    	// also sort the subset
-	    	Collections.sort(subset);
-	    	return Arrays.asList(subset);
-	    } else {
-	    	List<List<Account>> subsets = new ArrayList<>();
-	        for (int j = nextIndex; j < set.size(); j++) {
-	        	List<Account> newSubset = new ArrayList<>(subset);
-	        	newSubset.add(set.get(j));
-	        	subsets.addAll(
-	        			processLargerSubsets(set, newSubset, targetSize, j + 1));
-	        }
-	        return subsets;
-	    }
-	}
-	
-	public static void writeBytesToFile(File f, byte[] toWrite) {
-		try {
-			FileOutputStream fos = new FileOutputStream(f);
-			fos.write(toWrite);
-			fos.close();
-		}catch(Exception e) {
-			throw new RuntimeException(e.getMessage());
-		}
-	}
-	
-	public static byte[] readBytesFromFile(File f) {
-		try {
-			FileInputStream fis = new FileInputStream(f);
-			byte[] data = new byte[(int) f.length()];
-			fis.read(data);
-			fis.close();
-			return data;
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException("corrupted data");
-		}
-	}
 }
