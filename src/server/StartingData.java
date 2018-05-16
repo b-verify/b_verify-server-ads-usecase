@@ -66,7 +66,7 @@ public class StartingData implements Serializable {
 		
 		// (4) create the PKI
 		this.pki = new PKIDirectory(accounts);
-		logger.log(Level.INFO, "...pki created");
+		logger.log(Level.INFO, "... pki created");
 		logger.log(Level.INFO, "created: "+this.toString());
 	}
 	
@@ -121,7 +121,7 @@ public class StartingData implements Serializable {
 		List<List<Account>> res = new ArrayList<>();
 		for(int k = 1; k <= maxClientsPerADS; k++) {
 			res.addAll(getSortedListsOfAccounts(accounts, k));
-			logger.log(Level.INFO, res.size()+" sets of accounts generated so far");
+			logger.log(Level.INFO, "... "+res.size()+" sets of accounts generated so far");
 		}
 		if(res.size() < nADSes) {
 			throw new RuntimeException("insufficient number of accounts");
