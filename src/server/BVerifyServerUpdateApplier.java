@@ -100,6 +100,10 @@ public class BVerifyServerUpdateApplier implements Runnable {
 				totalUpdates++;
 				logger.log(Level.FINE, "staging update #"+totalUpdates);
 				
+				if(this.uncommittedUpdates % 1000 == 0) {
+					logger.log(Level.INFO, "... batched currently: "+this.uncommittedUpdates);
+				}
+				
 				// once we hit the batch size, trigger a commit
 				// 
 				if(this.uncommittedUpdates == this.TARGET_BATCH_SIZE) {

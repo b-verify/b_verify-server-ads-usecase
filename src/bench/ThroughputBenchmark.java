@@ -36,9 +36,9 @@ public class ThroughputBenchmark {
 	 * based on how the test is being run and the number 
 	 * of cores & memory on the testing machine
 	 */
-	private static final int NUMBER_OF_THREADS = 2;
-	private static final int TOTAL_TASK_TIMEOUT = 30;
-	private static final int MILLISECONDS_OF_RANDOM_DELAY = 5;
+	private static final int NUMBER_OF_THREADS = 100;
+	private static final int TOTAL_TASK_TIMEOUT = 120;
+	private static final int MILLISECONDS_OF_RANDOM_DELAY = 100;
 	private static final ThreadPoolExecutor WORKERS = 
 			new ThreadPoolExecutor(NUMBER_OF_THREADS, // keep these threads alive even if idle
 								   NUMBER_OF_THREADS, // total size of thread pool
@@ -182,8 +182,7 @@ public class ThroughputBenchmark {
 	
 	
 	public static void main(String[] args) {
-		File dataf = new File(
-				System.getProperty("user.dir") + "/benchmarks/throughput-baseline/init");
+		File dataf = new File(System.getProperty("user.dir") + "/benchmarks/throughput-baseline/init");
 		int nClients = 1500;
 		int maxClientsPerADS = 2;
 		int nTotalADSes = 1000000;
