@@ -45,7 +45,7 @@ public class ProofSizeBenchmark {
 		this.request = new Request(data);
 	}
 	
-	public void runProofSizeSingleADS(int nUpdates, String fileName) {
+	public void runProofSizeSingleADS(int nUpdateBatches, String fileName) {
 		List<List<String>> rows = new ArrayList<>();
 		
 		// set a deterministic prng for repeatable tests
@@ -57,44 +57,46 @@ public class ProofSizeBenchmark {
 		
 		// initial proof size
 		ProofSize size = this.getProofSize(adsIdToNotUpdate);
-		rows.add(getCSVRowSingleADSProofSize(nADSes, 0, batchSize, size.getRawProofSize(), 
+		rows.add(getCSVRowSingleADSProofSize(nADSes, 0, size.getRawProofSize(), 
 				size.getUpdateSize(), size.getUpdateProofSize(), size.getFreshnessProofSize()));
 		
-		int validAt = 1;
-		
-		for(int update = 1; update <= nUpdates; update++) {
-			// select a random ADS to update
-			int adsToUpdate = rand.nextInt(adsIds.size()-1)+1;
-			byte[] adsIdToUpdate = adsIds.get(adsToUpdate);
-			byte[] newValue =  CryptographicDigest.hash(("NEW VALUE"+update).getBytes());
-			
-			// create the update request
-			PerformUpdateRequest request = this.request.createPerformUpdateRequest(adsIdToUpdate, newValue, 
-					validAt, false);
-			byte[] response = this.server.getRequestHandler().performUpdate(request.toByteArray());
-			
-			// request should be accepted
-			boolean accepted = Request.parsePerformUpdateResponse(response);
-			if(!accepted) {
-				throw new RuntimeException("something went wrong");
+		for(int batch = 1; batch <= nUpdateBatches; batch++) {
+			for(int update = 1; update <= batchSize; update++) {
+				// select a random ADS to update
+				int adsToUpdate = rand.nextInt(adsIds.size()-1)+1;
+				byte[] adsIdToUpdate = adsIds.get(adsToUpdate);
+				byte[] newValue =  CryptographicDigest.hash(("NEW VALUE"+update).getBytes());
+				
+				// create the update request
+				PerformUpdateRequest request = this.request.createPerformUpdateRequest(adsIdToUpdate, newValue, 
+						batch, false);
+				byte[] response = this.server.getRequestHandler().performUpdate(request.toByteArray());
+				
+				// request should be accepted
+				boolean accepted = Request.parsePerformUpdateResponse(response);
+				if(!accepted) {
+					throw new RuntimeException("something went wrong");
+				}
 			}
-			
-			if((update % batchSize) == 0) {
-				size = this.getProofSize(adsIdToNotUpdate);
-				rows.add(getCSVRowSingleADSProofSize(nADSes, update, batchSize, size.getRawProofSize(), 
-						size.getUpdateSize(), size.getUpdateProofSize(), size.getFreshnessProofSize()));
-				validAt++;
+			try {
+				// wait until commitment is added
+				while(this.server.getRequestHandler().commitments().size() != batch+1) {
+					Thread.sleep(10);
+				}
+			}catch (Exception e) {
+				e.printStackTrace();
 			}
+			size = this.getProofSize(adsIdToNotUpdate);
+			rows.add(getCSVRowSingleADSProofSize(nADSes, batchSize*batch, size.getRawProofSize(), 
+					size.getUpdateSize(), size.getUpdateProofSize(), size.getFreshnessProofSize()));
 		}
 		writeSingleADSProofSizeToCSV(rows, fileName);
-		
 		this.server.shutdown();;
 	}
 	
-	public static List<String> getCSVRowSingleADSProofSize(int nADSes, int nUpdates, int batchSize, 
+	public static List<String> getCSVRowSingleADSProofSize(int nADSes, int nUpdates, 
 			int proofSize, int updateSize, int updateProofSize, int freshnessProofSize) {
-		return Arrays.asList(String.valueOf(nADSes), String.valueOf(nUpdates), 
-				String.valueOf(batchSize), String.valueOf(proofSize),
+		return Arrays.asList(String.valueOf(nADSes), String.valueOf(nUpdates), String.valueOf(proofSize),
 				String.valueOf(updateSize), String.valueOf(updateProofSize),
 				String.valueOf(freshnessProofSize));
 	}
@@ -102,7 +104,7 @@ public class ProofSizeBenchmark {
 	public static void writeSingleADSProofSizeToCSV(List<List<String>> results, String csvFile) {
 		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(csvFile));
 				CSVPrinter csvPrinter = new CSVPrinter(writer, 
-						CSVFormat.DEFAULT.withHeader("nADSes", "nUpdates", "batchSize", 
+						CSVFormat.DEFAULT.withHeader("nADSes", "nUpdates",  
 								"proofSizeTotal", "updateSize", "updateProofSize", "freshnessProofSize"));) {
 			for(List<String> resultRow : results) {
 				csvPrinter.printRecord(resultRow);
@@ -144,20 +146,20 @@ public class ProofSizeBenchmark {
 		//						   and 10 batches total (~10% of ADSes updated)
 		ProofSizeBenchmark benchSmall = new ProofSizeBenchmark(500, 2, 100000, 1000);
 		String smallTest = System.getProperty("user.dir")+"/benchmarks/proof-sizes/data/"+"small_proof_size_test.csv";
-		benchSmall.runProofSizeSingleADS(10000, smallTest);
+		benchSmall.runProofSizeSingleADS(10, smallTest);
 	
 		
 		// medium test: 1M ADS - each batch is 1% (10k) of ADSes
 		//				         and 10 batches total (~10% of ADSes updated)
 		ProofSizeBenchmark benchMedium = new ProofSizeBenchmark(1500, 2, 1000000, 10000);
 		String mediumTest = System.getProperty("user.dir")+"/benchmarks/proof-sizes/data/"+"medium_proof_size_test.csv";
-		benchMedium.runProofSizeSingleADS(100000, mediumTest);
+		benchMedium.runProofSizeSingleADS(10, mediumTest);
 		
-		// large test: 10M ADS - each update is 1% (100k) of ADSes
+		// large test: 10M ADS - each batch is 1% (100k) of ADSes
 		//						 and 10 batches total (~10 % of ADSes updated
 		ProofSizeBenchmark benchLarge = new ProofSizeBenchmark(5000, 2, 10000000, 100000);
 		String largeTest = System.getProperty("user.dir")+"/benchmarks/proof-sizes/data/"+"large_proof_size_test.csv";
-		benchLarge.runProofSizeSingleADS(1000000, largeTest);
+		benchLarge.runProofSizeSingleADS(10, largeTest);
 		
 	}
 }
