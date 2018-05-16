@@ -2,7 +2,6 @@ package server;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -64,27 +63,30 @@ public class BVerifyServer {
 	 * for efficiency. 
 	 */
 	private BlockingQueue<PerformUpdateRequest> updatesToBeCommited;
-	
-	
-	public BVerifyServer(String base, String registryHost, int registryPort, int batchSize, boolean requireSignatures) {
-		this.pki = new PKIDirectory(base + "pki/");
-		logger.log(Level.INFO, "... loaded pki");
-		this.rmi = new ClientProvider(registryHost, registryPort);
-		logger.log(Level.INFO, "... loaded rmi");
-
-		// setup the shared data
-		this.adsManager = new ADSManager(base, this.pki);
-		this.updatesToBeCommited = new LinkedBlockingQueue<>();
-
-		// setup the components 
-		// this is an object exposed to the RMI interface.
-		// the RMI library handles the threading and 
-		// may invoke multiple methods concurrently on this 
-		// object
-		this.verifier = 
-				new BVerifyServerRequestVerifier(this.lock, this.updatesToBeCommited, this.adsManager, 
-						requireSignatures);
 		
+	public BVerifyServer(String registryHost, int registryPort, StartingData initial, 
+			int batchSize, boolean requireSignatures) {
+		this.pki = initial.getPKI();
+		this.adsManager = new ADSManager(this.pki);
+		this.updatesToBeCommited = new LinkedBlockingQueue<>();
+		this.verifier = 
+				new BVerifyServerRequestVerifier(this.lock, this.updatesToBeCommited, this.adsManager,
+						requireSignatures);
+
+		for(PerformUpdateRequest initializingUpdate : initial.getInitialUpdates()) {
+			PerformUpdateResponse response;
+			try {
+				response = PerformUpdateResponse.parseFrom(
+						this.verifier.performUpdate(initializingUpdate.toByteArray()));
+			} catch (InvalidProtocolBufferException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e.getMessage());
+			}
+			boolean accepted = response.getAccepted();
+			if(!accepted) {
+				throw new RuntimeException("something wrong - initializing update rejected");
+			}
+		}
 		// now start up the applier 
 		// which will automatically apply the initializing updates 
 		this.applier = new BVerifyServerUpdateApplier(this.lock,
@@ -92,6 +94,9 @@ public class BVerifyServer {
 		
 		this.applierExecutor = Executors.newSingleThreadExecutor();
 		this.applierExecutor.submit(this.applier);
+		
+		// now connect to the rmi
+		this.rmi = new ClientProvider(registryHost, registryPort);
 		
 		BVerifyProtocolServerAPI serverAPI;
 		try {
@@ -107,15 +112,14 @@ public class BVerifyServer {
 	}
 		
 	// for testing only
-	public BVerifyServer(PKIDirectory pki, int batchSize, Set<PerformUpdateRequest> initializingUpdates,
-			boolean requireSignatures) {
-		this.pki = pki;
+	public BVerifyServer(StartingData initializingData, int batchSize, boolean requireSignatures) {
+		this.pki = initializingData.getPKI();
 		this.adsManager = new ADSManager(this.pki);
 		this.updatesToBeCommited = new LinkedBlockingQueue<>();
 		this.verifier = 
 				new BVerifyServerRequestVerifier(this.lock, this.updatesToBeCommited, this.adsManager,
 						requireSignatures);
-		for(PerformUpdateRequest initializingUpdate : initializingUpdates) {
+		for(PerformUpdateRequest initializingUpdate : initializingData.getInitialUpdates()) {
 			PerformUpdateResponse response;
 			try {
 				response = PerformUpdateResponse.parseFrom(

@@ -1,140 +1,105 @@
-package bench;
+package integrationtest;
 
 import java.nio.ByteBuffer;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import com.google.protobuf.ByteString;
-import com.google.protobuf.InvalidProtocolBufferException;
-
-import crpyto.CryptographicDigest;
-import crpyto.CryptographicSignature;
+import client.Request;
 import mpt.core.Utils;
 import mpt.dictionary.MPTDictionaryPartial;
-import pki.Account;
-import pki.PKIDirectory;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSModification;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
-import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateResponse;
 import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootResponse;
 import serialization.generated.BVerifyAPIMessageSerialization.Update;
-import serialization.generated.MptSerialization.MerklePrefixTrie;
 import server.BVerifyServer;
+import server.StartingData;
 
 public class MockTester {
 	
 	private static final Logger logger = Logger.getLogger(MockTester.class.getName());
 
-	// server - for testing.
 	private final BVerifyServer server;
-	private final PKIDirectory pki;
+
+	private final Request request;
 	
-	// the actual mappings (stored so that we can check the server)
+	// the actual mappings 
 	private final Map<ByteBuffer, PerformUpdateRequest> adsIdToLastUpdate;
-	private final Map<ByteBuffer, List<Account>> adsIdToOwners;
 	
-	// commitments 
-	private List<byte[]> commitments;
-		
+	// pending updates
 	private final List<Entry<byte[], PerformUpdateRequest>> pendingUpdates;
 	private int pendingAcceptedCommitments;
 	private int lastAcceptedCommitmentNumber;
 	private final int batchSize;
 	
-	// signatures may be omitted (saves time when generating large
+	// commitments 
+	private List<byte[]> commitments;
+	
+	// signatures may be omitted
+	// (saves time when generating large
 	// test cases)
 	private final boolean requireSignatures;
 	
 	private static final int RETRY_PROOF_INTERVAL_MS = 10;
 	
-	public MockTester(StartingData initialData, int batchSize, boolean requireSignatures) {
+	public MockTester(StartingData initialData, BVerifyServer server, 
+			int batchSize, boolean requireSignatures) {
 		logger.log(Level.INFO, ""+" batch size: "+batchSize);
-		
-		// we use concurrent maps, since we want to generate 
-		// test data and updates in parallel wherever possible
-		this.adsIdToLastUpdate = new ConcurrentHashMap<>();
-		this.adsIdToOwners = new ConcurrentHashMap<>();
-		
-		// start with no commitments 
-		this.commitments = new ArrayList<>();
-		
-		// may or may not need to actually sign
+		this.server = server;
 		this.requireSignatures = requireSignatures;
 		
-		// batching
-		this.pendingUpdates = new ArrayList<>();
-		this.pendingAcceptedCommitments = 0;
-		this.batchSize = batchSize;
-						
-		this.pki = initialData.getPKI();
-		
-		// (1) create a mapping from ADS_ID -> sorted [owners]
-		Map<ByteBuffer, Set<Account>> toOwners = new HashMap<>();
-		for(Account a : pki.getAllAccounts()) {
-			Set<byte[]> adsIds = a.getADSKeys();
-			for(byte[] adsId : adsIds) {
-				ByteBuffer key = ByteBuffer.wrap(adsId);
-				Set<Account> accs = toOwners.get(key);
-				if(accs == null) {
-					accs = new HashSet<>();
-				}
-				accs.add(a);
-				toOwners.put(key, accs);
-			}
-		}
-		for(Map.Entry<ByteBuffer, Set<Account>> entry : toOwners.entrySet()) {
-			List<Account> owners = entry.getValue().stream().collect(Collectors.toList());
-			Collections.sort(owners);
-			this.adsIdToOwners.put(entry.getKey(), owners);
-		}
-		
-		// (2) for each ADS_ID store the initial update
+		// this is used to format requests 
+		this.request = new Request(initialData);
+										
+		// (1) for each ADS_ID store the initial update
+		this.adsIdToLastUpdate = new HashMap<>();
 		for(PerformUpdateRequest initialUpdate : initialData.getInitialUpdates()) {
 			for(ADSModification mod : initialUpdate.getUpdate().getModificationsList()) {
 				this.adsIdToLastUpdate.put(ByteBuffer.wrap(mod.getAdsId().toByteArray()),
 						initialUpdate);
 			}
 		}
-		
-		logger.log(Level.INFO, "Starting the Server");
-		this.server = new BVerifyServer(this.pki, this.batchSize, 
-				initialData.getInitialUpdates(), requireSignatures);
-		
+				
+		// batching
+		this.pendingUpdates = new ArrayList<>();
+		this.pendingAcceptedCommitments = 0;
+		this.batchSize = batchSize;
 		this.lastAcceptedCommitmentNumber = 0;
+		
+		// start with no commitments 
+		this.commitments = new ArrayList<>();
+		
+		// get the first (initial) commitment
 		this.waitAndGetNewCommitments();
 		
-		logger.log(Level.INFO, "Asking for initial proofs");
+		
+		logger.log(Level.INFO, "asking for initial proofs");
 		boolean initialProofs = this.getAndCheckProofsAllADSIds();
 		if(!initialProofs) {
 			throw new RuntimeException("not correctly set up");
 		}
 	}
-		
+	
 	public void shutdown() {
 		this.server.shutdown();
 	}
-	
+		
 	public List<byte[]> getADSIds(){
 		return this.adsIdToLastUpdate.keySet().stream().map(x -> x.array()).collect(Collectors.toList());
 	}
 	
 	public boolean requestUpdate(PerformUpdateRequest request) {
 		byte[] res = this.server.getRequestHandler().performUpdate(request.toByteArray());
-		return parsePerformUpdateResponse(res);
+		return Request.parsePerformUpdateResponse(res);
 	}
 	
 	public void addApprovedUpdate(PerformUpdateRequest approvedRequest) {
@@ -164,9 +129,9 @@ public class MockTester {
 	}
 	
 	public boolean doUpdate(List<Map.Entry<byte[], byte[]>> adsModifications) {
-		PerformUpdateRequest updateRequest = this.createPerformUpdateRequest(adsModifications);
-		boolean response  = parsePerformUpdateResponse(
-				this.server.getRequestHandler().performUpdate(updateRequest.toByteArray()));
+		PerformUpdateRequest updateRequest = this.request.createPerformUpdateRequest(adsModifications, 
+				this.getNextCommitmentNumber(), this.requireSignatures);
+		boolean response  = this.requestUpdate(updateRequest);
 		if(response) {
 			this.addApprovedUpdate(updateRequest);
 		}
@@ -188,10 +153,10 @@ public class MockTester {
 	
 	public boolean getAndCheckProof(byte[] adsId) {
 		logger.log(Level.FINE, "asking for proof for ADS ID: "+Utils.byteArrayAsHexString(adsId));
-		ProveADSRootRequest request = createProveADSRootRequest(adsId);
+		ProveADSRootRequest request = Request.createProveADSRootRequest(adsId);
 		try {
 			// request a proof
-			ProveADSRootResponse proofResponse = parseProveADSResponse(
+			ProveADSRootResponse proofResponse = Request.parseProveADSResponse(
 					this.server.getRequestHandler().proveADSRoot(request.toByteArray()));
 			ADSRootProof proof = proofResponse.getProof();
 			// check the proof
@@ -208,30 +173,6 @@ public class MockTester {
 		return true;
 	}
 		
-	public ProofSize getProofSize(byte[] adsId) {
-		logger.log(Level.FINE, "getting proof size for ADS ID: "+Utils.byteArrayAsHexString(adsId));
-		ProveADSRootRequest request = createProveADSRootRequest(adsId);
-		try {
-			// request a proof
-			// and record the length
-			byte[] proof = this.server.getRequestHandler().proveADSRoot(request.toByteArray());
-			
-			int rawProofSize = proof.length;
-			ProveADSRootResponse proofResponse = parseProveADSResponse(proof);
-			int sizeUpdate = proofResponse.getProof().getLastUpdate().getSerializedSize();
-			int sizeUpdateProof = proofResponse.getProof().getLastUpdatedProof().getSerializedSize();
-			int sizeFreshnessProof = 0;
-			for(MerklePrefixTrie mpt : proofResponse.getProof().getFreshnessProofList()) {
-				sizeFreshnessProof+= mpt.getSerializedSize();
-			}
-			return new ProofSize(rawProofSize, sizeUpdate, sizeUpdateProof, sizeFreshnessProof);
-			
-		} catch (RemoteException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e.getMessage());
-		}
-	}
-	
 	private int getNextCommitmentNumber() {
 		return this.commitments.size();
 	}
@@ -344,79 +285,6 @@ public class MockTester {
 			return false;
 		}
 		return true;
-	}
-	
-			
-	public PerformUpdateRequest createPerformUpdateRequest(List<Map.Entry<byte[], byte[]>> adsModifications) {
-		Update.Builder update = Update.newBuilder()
-				.setValidAtCommitmentNumber(this.getNextCommitmentNumber());
-		// if include signatures, need to calculate signers, the witness
-		// and actually have each person sign
-		if(this.requireSignatures) {
-			Set<Account> accounts = new HashSet<>();
-			for(Map.Entry<byte[], byte[]> adsModification : adsModifications) {
-				ADSModification modification = ADSModification.newBuilder()
-						.setAdsId(ByteString.copyFrom(adsModification.getKey()))
-						.setNewValue(ByteString.copyFrom(adsModification.getValue()))
-						.build();
-				update.addModifications(modification);
-				accounts.addAll(this.adsIdToOwners.get(ByteBuffer.wrap(adsModification.getKey())));
-			}
-			PerformUpdateRequest request = calculateAndAddSignatures(update.build(), 
-					accounts.stream().collect(Collectors.toList()));
-			return request;
-		}
-		// if no signatures, just leave this blank
-		for(Map.Entry<byte[], byte[]> adsModification : adsModifications) {
-			ADSModification modification = ADSModification.newBuilder()
-					.setAdsId(ByteString.copyFrom(adsModification.getKey()))
-					.setNewValue(ByteString.copyFrom(adsModification.getValue()))
-					.build();
-			update.addModifications(modification);
-		}
-  		PerformUpdateRequest request = PerformUpdateRequest.newBuilder().setUpdate(update).build();
-  		return request;
-	}
-	
-	public PerformUpdateRequest createPerformUpdateRequest(byte[] adsId, byte[] newValue) {
-		return createPerformUpdateRequest(Arrays.asList(Map.entry(adsId, newValue)));
-	}
-			
-	public static PerformUpdateRequest calculateAndAddSignatures(Update update, List<Account> accounts) {
-		// calculate the witness
-		byte[] witness = CryptographicDigest.hash(update.toByteArray());
-		Collections.sort(accounts);
-  		PerformUpdateRequest.Builder request = PerformUpdateRequest.newBuilder()
-				.setUpdate(update);
-  		for(Account a : accounts) {
-  			byte[] signature = CryptographicSignature.sign(witness, a.getPrivateKey());
-  			request.addSignatures(ByteString.copyFrom(signature));
-  		}
-		return request.build();
-	}
-	
-	public static ProveADSRootRequest createProveADSRootRequest(byte[] adsId) {
-		return ProveADSRootRequest.newBuilder().setAdsId(ByteString.copyFrom(adsId)).build();
-	}
-	
-	public static ProveADSRootResponse parseProveADSResponse(byte[] adsRootProof) {
-		try {
-			ProveADSRootResponse response = ProveADSRootResponse.parseFrom(adsRootProof);
-			return response;
-		} catch (InvalidProtocolBufferException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e.getMessage());
-
-		}
-	}
-	
-	public static boolean parsePerformUpdateResponse(byte[] response) {
-		try {
-			return PerformUpdateResponse.parseFrom(response).getAccepted();
-		} catch (InvalidProtocolBufferException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e.getMessage());
-		}
 	}
 
 }

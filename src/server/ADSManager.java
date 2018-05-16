@@ -11,9 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import bench.BootstrapMockSetup;
 import mpt.core.Utils;
-import mpt.dictionary.AuthenticatedDictionaryClient;
 import mpt.dictionary.MPTDictionaryDelta;
 import mpt.dictionary.MPTDictionaryFull;
 import mpt.dictionary.MPTDictionaryPartial;
@@ -69,56 +67,6 @@ public class ADSManager {
 	//				instead we wrap it with a string
 	// account list is canonically sorted 
 	private final Map<ByteBuffer, Set<Account>> adsIdToOwners;
-	
-	public ADSManager(String base, PKIDirectory pki) {
-		this.stagedUpdates = new ArrayList<>();
-		this.adsRootProofs = new HashMap<>();
-		this.deltas = new ArrayList<>();
-		this.commitments = new ArrayList<>();
-		
-		// (1) create a mapping from ADS_ID -> sorted [owners]
-		this.adsIdToOwners = new HashMap<>();
-		Set<Account> accounts = pki.getAllAccounts();
-		for(Account a : accounts) {
-			Set<byte[]> adsIds = a.getADSKeys();
-			for(byte[] adsId : adsIds) {
-				ByteBuffer key = ByteBuffer.wrap(adsId);
-				Set<Account> accs = this.adsIdToOwners.get(key);
-				if(accs == null) {
-					accs = new HashSet<>();
-				}
-				accs.add(a);
-				this.adsIdToOwners.put(key, accs);
-			}
-		}
-		logger.log(Level.INFO, "ads_id -> [owners] loaded");
-		
-		// (2) Second load the MASTER_ADS from disk
-		this.serverAuthADS = BootstrapMockSetup.loadServerADS(base);
-		logger.log(Level.INFO, "master ads loaded");
-
-		// (3) Create initial update proofs 
-		//		for each ADS in parallel
-		//		NOTE: that the initial values are fixed
-		//			  so they just include the 
-		//			  full path to the root
-		this.adsIdToOwners.keySet().parallelStream().forEach(adsIdBuff -> {
-			AuthenticatedDictionaryClient mptPath = new MPTDictionaryPartial(this.serverAuthADS, adsIdBuff.array());
-			MerklePrefixTrie mptPathProof = mptPath.serialize();
-			ADSRootProof proof = ADSRootProof.newBuilder()
-					.setLastUpdatedProof(mptPathProof)
-					.build();
-			synchronized(this.adsRootProofs) {
-				this.adsRootProofs.put(adsIdBuff, proof);	
-			}
-		});
-		logger.log(Level.INFO, "initial ads root proofs created");
-		
-		// (4) Do an initial commitment
-		this.commit();
-		logger.log(Level.INFO, "added an initial commitment");
-		
-	}
 	
 	public ADSManager(PKIDirectory pki) {
 		this.stagedUpdates = new ArrayList<>();

@@ -1,11 +1,12 @@
 package bench;
 
+import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -18,18 +19,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import mpt.dictionary.MPTDictionaryPartial;
+import client.Request;
+import crpyto.CryptographicDigest;
 import rmi.ClientProvider;
-import serialization.generated.BVerifyAPIMessageSerialization.ADSModification;
-import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
-import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateResponse;
-import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootRequest;
-import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootResponse;
 import server.BVerifyServer;
+import server.StartingData;
 
 public class ThroughputBenchmark {
 	private static final Logger logger = Logger.getLogger(ThroughputBenchmark.class.getName());
-	
+	private static final byte[] START_VALUE = CryptographicDigest.hash("STARTING".getBytes());
+
 	/*
 	 * Adjust the number of threads, timeouts and delays 
 	 * based on how the test is being run and the number 
@@ -50,14 +49,13 @@ public class ThroughputBenchmark {
 	/*
 	 * Run this once to generate the data for the benchmark
 	 */
-	public static void generateTestData(String base, int nClients, int nTotalADSes, int nUpdates) {
-		logger.log(Level.INFO, "...resetting the test data");
-		BootstrapMockSetup.resetDataDir(base);
-		logger.log(Level.INFO, "...generating test data for simple throughput benchmark");
-		BootstrapMockSetup.bootstrapSingleADSUpdates(base, nClients, nTotalADSes, nUpdates);	
+	public static void generateTestData(int nClients, int maxClientsPerADS, int nTotalADSes, File f) {
+		StartingData data = new StartingData(nClients, maxClientsPerADS, nTotalADSes, START_VALUE );
+		data.saveToFile(f);
 	}
 	
-	public static void runBenchmarkServer(String base, String host, int port, int batchSize) {
+	public static void runBenchmarkServer(StartingData data, String host, 
+			int port, int batchSize, boolean requireSignatures) {
 		logger.log(Level.INFO, "...starting server on host: "+host+" port: "+port);
 		// first create a registry on localhost
 		try {
@@ -70,9 +68,9 @@ public class ThroughputBenchmark {
 			throw new RuntimeException(e.getMessage());
 		}
 		
-		// start up the server (also on localhost)
+		// start up the server (also on local-host)
 		@SuppressWarnings("unused")
-		BVerifyServer server = new BVerifyServer(base, null, port, batchSize, true);
+		BVerifyServer server = new BVerifyServer(host, port, data, batchSize, requireSignatures);
 		logger.log(Level.INFO, "...ready!");
 		Scanner sc = new Scanner(System.in);
 		logger.log(Level.INFO, "[Press enter to kill sever]");
@@ -81,32 +79,32 @@ public class ThroughputBenchmark {
 		server.shutdown();
 	}
 	
-	public static void runBenchmarkClients(String base, String host, int port) {
+	public static void runBenchmarkClients(StartingData data, String host, 
+			int port, int batchSize, boolean requireSignatures) {
 		logger.log(Level.INFO, "...creating mock clients connected to b_verify server \n "
 				+ "on host: "+host+" port: "+port);
 		// first connect to the registry 
 		ClientProvider rmi = new ClientProvider(host, port);
-
-		// now throw requests at it
-		List<PerformUpdateRequest> requests = BootstrapMockSetup.loadPerformUpdateRequests(base);
 		
+		// next load the request module tohelp create requests
+		Request request = new Request(data);
+		
+		// now prepare requests to throw at it
 		Collection<Callable<Boolean>> makeUpdateRequestWorkers = new ArrayList<Callable<Boolean>>();
 		Collection<Callable<Boolean>> verifyUpdatePerformedWorkers = new ArrayList<Callable<Boolean>>();
 		
-		for(PerformUpdateRequest request : requests) {
-			// for now only one ADS Modification per request
-			ADSModification singleModification = request.getUpdate().getModifications(0);
-			byte[] adsId = singleModification.getAdsId().toByteArray();
-			byte[] newAdsRoot = singleModification.getNewValue().toByteArray();
-			
-			// construct the proof request
-			ProveADSRootRequest proofRequest = ProveADSRootRequest.newBuilder()
-					.setAdsId(singleModification.getAdsId())
-					.build();
-			
-			byte[] updateRequestAsBytes = request.toByteArray();
-			byte[] proofRequestAsBytes = proofRequest.toByteArray();
-			
+		
+		List<byte[]> adsIds = request.getADSIds();
+		Collections.shuffle(adsIds);
+		for(int update = 0; update < batchSize; update++) {
+			byte[] adsId = adsIds.get(update);
+			byte[] newValue = CryptographicDigest.hash(("new value"+update).getBytes());
+			byte[] performRequest = 
+					request.createPerformUpdateRequest(adsId, newValue, 1, requireSignatures)
+					.toByteArray();
+			byte[] proveRequest = Request.createProveADSRootRequest(adsId)
+					.toByteArray();
+
 			
 			makeUpdateRequestWorkers.add(new Callable<Boolean>() {
 					@Override
@@ -114,26 +112,18 @@ public class ThroughputBenchmark {
 						// request the update
 						Random rand = new Random();
 						Thread.sleep(rand.nextInt(MILLISECONDS_OF_RANDOM_DELAY));
-						byte[] responseBytes = rmi.getServer().performUpdate(updateRequestAsBytes);
-						PerformUpdateResponse response = PerformUpdateResponse.parseFrom(responseBytes);
-						return Boolean.valueOf(response.getAccepted());
+						byte[] responseBytes = rmi.getServer().performUpdate(performRequest);
+						return Boolean.valueOf(Request.parsePerformUpdateResponse(responseBytes));
 					}
-				});
-			
+			});
 			verifyUpdatePerformedWorkers.add(new Callable<Boolean>() {
 				@Override
 				public Boolean call() throws Exception {
 					// ask for a proof it was applied 
 					Random rand = new Random();
 					Thread.sleep(rand.nextInt(MILLISECONDS_OF_RANDOM_DELAY));
-					byte[] proofApplied = rmi.getServer().proveADSRoot(proofRequestAsBytes);
-					ProveADSRootResponse up = ProveADSRootResponse.parseFrom(proofApplied);
-					// check the proof 
-					MPTDictionaryPartial proof = MPTDictionaryPartial.deserialize(
-							up.getProof().getLastUpdatedProof());
-					byte[] value = proof.get(adsId);
-					boolean success = Arrays.equals(value, newAdsRoot);
-					return Boolean.valueOf(success);
+					rmi.getServer().proveADSRoot(proveRequest);
+					return Boolean.valueOf(true);
 				}
 			});
 		}
@@ -177,22 +167,25 @@ public class ThroughputBenchmark {
 	
 	
 	public static void main(String[] args) {
-		String base = System.getProperty("user.dir") + "/benchmark/throughput-simple-baseline/";
-		int nClients = 20;
-		int nTotalADSes = 1000;
-		int nUpdates = 100;
-		if (args.length != 4) {
-			logger.log(Level.INFO, "please provide <host> <port> [SERVER|CLIENT] [true|flase] \n true if should generate data for test");
+		File dataf = new File(
+				System.getProperty("user.dir") + "/benchmarks/throughput-baseline/init");
+		int nClients = 1500;
+		int maxClientsPerADS = 2;
+		int nTotalADSes = 1000000;
+		int nUpdates = 10000;
+		if (args.length != 3) {
+			generateTestData(nClients, maxClientsPerADS, nTotalADSes, dataf);
+			logger.log(Level.INFO, "test data generated"+"\n"+
+					"to run test provide <host> <port> [SERVER|CLIENT]");
+			return;
 		}
-		if(Boolean.parseBoolean(args[3])) {
-			generateTestData(base, nClients, nTotalADSes, nUpdates);
-		}
+		StartingData data = StartingData.loadFromFile(dataf);
 		String host = args[0];
 		int port = Integer.parseInt(args[1]);
 		if (args[2].equals("SERVER")) {
-			runBenchmarkServer(base, host, port, nUpdates);
+			runBenchmarkServer(data, host, port, nUpdates, true);
 		}else if (args[2].equals("CLIENT")){
-			runBenchmarkClients(base, host, port);
+			runBenchmarkClients(data, host, port, nUpdates, true);
 		}else {
 			logger.log(Level.INFO, "please provide <host> <port> [SERVER|CLIENT]");
 		}
