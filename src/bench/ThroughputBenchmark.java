@@ -6,6 +6,7 @@ import java.rmi.registry.LocateRegistry;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -99,9 +100,9 @@ public class ThroughputBenchmark {
 		
 		// now prepare requests to throw at it
 		@SuppressWarnings("unchecked")
-		Callable<Boolean>[] makeUpdateRequestWorkers = new Callable[batchSize];
+		Callable<Boolean>[] updateRequests = new Callable[batchSize];
 		@SuppressWarnings("unchecked")
-		Callable<Boolean>[] verifyUpdatePerformedWorkers = new Callable[batchSize];
+		Callable<Boolean>[] verifyRequests = new Callable[batchSize];
 		
 		List<byte[]> adsIds = request.getADSIds();
 		Collections.shuffle(adsIds);
@@ -119,7 +120,7 @@ public class ThroughputBenchmark {
 					.toByteArray();
 
 			
-			makeUpdateRequestWorkers[x] = new Callable<Boolean>() {
+			updateRequests[x] = new Callable<Boolean>() {
 					@Override
 					public Boolean call() throws Exception {
 						// request the update
@@ -130,7 +131,7 @@ public class ThroughputBenchmark {
 					}
 			};
 			
-			verifyUpdatePerformedWorkers[x] = new Callable<Boolean>() {
+			verifyRequests[x] = new Callable<Boolean>() {
 				@Override
 				public Boolean call() throws Exception {
 					// ask for a proof it was applied 
@@ -143,6 +144,11 @@ public class ThroughputBenchmark {
 			
 		});
 		
+		logger.log(Level.INFO, "...request generated");
+
+		Collection<Callable<Boolean>> requestUpdates = Arrays.asList(updateRequests);
+		Collection<Callable<Boolean>> requestProofs = Arrays.asList(verifyRequests);
+		
 		Scanner sc = new Scanner(System.in);
 		try {
 			
@@ -153,7 +159,7 @@ public class ThroughputBenchmark {
 			sc.nextLine();
 			logger.log(Level.INFO, "... making update requests");
 			long startTime1 = System.currentTimeMillis();
-			List<Future<Boolean>> updateResults = WORKERS.invokeAll(Arrays.asList(makeUpdateRequestWorkers), 
+			List<Future<Boolean>> updateResults = WORKERS.invokeAll(requestUpdates, 
 					TOTAL_TASK_TIMEOUT, TimeUnit.SECONDS);
 			for (Future<Boolean> result : updateResults) {
 				Boolean resultBool = result.get();
@@ -172,7 +178,8 @@ public class ThroughputBenchmark {
 			sc.nextLine();
 			logger.log(Level.INFO, "... making proof requests");
 			long startTime2 = System.currentTimeMillis();
-			List<Future<Boolean>> proofResults = WORKERS.invokeAll(Arrays.asList(verifyUpdatePerformedWorkers), TOTAL_TASK_TIMEOUT, TimeUnit.SECONDS);
+			List<Future<Boolean>> proofResults = WORKERS.invokeAll(requestProofs, 
+					TOTAL_TASK_TIMEOUT, TimeUnit.SECONDS);
 			logger.log(Level.INFO, "...making update requests");
 			for (Future<Boolean> result : proofResults) {
 				Boolean resultBool = result.get();
@@ -184,8 +191,8 @@ public class ThroughputBenchmark {
 			long duration2 = endTime2 - startTime2;
 			String timeTaken2 = formatter.format(duration2 / 1000d)+ " seconds";
 			
-			logger.log(Level.INFO, "Time taken to request updates: "+timeTaken1);
-			logger.log(Level.INFO, "Time taken to verify updates: "+timeTaken2);
+			logger.log(Level.INFO, "Time taken to request "+batchSize+" updates: "+timeTaken1);
+			logger.log(Level.INFO, "Time taken to verify "+batchSize+" updates: "+timeTaken2);
 			logger.log(Level.INFO, "[TEST COMPLETE!]");
 			sc.close();
 		} catch (InterruptedException | ExecutionException e) {
@@ -194,7 +201,6 @@ public class ThroughputBenchmark {
 		}
 
 	}
-	
 	
 	public static void main(String[] args) {
 		File dataf = new File(System.getProperty("user.dir") + "/benchmarks/throughput-baseline/init");
