@@ -191,7 +191,7 @@ public class ThroughputBenchmark {
 		int nClients = 1500;
 		int maxClientsPerADS = 2;
 		int nTotalADSes = 1000000;
-		int nUpdates = 10000;
+		int nUpdates = 100000;
 		if (args.length != 3) {
 			generateTestData(nClients, maxClientsPerADS, nTotalADSes, dataf);
 			logger.log(Level.INFO, "test data generated"+"\n"+
