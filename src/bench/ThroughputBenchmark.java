@@ -93,7 +93,8 @@ public class ThroughputBenchmark {
 		// first connect to the registry 
 		ClientProvider rmi = new ClientProvider(host, port);
 		
-		// next load the request module tohelp create requests
+		// next load the request module to help create requests
+		logger.log(Level.INFO, "...loading initializing data");
 		Request request = new Request(data);
 		
 		// now prepare requests to throw at it
@@ -102,6 +103,8 @@ public class ThroughputBenchmark {
 		
 		List<byte[]> adsIds = request.getADSIds();
 		Collections.shuffle(adsIds);
+		
+		logger.log(Level.INFO, "...creating mock updates");
 		for(int update = 0; update < batchSize; update++) {
 			byte[] adsId = adsIds.get(update);
 			byte[] newValue = CryptographicDigest.hash(("new value"+update).getBytes());
