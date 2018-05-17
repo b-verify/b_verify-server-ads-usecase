@@ -27,7 +27,7 @@ This is the time required for each of the 10^5 separate clients to request a pro
 Overall the complete process to update and verify 10% of the ADSes on a realistically sized serer is about 2 minutes.
 
 
-## Proof Sizes
+## Proof Size Benchmark
 To test proof sizes we measured how the size of the proof for an ADS_ROOT changes as updates to other ADSes are performed. 
 
 To simulate a real deployment we again used a medium size b_verify server with 
