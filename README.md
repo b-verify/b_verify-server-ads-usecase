@@ -20,10 +20,12 @@ This is the time required for 10^5 separate clients to submit update request to 
 
 ### Time To Commit (on Server)
 ``1.675 seconds``
+
 This is the time required for the server to commit a batch of updates and broadcast the commitment. During this period the server cannot accept new update requests. Currently this is the time required to re-hash intermediate nodes in a the MPT. The current implementation is single threaded, so this can probably be improved.
 
 ### Time To Request Proofs 
 ``21.605 seconds or ~4,500 proof generated / second``
+
 This is the time required for each of the 10^5 separate clients to request a proof showing that the update was performed. The server generates these proofs on demand and in parallel. This is because the binding constraint for the current implementation is memory and pre-computing these proofs would take a considerable amount of additional memory. 
 
 ### Total Time 
@@ -44,9 +46,15 @@ but this time we did each of the updates in batches of
 
 and measured the size of the proof after each update.
 
-To analyze the proof size, we split it into the ``update`` portion: the signed update and a proof that the update was performed and the ``freshness`` portion: which is a proof that the update is current and the ADS\_ROOT has not been changed since the update.
+To analyze the proof size, we split it into the ``update`` portion: the signed update and a proof that the update was performed and the ``freshness`` portion: which is a proof that the update is current and the ADS\_ROOT has not been changed since the update. 
+
+The ``update`` protion of the proof is fixed size and does not change over time. 
+
+The ``freshness`` proof however gets strictly larger after each commitment since the update was performed. To prove that an ADS\_ROOT is still fresh, after each commitment a partial path must be added to the freshness proof. However the partial path does not need to contain all of the pre-images on the co-path. By caching updates on the client we can reduce the sizes of these proofs by around 50%. Assymptotically if a commitment has U random updates, the freshness proof will grow by a size of ``log^2(U)`` in expectation. 
 
 ### Results
+Actual measurement of proof sizes confirms these results: 
+
 ![picture](benchmarks/proof-sizes/proof_size.png) 
 
 
