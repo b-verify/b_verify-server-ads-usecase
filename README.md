@@ -50,7 +50,7 @@ To analyze the proof size, we split it into the ``update`` portion: the signed u
 
 The ``update`` protion of the proof is fixed size and does not change over time. 
 
-The ``freshness`` proof however gets strictly larger after each commitment since the update was performed. To prove that an ADS\_ROOT is still fresh, after each commitment a partial path must be added to the freshness proof. However the partial path does not need to contain all of the pre-images on the co-path. By caching updates on the client we can reduce the sizes of these proofs by around 50%. Assymptotically if a commitment has U random updates, the freshness proof will grow by a size of ``log^2(U)`` in expectation. 
+The ``freshness`` proof however gets strictly larger after each commitment since the update was performed. To prove that an ADS\_ROOT is still fresh, after each commitment a partial path must be added to the freshness proof. However the partial path does not need to contain all of the pre-images on the co-path. By caching updates on the client we can reduce the sizes of these proofs by around 50%. Assymptotically if a commitment has ``U random updates`` and there are ``N total ADS\_ROOTs`` in the data structure, the freshness proof will grow by a size of ``log(N)*log(U)`` in expectation. 
 
 ### Results
 Actual measurement of proof sizes confirms these results: 
