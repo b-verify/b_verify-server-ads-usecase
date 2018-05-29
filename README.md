@@ -5,7 +5,7 @@ To test the throughput of the b\_verify server we measure the amount of time req
 
 In a real world deployment, only a fraction of all the ADS\_ROOTs would be updated at a given time. To simulate a medium-sized real-world deployment, we created a b\_verify server that stores  
 
-``10^6 ADS\_ROOTs``
+``10^6 ADS_ROOTs``
 
 and We will update 
 
@@ -48,7 +48,7 @@ and measured the size of the proof after each update.
 
 To analyze the proof size, we split it into the ``update`` portion: the signed update and a proof that the update was performed and the ``freshness`` portion: which is a proof that the update is current and the ADS\_ROOT has not been changed since the update. 
 
-The ``update`` protion of the proof is fixed size and does not change over time. 
+The ``update`` portion of the proof is fixed size and does not change over time. 
 
 The ``freshness`` proof however gets strictly larger after each commitment since the update was performed. To prove that an ADS\_ROOT is still fresh, after each commitment a partial path must be added to the freshness proof. However the partial path does not need to contain all of the pre-images on the co-path. By caching updates on the client we can reduce the sizes of these proofs by around 50%. Assymptotically if a commitment has ``U random updates`` and there are ``N total ADS\_ROOTs`` in the data structure, the freshness proof will grow by a size of ``log(N)*log(U)`` in expectation. 
 
