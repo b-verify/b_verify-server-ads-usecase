@@ -56,7 +56,7 @@ The ``freshness`` proof however gets strictly larger after each subsequent commi
 
 Therefore the overall size of the proof for an update on a b\_verify server with ``N ADS_ROOTs`` that has since processed ``U random updates``, committed in ``batches of size C`` has size:
 
-``size = O(log(N)) + (U/C)*O(log(C))``
+``size = O(log(N) + U/C*log(C))``
 
 Note that the efficiency of these proofs depends on the ratio ``U/C``. To see this consider performing ``N`` random updates. If each commitment contains only a single update (``C = 1``), the freshness proof will consist of a single updated co-path pre-image and the proof will be of size ``O(N)``. However if instead all the ADS\_ROOTs are updated in a single commitment, then all nodes on every co-path change and the size of the proof is ``O(log(N))` and maximally efficient.
 
