@@ -25,7 +25,7 @@ def plot_impact_of_optimization():
     plt.ylabel("Proof Size in Bytes")
     plt.xlabel("Percentage of ADSes Updated")
     plt.title("Impact of Caching Optimization on Proof Sizes")
-    plt.suptitle("b_verify Server with 10^6 ADSes with 10% of ADSes Updated in 1% Batches")
+    plt.suptitle("b_verify Server with 10^6 ADSes, 10% of ADSes Updated in 1% Batches")
     plt.legend(handles=[proof_size_full_medium, proof_size_full_no_optimization_medium], loc=2)
     plt.show()
     
@@ -35,14 +35,6 @@ def plot_proof_size_breakdown():
     plt.ylabel("Proof Size in Bytes")
     plt.xlabel("Percentage of ADSes Updated")
     plt.title("Proof Size Breakdown By Component")
-    plt.suptitle("b_verify Server with 10^6 ADSes with 10% of ADSes Updated in 1% Batches")
+    plt.suptitle("b_verify Server with 10^6 ADSes, 10% of ADSes Updated in 1% Batches")
     plt.legend(handles=[update_proof_medium, freshness_proof_medium], loc=2)
-    plt.show()    
-    
-    
-    
-    
-    
-    
-    
-
+    plt.show()        
