@@ -13,5 +13,4 @@ public interface BVerifyProtocolClientAPI extends Remote {
 	
 	public byte[] approveRequest(byte[] requestMessage) throws RemoteException;
 	
-	
 }

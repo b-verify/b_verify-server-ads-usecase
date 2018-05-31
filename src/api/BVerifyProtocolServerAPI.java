@@ -15,8 +15,8 @@ public interface BVerifyProtocolServerAPI extends Remote {
 	public byte[] performUpdate(byte[] adsUpdates) throws RemoteException;
 		
 	public byte[] proveADSRoot(byte[] adsRootRequest) throws RemoteException;
-
-	// for testing only!
+	
+	// for testing only - these should be witnessed to Bitcoin using Catena!
 	public List<byte[]> commitments() throws RemoteException;
 	
 }

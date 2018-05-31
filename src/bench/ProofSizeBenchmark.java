@@ -17,7 +17,9 @@ import org.apache.commons.csv.CSVPrinter;
 
 import client.Request;
 import crpyto.CryptographicDigest;
+import mpt.core.InvalidSerializationException;
 import mpt.core.Utils;
+import mpt.dictionary.MPTDictionaryPartial;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootResponse;
@@ -58,7 +60,8 @@ public class ProofSizeBenchmark {
 		// initial proof size
 		ProofSize size = this.getProofSize(adsIdToNotUpdate);
 		rows.add(getCSVRowSingleADSProofSize(nADSes, 0, size.getRawProofSize(), 
-				size.getUpdateSize(), size.getUpdateProofSize(), size.getFreshnessProofSize()));
+				size.getUpdateSize(), size.getUpdateProofSize(), size.getFreshnessProofSize(), 
+				size.getFreshnessProofNoOptimizationSize()));
 		
 		for(int batch = 1; batch <= nUpdateBatches; batch++) {
 			for(int update = 1; update <= batchSize; update++) {
@@ -88,24 +91,25 @@ public class ProofSizeBenchmark {
 			}
 			size = this.getProofSize(adsIdToNotUpdate);
 			rows.add(getCSVRowSingleADSProofSize(nADSes, batchSize*batch, size.getRawProofSize(), 
-					size.getUpdateSize(), size.getUpdateProofSize(), size.getFreshnessProofSize()));
+					size.getUpdateSize(), size.getUpdateProofSize(), size.getFreshnessProofSize(),
+					size.getFreshnessProofNoOptimizationSize()));
 		}
 		writeSingleADSProofSizeToCSV(rows, fileName);
 		this.server.shutdown();;
 	}
 	
 	public static List<String> getCSVRowSingleADSProofSize(int nADSes, int nUpdates, 
-			int proofSize, int updateSize, int updateProofSize, int freshnessProofSize) {
+			int proofSize, int updateSize, int updateProofSize, int freshnessProofSize, int freshnessProofNoOptimizationSize) {
 		return Arrays.asList(String.valueOf(nADSes), String.valueOf(nUpdates), String.valueOf(proofSize),
 				String.valueOf(updateSize), String.valueOf(updateProofSize),
-				String.valueOf(freshnessProofSize));
+				String.valueOf(freshnessProofSize), String.valueOf(freshnessProofNoOptimizationSize));
 	}
 	
 	public static void writeSingleADSProofSizeToCSV(List<List<String>> results, String csvFile) {
 		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(csvFile));
 				CSVPrinter csvPrinter = new CSVPrinter(writer, 
 						CSVFormat.DEFAULT.withHeader("nADSes", "nUpdates",  
-								"proofSizeTotal", "updateSize", "updateProofSize", "freshnessProofSize"));) {
+								"proofSizeTotal", "updateSize", "updateProofSize", "freshnessProofSize", "freshnessProofNoOptimizationSize"));) {
 			for(List<String> resultRow : results) {
 				csvPrinter.printRecord(resultRow);
 			}
@@ -125,16 +129,24 @@ public class ProofSizeBenchmark {
 			byte[] proof = this.server.getRequestHandler().proveADSRoot(request.toByteArray());
 			
 			int rawProofSize = proof.length;
+			
 			ProveADSRootResponse proofResponse = Request.parseProveADSResponse(proof);
 			int sizeUpdate = proofResponse.getProof().getLastUpdate().getSerializedSize();
 			int sizeUpdateProof = proofResponse.getProof().getLastUpdatedProof().getSerializedSize();
 			int sizeFreshnessProof = 0;
+			int sizeFreshnessProofNoCacheOptimization = 0;
+			MPTDictionaryPartial fullPath = MPTDictionaryPartial.deserialize(proofResponse.getProof().getLastUpdatedProof());
 			for(MerklePrefixTrie mpt : proofResponse.getProof().getFreshnessProofList()) {
 				sizeFreshnessProof+= mpt.getSerializedSize();
+				// calculate the size required to have sent the actual full path 
+				// rather than just the updates (for benchmarking purposes)
+				fullPath.processUpdates(mpt);
+				sizeFreshnessProofNoCacheOptimization += fullPath.serialize().getSerializedSize();
 			}
-			return new ProofSize(rawProofSize, sizeUpdate, sizeUpdateProof, sizeFreshnessProof);
+			return new ProofSize(rawProofSize, sizeUpdate, sizeUpdateProof, sizeFreshnessProof, 
+					sizeFreshnessProofNoCacheOptimization);
 			
-		} catch (RemoteException e) {
+		} catch (RemoteException | InvalidSerializationException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
 		}

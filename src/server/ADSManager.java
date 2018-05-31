@@ -168,7 +168,7 @@ public class ADSManager {
 		}
 		return proof.build();
 	}
-	
+		
 	public int getCurrentCommitmentNumber() {
 		return this.commitments.size()-1;
 	}
