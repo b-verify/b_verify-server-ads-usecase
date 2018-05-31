@@ -16,15 +16,33 @@ y_update_medium = medium_proof_sizes['updateSize'] + medium_proof_sizes['updateP
 
 y_freshness_medium = medium_proof_sizes['freshnessProofSize']
 
-proof_size_full_medium, = plt.plot(x, y_proof_size_total_medium, 'b^', linestyle='--', label="Entire Proof")
-update_proof_medium, = plt.plot(x, y_update_medium, 'ro', linestyle='--', label="Proof of Update")
-freshness_proof_medium, = plt.plot(x, y_freshness_medium, 'gs', linestyle='--', label="Proof of Freshness")
+y_freshness_no_optimization_medium = medium_proof_sizes['freshnessProofNoOptimizationSize']
 
+def plot_impact_of_optimization():
+    proof_size_full_medium, = plt.plot(x, y_proof_size_total_medium, 'r^', linestyle='--', label="Entire Proof")
+    proof_size_full_no_optimization_medium, = plt.plot(x, y_proof_size_total_medium-y_freshness_medium+y_freshness_no_optimization_medium
+                                                   , 'bo', linestyle='--', label="Entire Proof Without Caching Optimization")
+    plt.ylabel("Proof Size in Bytes")
+    plt.xlabel("Percentage of ADSes Updated")
+    plt.title("Impact of Caching Optimization on Proof Sizes")
+    plt.suptitle("b_verify Server with 10^6 ADSes with 10% of ADSes Updated in 1% Batches")
+    plt.legend(handles=[proof_size_full_medium, proof_size_full_no_optimization_medium], loc=2)
+    plt.show()
+    
+def plot_proof_size_breakdown():
+    update_proof_medium, = plt.plot(x, y_update_medium, 'rs', linestyle='--', label="Proof of Update")
+    freshness_proof_medium, = plt.plot(x, y_freshness_medium, 'g^', linestyle='--', label="Proof of Freshness")
+    plt.ylabel("Proof Size in Bytes")
+    plt.xlabel("Percentage of ADSes Updated")
+    plt.title("Proof Size Breakdown By Component")
+    plt.suptitle("b_verify Server with 10^6 ADSes with 10% of ADSes Updated in 1% Batches")
+    plt.legend(handles=[update_proof_medium, freshness_proof_medium], loc=2)
+    plt.show()    
+    
+    
+    
+    
+    
+    
+    
 
-plt.ylabel("Proof Size in Bytes")
-plt.xlabel("Percentage of ADSes Updated")
-plt.title("Proof Size on b_verify Server with 10^6 ADSes")
-plt.suptitle("10% of ADSes Updated in 1% Batches")
-plt.legend(handles=[proof_size_full_medium, update_proof_medium, freshness_proof_medium], loc=2)
-
-plt.show()

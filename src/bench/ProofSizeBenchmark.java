@@ -27,6 +27,15 @@ import serialization.generated.MptSerialization.MerklePrefixTrie;
 import server.BVerifyServer;
 import server.StartingData;
 
+/*
+ * NOTE on deterministic tests - Java cryptographic libraries make it 
+ * difficult to generate key pairs deterministically (which would normally
+ * be something that users should never do). As a result there is still
+ * some non-determinism in the benchmarking programs based on 
+ * the random key pairs generated. 
+ */
+
+
 public class ProofSizeBenchmark {
 	private static final Logger logger = Logger.getLogger(ProofSizeBenchmark.class.getName());
 	private static final byte[] START_VALUE = CryptographicDigest.hash("STARTING".getBytes());

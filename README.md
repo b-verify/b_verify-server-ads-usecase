@@ -63,8 +63,35 @@ Note that the efficiency of these proofs depends on the ratio ``U/C``. To see th
 In practice the ratio ``U/C`` will be determined by the usage requirements. It reflects a tradeoff between proof size and the lost time required to batch updates. While waiting for a batch to commit the client cannot be sure that the update will be performed and thus must sit in an indeterminate state. 
 
 ### Actual Proof Size
-Actual measurement of proof sizes confirms these results: 
+Actual measurement of proof sizes confirms these results. 
 
-![picture](benchmarks/proof-sizes/proof_size.png) 
+#### Proof Size Breakdown
+Here is a breakdown of the proof size into the ``update`` and ``freshness`` components. Note how the ``freshness`` component grows as new commitments are published.
+
+![picture](benchmarks/proof-sizes/proof_size_breakdown.png)
+
+
+#### Impact of Caching Optimization
+This plot measures the impact of caching unchanged pre-images on the client. Note that this optimization reduces the size of the proofs by roughly 50%. 
+
+![picture](benchmarks/proof-sizes/proof_size_optimization_comparison.png) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
