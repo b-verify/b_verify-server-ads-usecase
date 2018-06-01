@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -123,6 +124,10 @@ public class ADSManager {
 	}
 	
 	public byte[] commit() {
+		return this.commitParallelized(null);
+	}
+	
+	public byte[] commitParallelized(ExecutorService workers) {
 		logger.log(Level.FINE, "committing!");
 		// save delta and clear any changes
 		MPTDictionaryDelta delta = new MPTDictionaryDelta(this.serverAuthADS);
@@ -130,7 +135,12 @@ public class ADSManager {
 		this.serverAuthADS.reset();
 		
 		// calculate a new commitment
-		byte[] commitment = this.serverAuthADS.commitment();
+		byte[] commitment;
+		if(workers != null) {
+			commitment = this.serverAuthADS.commitmentParallelized(workers);
+		}else {
+			commitment = this.serverAuthADS.commitment();
+		}
 		this.commitments.add(commitment);
 
 		// create the proofs (in parallel for speed):
