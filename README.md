@@ -16,24 +16,37 @@ and we perform
 To simulate mock clients we use 500 threads to send each of the update requests individually and in parallel. The Java RMI interface begins to have problems at a load of about >5 request per millisecond, so we introduce some random delay into when the client threads actually make the requests. Note that this will only increase the time required for these benchmarks and it is probably possible that by carefully tuning the timing we could achieve even better results.
 
 ### Time To Request Updates
-``95.404 seconds or ~1,050 requests verified / second``
+``90.474 seconds or ~1,105 requests verified / second``
 
 This is the time required for 10^5 separate clients to submit update request to the server, for the server to verify these requests and schedule the update to be committed, and then to reply ACCEPTED to the client. 
 
-### Time To Commit (on Server)
-``1.675 seconds``
+In the b_verify protocol this consists of 
 
-This is the time required for the server to commit a batch of updates and broadcast the resulting commitment. During this period the server cannot accept new update requests. Currently this is the time required to re-hash intermediate nodes in a the MPT. The current implementation is single threaded, so this can probably be improved.
+``a lookup in a hash table + 1 or more signature verification per update request``
+
+and is done in parallel 
+
+### Time To Commit (on Server)
+``0.927 seconds``
+
+This is the time required for the server to commit a batch of updates and broadcast the resulting commitment. During this period the server cannot accept new update requests. 
+
+In this implementation this is the time required to re-calculate the hashes of some subset of the nodes in the MPT on the server. To determine exactly how many hashes need to be recalculated, I instrumented the code to keep track. A MPT with ``10^6 entries`` has ``2879761 total nodes``. After the updates 
+
+``575724 or 20% of the hashes must be recalculated``
+
+In the current implementation this is parallelized as much as possible. 
+
 
 ### Time To Request Proofs
-``21.605 seconds or ~4,500 proofs generated / second``
+``6.332 seconds or ~16,000 proofs generated / second``
 
 This is the time required for each of the 10^5 separate clients to request a proof showing that the update was performed. The server generates these proofs in parallel. In the current implementation, proofs are generated on demand instead of being pre-computed due to memory constraints on the server. For example saving a 1 KB proof for each of the 10^6 ADS\_ROOTs requires 1 GB worth of storage. The current implementation saves only the minimal subset of pre-images required to construct the proofs on demand.   
 
 ### Total Time 
-``118.684 seconds or about 2 minutes or ~800 updates / second``
+``97.733 seconds or ~1,112 updates / second``
 
-Overall the complete process to update and verify 10% of the ADSes on a realistically sized b\_verify server is about 2 minutes with a total throughput of just under a thousand updates per second. 
+Overall the complete process to update and verify 10% of the ADSes on a realistically sized b\_verify server is about a minute and a half with a total throughput of over a thousand updates per second. 
 
 ## Proof Size Benchmark
 To test proof sizes we measured how the size of the proof for an ADS\_ROOT changes as updates to other roots are performed. 
