@@ -1,4 +1,6 @@
 # b\_verify 
++[![Build Status](https://travis-ci.org/b-verify/reference-server.svg?branch=master)](https://travis-ci.org/b-verify/reference-server)
+
 
 ## Throughput Benchmark
 To test the throughput of the b\_verify server we measure the amount of time required to process client updates. In the b\_verify protocol clients may update ADS\_ROOTs stored on the server. The server verifies these updates, and then commits many changes as a batch. Clients must then request proofs from the server to verify that the server has performed the updates.
