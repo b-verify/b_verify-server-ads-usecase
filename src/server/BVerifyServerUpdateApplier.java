@@ -61,7 +61,7 @@ public class BVerifyServerUpdateApplier implements Runnable {
 				PerformUpdateRequest request = this.updates.take();
 				this.adsManager.stageUpdate(request);
 				initializingUpdates++;
-				if(initializingUpdates % 1000000 == 0) {
+				if(initializingUpdates % 10000 == 0) {
 					logger.log(Level.INFO, "..."+initializingUpdates+" initialized");
 				}
 				logger.log(Level.FINE, "initializing update #"+initializingUpdates);
@@ -100,7 +100,7 @@ public class BVerifyServerUpdateApplier implements Runnable {
 				totalUpdates++;
 				logger.log(Level.FINE, "staging update #"+totalUpdates);
 				
-				if(this.uncommittedUpdates % 1000 == 0) {
+				if(this.uncommittedUpdates % 10000 == 0) {
 					logger.log(Level.INFO, "... batched currently: "+this.uncommittedUpdates);
 				}
 				
@@ -120,7 +120,13 @@ public class BVerifyServerUpdateApplier implements Runnable {
 					}
 					// once all outstanding updates are added
 					// commit!
-					logger.log(Level.INFO, "starting commit");
+					int totalNumberOfNodes = this.adsManager.countTotalNumberOfNodes();
+					int totalNumberOfHashesNeededToCommit = this.adsManager.countHashesNeededToCommit();
+					logger.log(Level.INFO, "starting to commit");
+					logger.log(Level.INFO, "[total updates: "+uncommittedUpdates+
+							" | total nodes in ADS: "+totalNumberOfNodes+
+							" | number of hashes needed to commit: "+totalNumberOfHashesNeededToCommit+
+							"]");
 					long startTime = System.currentTimeMillis();
 					this.adsManager.commit();
 					long endTime = System.currentTimeMillis();
@@ -128,7 +134,7 @@ public class BVerifyServerUpdateApplier implements Runnable {
 					long duration = endTime - startTime;
 					NumberFormat formatter = new DecimalFormat("#0.000");
 					String timeTaken = formatter.format(duration / 1000d)+ " seconds";
-					logger.log(Level.INFO, "committed "+uncommittedUpdates+" updates in "+timeTaken);
+					logger.log(Level.INFO, "time taken to commit: "+timeTaken);
 					logger.log(Level.INFO, "total updates: "+totalUpdates
 							+" [at "+LocalDateTime.now()+"]");
 					this.uncommittedUpdates = 0;

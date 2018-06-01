@@ -114,6 +114,14 @@ public class ADSManager {
 		this.stagedUpdates.add(approvedUpdate);
 	}
 	
+	public int countHashesNeededToCommit() {
+		return this.serverAuthADS.countHashesRequiredToCommit();
+	}
+	
+	public int countTotalNumberOfNodes() {
+		return this.serverAuthADS.countNodes();
+	}
+	
 	public byte[] commit() {
 		logger.log(Level.FINE, "committing!");
 		// save delta and clear any changes
