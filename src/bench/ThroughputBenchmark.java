@@ -43,15 +43,15 @@ public class ThroughputBenchmark {
 	 * of cores & memory on the testing machine
 	 */
 	private static final int NUMBER_OF_THREADS = 500;
-	private static final int TOTAL_TASK_TIMEOUT = 60;
+	private static final int TOTAL_TASK_TIMEOUT = 120;
 	private static final int MILLISECONDS_OF_RANDOM_DELAY = 50;
 	private static final ThreadPoolExecutor WORKERS = 
 			new ThreadPoolExecutor(NUMBER_OF_THREADS, // keep these threads alive even if idle
 								   NUMBER_OF_THREADS, // total size of thread pool
 								   30, // idle timeout
 								    TimeUnit.SECONDS,
-								    // can also queue up to 10k tasks
-								    new ArrayBlockingQueue<Runnable>(10000));
+								    // can also queue up to 100k tasks
+								    new ArrayBlockingQueue<Runnable>(100000));
 	
 		
 	/*
@@ -207,7 +207,7 @@ public class ThroughputBenchmark {
 		int nClients = 1500;
 		int maxClientsPerADS = 2;
 		int nTotalADSes = 1000000;
-		int nUpdates = 10000;
+		int nUpdates = 100000;
 		if (args.length != 3) {
 			generateTestData(nClients, maxClientsPerADS, nTotalADSes, dataf);
 			logger.log(Level.INFO, "test data generated"+"\n"+
