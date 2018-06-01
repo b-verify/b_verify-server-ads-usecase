@@ -1,5 +1,5 @@
 # b\_verify 
-+[![Build Status](https://travis-ci.org/b-verify/reference-server.svg?branch=master)](https://travis-ci.org/b-verify/reference-server)
+[![Build Status](https://travis-ci.org/b-verify/reference-server.svg?branch=master)](https://travis-ci.org/b-verify/reference-server)
 
 
 ## Throughput Benchmark
