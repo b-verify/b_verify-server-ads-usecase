@@ -52,7 +52,10 @@ public class Request {
 	}
 	
 	public List<byte[]> getADSIds(){
-		return this.adsIdToOwners.keySet().stream().map(x -> x.array()).collect(Collectors.toList());
+		// we sort this so that it is deterministic
+		List<ByteBuffer> result = this.adsIdToOwners.keySet().stream().collect(Collectors.toList());
+		Collections.sort(result);
+		return result.stream().map(x -> x.array()).collect(Collectors.toList());
 	}
 	
 	public PerformUpdateRequest createPerformUpdateRequest(List<Map.Entry<byte[], byte[]>> adsModifications,
