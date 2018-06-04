@@ -40,8 +40,8 @@ public class ProofGenerationThroughputBenchmark {
 								   NUMBER_OF_THREADS, // total size of thread pool
 								   30, // idle timeout
 								    TimeUnit.SECONDS,
-								    // can also queue up to 100k tasks
-								    new ArrayBlockingQueue<Runnable>(100000));
+								    // queue one request per ADS so 1M requests
+								    new ArrayBlockingQueue<Runnable>(1000000));
 	
 	/*
 	 * Run this once to generate the data for the benchmark
