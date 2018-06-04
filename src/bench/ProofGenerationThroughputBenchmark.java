@@ -116,6 +116,50 @@ public class ProofGenerationThroughputBenchmark {
 		server.shutdown();
 	}
 	
+	public static void runBenchmarkSingleThreadedClient(StartingData data, String host,
+			int port, Random prng) {
+		logger.log(Level.INFO, "...creating mock clients connected to b_verify server \n "
+				+ "on host: "+host+" port: "+port);
+		// first connect to the registry 
+		ClientProvider rmi = new ClientProvider(host, port);
+		
+		// next load the request module to help create requests
+		logger.log(Level.INFO, "...loading initializing data");
+		Request request = new Request(data);
+		
+		List<byte[]> adsIds = request.getADSIds();
+		Collections.shuffle(adsIds, prng);
+		
+		logger.log(Level.INFO, "...creating proof requests");
+		List<byte[]> proofRequests  = adsIds.parallelStream().map(adsId -> {
+			return Request.createProveADSRootRequest(adsId).toByteArray();
+		}).collect(Collectors.toList());
+		
+		logger.log(Level.INFO, "..."+proofRequests.size()+" proof requests generated");		
+		Scanner sc = new Scanner(System.in);
+		try {
+			/*
+			 * Request proofs in parallel for EVERY ADS
+			 */
+			logger.log(Level.INFO, "[Press enter to make proof one at a time]");
+			sc.nextLine();
+			logger.log(Level.INFO, "...making proof requests");
+			long startTime1 = System.currentTimeMillis();
+			for(byte[] serializedRequest : proofRequests) {
+				rmi.getServer().proveADSRoot(serializedRequest);
+			}
+			long endTime1 = System.currentTimeMillis();
+			long duration1 = endTime1 - startTime1;
+			String timeTaken1 = formatter.format(duration1 / 1000d)+ " seconds";
+			logger.log(Level.INFO, "Time taken to GENERATE "+adsIds.size()+" proofs "+timeTaken1);
+			logger.log(Level.INFO, "...done!");
+			sc.close();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			sc.close();
+		}
+	}
+	
 	public static void runBenchmarkClients(StartingData data, String host, 
 			int port, Random prng) {
 		logger.log(Level.INFO, "...creating mock clients connected to b_verify server \n "
@@ -175,7 +219,6 @@ public class ProofGenerationThroughputBenchmark {
 			e.printStackTrace();
 			sc.close();
 		}
-
 	}
 	
 	public static void main(String[] args) {
@@ -202,6 +245,14 @@ public class ProofGenerationThroughputBenchmark {
 			runBenchmarkClients(data, host, port, new Random(35234));
 		}else {
 			logger.log(Level.INFO, "please provide <host> <port> [SERVER|CLIENT]");
+		}
+		logger.log(Level.INFO, "...shutting down workers");
+		WORKERS.shutdown();
+		try {
+			WORKERS.awaitTermination(10, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}
 	}	
 	
