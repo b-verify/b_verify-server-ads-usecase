@@ -54,7 +54,6 @@ public class UpdateThroughputBenchmark {
 								    // can also queue up to 100k tasks
 								    new ArrayBlockingQueue<Runnable>(100000));
 	
-		
 	/*
 	 * Run this once to generate the data for the benchmark
 	 */
@@ -229,7 +228,7 @@ public class UpdateThroughputBenchmark {
 	
 	public static void main(String[] args) {
 		// save the data so make sure tests are deterministic 
-		File dataf = new File(System.getProperty("user.dir") + "/benchmarks/throughput-baseline/init");
+		File dataf = new File(System.getProperty("user.dir") + "/benchmarks/update-throughput/init");
 		int nClients = 1500;
 		int maxClientsPerADS = 2;
 		int nTotalADSes = 1000000;

@@ -51,7 +51,8 @@ public class ProofSizeBenchmark {
 		this.nADSes = nADSes;
 		this.batchSize = batchSize;
 		
-		// turn signature checking off
+		// turn signature checking off - speeds up test but does not affect 
+		// proof sizes
 		this.server = new BVerifyServer(data, batchSize, false);
 		this.request = new Request(data);
 	}
@@ -178,6 +179,7 @@ public class ProofSizeBenchmark {
 		
 		// large test: 10M ADS - each batch is 1% (100k) of ADSes
 		//						 and 10 batches total (~10 % of ADSes updated
+		// WARNING - this test requires a LOT of RAM
 		ProofSizeBenchmark benchLarge = new ProofSizeBenchmark(5000, 2, 10000000, 100000);
 		String largeTest = System.getProperty("user.dir")+"/benchmarks/proof-sizes/data/"+"large_proof_size_test.csv";
 		benchLarge.runProofSizeSingleADS(10, largeTest);
