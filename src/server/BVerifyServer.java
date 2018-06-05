@@ -114,7 +114,7 @@ public class BVerifyServer {
 		
 	public BVerifyServer(StartingData initializingData, int batchSize, boolean requireSignatures) {
 		logger.log(Level.INFO, "staritng a b_verify server in test mode (no RMI)"
-				+ " (batch size: "+batchSize+" | require signatures: "+requireSignatures);
+				+ " (batch size: "+batchSize+" | require signatures: "+requireSignatures+")");
 		this.pki = initializingData.getPKI();
 		this.adsManager = new ADSManager(this.pki);
 		this.updatesToBeCommited = new LinkedBlockingQueue<>();
