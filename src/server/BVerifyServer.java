@@ -66,6 +66,8 @@ public class BVerifyServer {
 		
 	public BVerifyServer(String registryHost, int registryPort, StartingData initial, 
 			int batchSize, boolean requireSignatures) {
+		logger.log(Level.INFO, "staritng a b_verify server on host: "+registryHost+":"+registryPort+
+				" (batch size: "+batchSize+" | require signatures: "+requireSignatures);
 		this.pki = initial.getPKI();
 		this.adsManager = new ADSManager(this.pki);
 		this.updatesToBeCommited = new LinkedBlockingQueue<>();
@@ -101,7 +103,6 @@ public class BVerifyServer {
 		BVerifyProtocolServerAPI serverAPI;
 		try {
 			// port 0 = any free port
-			logger.log(Level.INFO, "... binding server on port: "+registryPort);
 			serverAPI = (BVerifyProtocolServerAPI) UnicastRemoteObject.exportObject(this.verifier, 0);
 			this.rmi.bindServer(serverAPI);
 			logger.log(Level.INFO, "... ready!");
@@ -112,6 +113,8 @@ public class BVerifyServer {
 	}
 		
 	public BVerifyServer(StartingData initializingData, int batchSize, boolean requireSignatures) {
+		logger.log(Level.INFO, "staritng a b_verify server in test mode (no RMI)"
+				+ " (batch size: "+batchSize+" | require signatures: "+requireSignatures);
 		this.pki = initializingData.getPKI();
 		this.adsManager = new ADSManager(this.pki);
 		this.updatesToBeCommited = new LinkedBlockingQueue<>();
@@ -140,9 +143,10 @@ public class BVerifyServer {
 		this.applierExecutor = Executors.newSingleThreadExecutor();
 		this.applierExecutor.submit(this.applier);
 		
-	}
+	} 
 	
 	public void shutdown() {
+		logger.log(Level.INFO, "...shutting down the server");
 		this.applier.setShutdown();
 		this.applierExecutor.shutdown();
 		try {

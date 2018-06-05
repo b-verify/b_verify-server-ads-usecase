@@ -58,6 +58,16 @@ public class Request {
 		return result.stream().map(x -> x.array()).collect(Collectors.toList());
 	}
 	
+	public List<Account> getAccountsThatMustSign(List<Map.Entry<byte[], byte[]>> adsModifications){
+		Set<Account> accounts = new HashSet<>();
+		for(Map.Entry<byte[], byte[]> adsModification : adsModifications) {
+			accounts.addAll(this.adsIdToOwners.get(ByteBuffer.wrap(adsModification.getKey())));
+		}
+		List<Account> result = accounts.stream().collect(Collectors.toList());
+		Collections.sort(result);
+		return result;
+	}
+	
 	public PerformUpdateRequest createPerformUpdateRequest(List<Map.Entry<byte[], byte[]>> adsModifications,
 			int validAt, boolean requireSignatures) {
 		Update.Builder update = Update.newBuilder()
@@ -89,7 +99,7 @@ public class Request {
   		PerformUpdateRequest request = PerformUpdateRequest.newBuilder().setUpdate(update).build();
   		return request;
 	}
-	
+		
 	public PerformUpdateRequest createPerformUpdateRequest(byte[] adsId, byte[] newValue, 
 			int validAt, boolean requireSignatures) {
 		return this.createPerformUpdateRequest(Arrays.asList(Map.entry(adsId, newValue)),

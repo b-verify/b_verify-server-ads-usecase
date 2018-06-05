@@ -158,7 +158,13 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 			return null;
 		}
 	}
-
+	
+	// BENCHMARKING ONLY
+	public byte[] proveADSRootMICROBENCHMARK(byte[] adsId) {
+		ADSRootProof proof = this.adsManager.getADSRootProof(adsId);
+		return proof.toByteArray();
+	}
+	
 	@Override
 	public List<byte[]> commitments() throws RemoteException {
 		logger.log(Level.FINE, "get commitments request recieved");
