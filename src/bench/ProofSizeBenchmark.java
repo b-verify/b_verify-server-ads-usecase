@@ -231,7 +231,7 @@ public class ProofSizeBenchmark {
 		/**
 		 * TEST PARAMETERS
 		 */
-		final int batchSize = 1000;
+		final int batchSize = 10000;
 		final int nUpdateBatches = 10;
 		
 		
