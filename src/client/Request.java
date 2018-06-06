@@ -17,6 +17,8 @@ import crpyto.CryptographicDigest;
 import crpyto.CryptographicSignature;
 import pki.Account;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSModification;
+import serialization.generated.BVerifyAPIMessageSerialization.GetADSProofUpdatesRequest;
+import serialization.generated.BVerifyAPIMessageSerialization.GetADSProofUpdatesResponse;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateResponse;
 import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootRequest;
@@ -140,6 +142,23 @@ public class Request {
 		} catch (InvalidProtocolBufferException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
+		}
+	}
+	
+	public static GetADSProofUpdatesRequest createGetProofUpdatesReuqest(byte[] adsId, int fromCmt) {
+		return GetADSProofUpdatesRequest.newBuilder()
+				.setAdsId(ByteString.copyFrom(adsId))
+				.setFromCommitment(fromCmt)
+				.build();
+	}
+	
+	public static GetADSProofUpdatesResponse parseGetProofUpdatesResponse(byte[] requestBytes) {
+		try {
+			return GetADSProofUpdatesResponse.parseFrom(requestBytes);
+		} catch (InvalidProtocolBufferException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+
 		}
 	}
 	

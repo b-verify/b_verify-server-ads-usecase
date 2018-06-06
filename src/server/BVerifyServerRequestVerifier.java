@@ -16,7 +16,10 @@ import api.BVerifyProtocolServerAPI;
 import crpyto.CryptographicDigest;
 import crpyto.CryptographicSignature;
 import pki.Account;
+import serialization.generated.BVerifyAPIMessageSerialization.ADSProofUpdates;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof;
+import serialization.generated.BVerifyAPIMessageSerialization.GetADSProofUpdatesRequest;
+import serialization.generated.BVerifyAPIMessageSerialization.GetADSProofUpdatesResponse;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateResponse;
 import serialization.generated.BVerifyAPIMessageSerialization.ProveADSRootRequest;
@@ -159,10 +162,35 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 		}
 	}
 	
+	@Override
+	public byte[] getADSProofUpdates(byte[] proofUpdatesRequest) throws RemoteException {
+		try {
+			logger.log(Level.FINE, "update ads proof request recieved");
+			this.lock.readLock().lock();
+			GetADSProofUpdatesRequest request = GetADSProofUpdatesRequest.parseFrom(proofUpdatesRequest);
+			byte[] adsId = request.getAdsId().toByteArray();
+			int fromCommitment = request.getFromCommitment();
+			ADSProofUpdates updates = this.adsManager.getADSProofUpdates(adsId, fromCommitment);
+			this.lock.readLock().unlock();
+			return GetADSProofUpdatesResponse.newBuilder().setUpdates(updates).build().toByteArray();
+		} catch (InvalidProtocolBufferException e) {
+			e.printStackTrace();
+			logger.log(Level.WARNING, "bad request");
+			this.lock.readLock().unlock();
+			return null;
+		}
+	}
+	
 	// BENCHMARKING ONLY
 	public byte[] proveADSRootMICROBENCHMARK(byte[] adsId) {
 		ADSRootProof proof = this.adsManager.getADSRootProof(adsId);
 		return proof.toByteArray();
+	}
+	
+	// BENCHMARKING ONLY
+	public byte[] getProofUpdatesMICROBENCHMARK(byte[] adsId) {
+		ADSProofUpdates updates = this.adsManager.getADSProofUpdates(adsId);
+		return updates.toByteArray();
 	}
 	
 	@Override

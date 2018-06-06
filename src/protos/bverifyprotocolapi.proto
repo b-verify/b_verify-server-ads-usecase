@@ -6,9 +6,18 @@ option java_outer_classname = "BVerifyAPIMessageSerialization";
 
 /**
 * OVERALL NOTES:
+*	-  	we use protobuf to essentially create a language 
+*		independent API that any programming language 
+*		supported by protobuf can talk to
+*
 *	-   an id is a string representing a unique user id 
 *		that allows each client to look up that user in a 
 * 		pki.  
+*/
+
+
+/**
+*	SERVER API
 */
 
 /**
@@ -22,17 +31,61 @@ message PerformUpdateRequest {
 	repeated bytes signatures = 2;
 }
 
+/**
+*	Response to an update request. If accepted the server
+*	promises to commit the update.
+*/
 message PerformUpdateResponse {
 	bool accepted = 1;
 }
 
+/**
+*	Request that the server return the ADS Root
+* 	for the specified ADS ID along with a complete
+*	proof. Anyone can ask the server for a proof 
+*	for a given ADS
+*/
 message ProveADSRootRequest {
 	bytes ads_id = 1;
 }
 
+/**
+*	Response from a request for the an ADS Root
+*	proof. Contains the entire proof for that
+*	ADS Root
+*/
 message ProveADSRootResponse {
 	ADSRootProof proof = 1;
 }
+
+/**
+*	Request for only the Updates for a proof 
+* 	for the specified ADS Root. This is called
+* 	by clients with cached proofs to avoid 
+* 	requiring the server to retransmit the entire proof.
+*	Instead the server only sends the updates for 
+* 	the proof starting at the from_commitment.
+*/
+message GetADSProofUpdatesRequest {
+	bytes ads_id = 1;
+	int32 from_commitment = 2;
+}
+
+/**
+*	Response for a request for proof updates.
+*	Contains the updates required for a client 
+* 	to produce a fresh, valid proof for an 
+* 	ADS Root.
+*/
+message GetADSProofUpdatesResponse {
+	ADSProofUpdates updates = 1;
+}
+
+
+
+/**
+*	MESSAGES, PROOFS, Etc.
+*/
 
 
 /**
@@ -42,11 +95,20 @@ message Update {
 	repeated ADSModification modifications = 1;
 	int32 valid_at_commitment_number = 2;
 }
-
+/**
+*	A complete ADS Root Proof
+*/
 message ADSRootProof {
 	MerklePrefixTrie last_updated_proof = 1;
 	PerformUpdateRequest last_update = 2;
 	repeated MerklePrefixTrie freshness_proof = 3;
+}
+
+/**
+*	Updates to an ADS Root Proof
+*/
+message ADSProofUpdates {
+	repeated MerklePrefixTrie updates = 1;
 }
 
 /**

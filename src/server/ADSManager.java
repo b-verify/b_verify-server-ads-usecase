@@ -19,6 +19,7 @@ import mpt.dictionary.MPTDictionaryPartial;
 import pki.Account;
 import pki.PKIDirectory;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSModification;
+import serialization.generated.BVerifyAPIMessageSerialization.ADSProofUpdates;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof;
 import serialization.generated.BVerifyAPIMessageSerialization.PerformUpdateRequest;
 import serialization.generated.BVerifyAPIMessageSerialization.Update;
@@ -185,6 +186,23 @@ public class ADSManager {
 			proof.addFreshnessProof(updates);
 		}
 		return proof.build();
+	}
+	
+	public ADSProofUpdates getADSProofUpdates(byte[] adsId, int fromCommitment) {
+		ADSProofUpdates.Builder updatesResp = ADSProofUpdates.newBuilder();
+		int currentCommitmentNumber = this.getCurrentCommitmentNumber();
+		for(int commitment = fromCommitment; 
+				commitment <= currentCommitmentNumber; commitment++) {
+			MerklePrefixTrie updates = this.deltas.get(commitment).getUpdates(adsId);
+			updatesResp.addUpdates(updates);
+		}
+		return updatesResp.build();
+	}
+	
+	public ADSProofUpdates getADSProofUpdates(byte[] adsId) {
+		return ADSProofUpdates.newBuilder()
+				.addUpdates(this.deltas.get(this.getCurrentCommitmentNumber()).getUpdates(adsId))
+				.build();
 	}
 		
 	public int getCurrentCommitmentNumber() {
