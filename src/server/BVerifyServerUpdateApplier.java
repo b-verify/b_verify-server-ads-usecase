@@ -4,6 +4,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.logging.Level;
@@ -40,6 +42,11 @@ public class BVerifyServerUpdateApplier implements Runnable {
 	private final ADSManager adsManager;
 	
 	private boolean shutdown;
+	
+	/**
+	 * Workers for parallelizing commitment work
+	 */
+	private final ExecutorService workers = Executors.newCachedThreadPool();
 		
 	public BVerifyServerUpdateApplier(ReadWriteLock lock, BlockingQueue<PerformUpdateRequest> updates, 
 			ADSManager adsManager, 
@@ -66,7 +73,7 @@ public class BVerifyServerUpdateApplier implements Runnable {
 				logger.log(Level.FINE, "initializing update #"+initializingUpdates);
 			}
 			logger.log(Level.INFO, "doing initial commit!");
-			this.adsManager.commit();		
+			this.adsManager.commitParallelized(this.workers);		
 			logger.log(Level.INFO, "initialized "+initializingUpdates
 					+" ADS_IDs [at "+LocalDateTime.now()+"]");
 		}catch(Exception e) {
@@ -127,7 +134,7 @@ public class BVerifyServerUpdateApplier implements Runnable {
 							" | number of hashes needed to commit: "+totalNumberOfHashesNeededToCommit+
 							"]");
 					long startTime = System.currentTimeMillis();
-					this.adsManager.commit();		
+					this.adsManager.commitParallelized(this.workers);		
 					long endTime = System.currentTimeMillis();
 					this.lock.writeLock().unlock();
 					long duration = endTime - startTime;
@@ -138,7 +145,16 @@ public class BVerifyServerUpdateApplier implements Runnable {
 							+" [at "+LocalDateTime.now()+"]");
 					this.uncommittedUpdates = 0;
 				}
-			}		
+			}	
+			logger.log(Level.INFO, "...shutting down applier workers");
+			this.workers.shutdown();
+			try {
+			    if (!this.workers.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+			    	this.workers.shutdownNow();
+			    } 
+			} catch (InterruptedException e) {
+				this.workers.shutdownNow();
+} 
 		} catch(InterruptedException e) {
 			e.printStackTrace();
 			logger.log(Level.WARNING, "something is wrong...shutdown");
