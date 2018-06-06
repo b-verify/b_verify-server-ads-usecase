@@ -180,7 +180,7 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 			return null;
 		}
 	}
-	
+		
 	// BENCHMARKING ONLY
 	public byte[] proveADSRootMICROBENCHMARK(byte[] adsId) {
 		ADSRootProof proof = this.adsManager.getADSRootProof(adsId);

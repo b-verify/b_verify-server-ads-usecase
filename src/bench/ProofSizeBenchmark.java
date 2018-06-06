@@ -1,13 +1,16 @@
 package bench;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,15 +33,12 @@ import server.StartingData;
 /*
  * NOTE on deterministic tests - Java cryptographic libraries make it 
  * difficult to generate key pairs deterministically (which would normally
- * be something that users should never do). As a result there is still
- * some non-determinism in the benchmarking programs based on 
- * the random key pairs generated. 
+ * be something that users should never do). As a result if we are not careful
+ * we will get slight differences from run to run. 
  */
-
 
 public class ProofSizeBenchmark {
 	private static final Logger logger = Logger.getLogger(ProofSizeBenchmark.class.getName());
-	private static final byte[] START_VALUE = CryptographicDigest.hash("STARTING".getBytes());
 	
 	private final BVerifyServer server;
 	private final Request request;
@@ -46,38 +46,92 @@ public class ProofSizeBenchmark {
 	private final int nADSes;
 	private final int batchSize;
 	
-	public ProofSizeBenchmark(int nClients, int nClientsPerAdsMax, int nADSes, int batchSize) {
-		StartingData data = new StartingData(nClients, nClientsPerAdsMax, nADSes, START_VALUE);
-		this.nADSes = nADSes;
-		this.batchSize = batchSize;
-		
+	private final byte[] adsIdLastUpdatedWithSingleAdsMod;
+	private final byte[] adsIdLastUpdatedWithDoubleAdsModA;
+	private final byte[] adsIdLastUpdatedWithDoubleAdsModB;
+	
+	private final List<byte[]> adsIdsToUpdate;
+	
+	public ProofSizeBenchmark(StartingData data, int batchSize) {
 		// turn signature checking off - speeds up test but does not affect 
 		// proof sizes
 		this.server = new BVerifyServer(data, batchSize, false);
 		this.request = new Request(data);
+		this.nADSes = this.request.getADSIds().size();
+		this.batchSize = batchSize;
+		
+		List<byte[]> adsIds = this.request.getADSIds();
+		Collections.shuffle(adsIds, new Random(1034243));
+		
+		// the first ADS ID we update individually
+		this.adsIdLastUpdatedWithSingleAdsMod = adsIds.get(0);
+		// the second ADS ID we update as part of an update to two ADS IDs
+		this.adsIdLastUpdatedWithDoubleAdsModA = adsIds.get(1);
+		this.adsIdLastUpdatedWithDoubleAdsModB = adsIds.get(2);
+		
+		this.adsIdsToUpdate = adsIds.subList(3, adsIds.size());
+		
+		int batch = 1;
+		boolean requireSignatures = true;
+		Random prng = new Random(17021);
+		
+		for(int update = 1; update <= this.batchSize; update++) {
+			PerformUpdateRequest request;
+			if(update == 1) {
+				byte[] newValue =  CryptographicDigest.hash(("NEW VALUE"+update).getBytes());
+				request = this.request.createPerformUpdateRequest(this.adsIdLastUpdatedWithSingleAdsMod, newValue, 
+						batch, requireSignatures);
+			}else if (update == 2) {
+				byte[] newValueA =  CryptographicDigest.hash(("NEW VALUE A").getBytes());
+				byte[] newValueB =  CryptographicDigest.hash(("NEW VALUE B").getBytes());
+				List<Map.Entry<byte[], byte[]>> updates = Arrays.asList(Map.entry(this.adsIdLastUpdatedWithDoubleAdsModA, newValueA), 
+						Map.entry(this.adsIdLastUpdatedWithDoubleAdsModB, newValueB));
+				 request = this.request.createPerformUpdateRequest(updates,batch, requireSignatures);
+			}else {
+				int adsToUpdate = prng.nextInt(this.adsIdsToUpdate.size());	
+				byte[] adsIdToUpdate = this.adsIdsToUpdate.get(adsToUpdate);
+				byte[] newValue =  CryptographicDigest.hash(("NEW VALUE"+update).getBytes());
+				request = this.request.createPerformUpdateRequest(adsIdToUpdate, newValue, 
+					batch, requireSignatures);
+			}
+			
+			byte[] response = this.server.getRequestHandler().performUpdate(request.toByteArray());
+			
+			// request should be accepted
+			boolean accepted = Request.parsePerformUpdateResponse(response);
+			if(!accepted) {
+				throw new RuntimeException("something went wrong");
+			}
+		}
+		try {
+			// wait until commitment is added
+			while(this.server.getRequestHandler().commitments().size() != batch+1) {
+				Thread.sleep(10);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
-	public void runProofSizeSingleADS(int nUpdateBatches, String fileName) {
+	public void runProofSizeBenchmark(int nUpdateBatches, String fileName) {
 		List<List<String>> rows = new ArrayList<>();
 		
 		// set a deterministic prng for repeatable tests
-		Random rand = new Random(91012);
+		Random prng = new Random(91012);
+			
+		// initial proof sizes
+		ProofSize sizeSingle = this.getProofSize(this.adsIdLastUpdatedWithSingleAdsMod);
+		ProofSize sizeDoubleA =  this.getProofSize(this.adsIdLastUpdatedWithDoubleAdsModA);
 		
-		List<byte[]> adsIds = this.request.getADSIds();
+		rows.add(getCSVRowProofSize(nADSes, 0, sizeSingle));
+		rows.add(getCSVRowProofSize(nADSes, 0, sizeDoubleA));
 
-		byte[] adsIdToNotUpdate = adsIds.get(0);
-		
-		// initial proof size
-		ProofSize size = this.getProofSize(adsIdToNotUpdate);
-		rows.add(getCSVRowSingleADSProofSize(nADSes, 0, size.getRawProofSize(), 
-				size.getUpdateSize(), size.getUpdateProofSize(), size.getFreshnessProofSize(), 
-				size.getFreshnessProofNoOptimizationSize()));
-		
-		for(int batch = 1; batch <= nUpdateBatches; batch++) {
+		for(int batch = 2; batch <= nUpdateBatches+1; batch++) {
 			for(int update = 1; update <= batchSize; update++) {
 				// select a random ADS to update
-				int adsToUpdate = rand.nextInt(adsIds.size()-1)+1;
-				byte[] adsIdToUpdate = adsIds.get(adsToUpdate);
+				int adsToUpdate = prng.nextInt(this.adsIdsToUpdate.size());
+				byte[] adsIdToUpdate = this.adsIdsToUpdate.get(adsToUpdate);
 				byte[] newValue =  CryptographicDigest.hash(("NEW VALUE"+update).getBytes());
 				
 				// create the update request
@@ -99,27 +153,35 @@ public class ProofSizeBenchmark {
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
-			size = this.getProofSize(adsIdToNotUpdate);
-			rows.add(getCSVRowSingleADSProofSize(nADSes, batchSize*batch, size.getRawProofSize(), 
-					size.getUpdateSize(), size.getUpdateProofSize(), size.getFreshnessProofSize(),
-					size.getFreshnessProofNoOptimizationSize()));
+			
+			// updates proof sizes
+			sizeSingle = this.getProofSize(this.adsIdLastUpdatedWithSingleAdsMod);
+			sizeDoubleA =  this.getProofSize(this.adsIdLastUpdatedWithDoubleAdsModA);
+			
+			int nUpdates = (batch-1)*batchSize;
+			rows.add(getCSVRowProofSize(nADSes, nUpdates, sizeSingle));
+			rows.add(getCSVRowProofSize(nADSes, nUpdates, sizeDoubleA));
+
 		}
-		writeSingleADSProofSizeToCSV(rows, fileName);
-		this.server.shutdown();;
+		writeProofSizeRowsToCSV(rows, fileName);
+		this.server.shutdown();
 	}
 	
-	public static List<String> getCSVRowSingleADSProofSize(int nADSes, int nUpdates, 
-			int proofSize, int updateSize, int updateProofSize, int freshnessProofSize, int freshnessProofNoOptimizationSize) {
-		return Arrays.asList(String.valueOf(nADSes), String.valueOf(nUpdates), String.valueOf(proofSize),
-				String.valueOf(updateSize), String.valueOf(updateProofSize),
-				String.valueOf(freshnessProofSize), String.valueOf(freshnessProofNoOptimizationSize));
+	public static List<String> getCSVRowProofSize(int nADSes, int nUpdates, ProofSize size) {
+		return Arrays.asList(String.valueOf(nADSes), String.valueOf(nUpdates),
+				String.valueOf(size.getRawProofSize()), String.valueOf(size.getUpdateSize()), 
+				String.valueOf(size.getNSignatures()), 
+				String.valueOf(size.getSignaturesSize()),
+				String.valueOf(size.getUpdateProofSize()),
+				String.valueOf(size.getFreshnessProofSize()), String.valueOf(size.getFreshnessProofNoOptimizationSize()));
 	}
 	
-	public static void writeSingleADSProofSizeToCSV(List<List<String>> results, String csvFile) {
+	public static void writeProofSizeRowsToCSV(List<List<String>> results, String csvFile) {
 		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(csvFile));
 				CSVPrinter csvPrinter = new CSVPrinter(writer, 
-						CSVFormat.DEFAULT.withHeader("nADSes", "nUpdates",  
-								"proofSizeTotal", "updateSize", "updateProofSize", "freshnessProofSize", "freshnessProofNoOptimizationSize"));) {
+						CSVFormat.DEFAULT.withHeader("nADSes", "nUpdates",
+								"proofSizeTotal", "updateSize", "nSignatures", "signaturesSize",
+								"updateProofSize", "freshnessProofSize", "freshnessProofNoOptimizationSize"));) {
 			for(List<String> resultRow : results) {
 				csvPrinter.printRecord(resultRow);
 			}
@@ -131,7 +193,7 @@ public class ProofSizeBenchmark {
 	}
 	
 	public ProofSize getProofSize(byte[] adsId) {
-		logger.log(Level.FINE, "getting proof size for ADS ID: "+Utils.byteArrayAsHexString(adsId));
+		logger.log(Level.INFO, "getting proof size for ADS ID: "+Utils.byteArrayAsHexString(adsId));
 		ProveADSRootRequest request = Request.createProveADSRootRequest(adsId);
 		try {
 			// request a proof
@@ -142,6 +204,8 @@ public class ProofSizeBenchmark {
 			
 			ProveADSRootResponse proofResponse = Request.parseProveADSResponse(proof);
 			int sizeUpdate = proofResponse.getProof().getLastUpdate().getSerializedSize();
+			int nSignatures = proofResponse.getProof().getLastUpdate().getSignaturesCount();
+			int sizeSignatures = proofResponse.getProof().getLastUpdate().getSignaturesList().stream().mapToInt(x -> x.size()).sum();
 			int sizeUpdateProof = proofResponse.getProof().getLastUpdatedProof().getSerializedSize();
 			int sizeFreshnessProof = 0;
 			int sizeFreshnessProofNoCacheOptimization = 0;
@@ -153,7 +217,8 @@ public class ProofSizeBenchmark {
 				fullPath.processUpdates(mpt);
 				sizeFreshnessProofNoCacheOptimization += fullPath.serialize().getSerializedSize();
 			}
-			return new ProofSize(rawProofSize, sizeUpdate, sizeUpdateProof, sizeFreshnessProof, 
+			return new ProofSize(rawProofSize, sizeUpdate, nSignatures, sizeSignatures,
+					sizeUpdateProof, sizeFreshnessProof, 
 					sizeFreshnessProofNoCacheOptimization);
 			
 		} catch (RemoteException | InvalidSerializationException e) {
@@ -163,26 +228,20 @@ public class ProofSizeBenchmark {
 	}
 	
 	public static void main(String[] args) {
+		/**
+		 * TEST PARAMETERS
+		 */
+		final int batchSize = 1000;
+		final int nUpdateBatches = 10;
 		
-		// small test: 100000 ADS, each batch is 1% (1k) of ADSes
-		//						   and 10 batches total (~10% of ADSes updated)
-		ProofSizeBenchmark benchSmall = new ProofSizeBenchmark(500, 2, 100000, 1000);
-		String smallTest = System.getProperty("user.dir")+"/benchmarks/proof-sizes/data/"+"small_proof_size_test.csv";
-		benchSmall.runProofSizeSingleADS(10, smallTest);
-	
 		
-		// medium test: 1M ADS - each batch is 1% (10k) of ADSes
-		//				         and 10 batches total (~10% of ADSes updated)
-		ProofSizeBenchmark benchMedium = new ProofSizeBenchmark(1500, 2, 1000000, 10000);
-		String mediumTest = System.getProperty("user.dir")+"/benchmarks/proof-sizes/data/"+"medium_proof_size_test.csv";
-		benchMedium.runProofSizeSingleADS(10, mediumTest);
+		File dataf = new File(System.getProperty("user.dir") + "/benchmarks/test-data");
+		StartingData data = StartingData.loadFromFile(dataf);
+		// StartingData data2 = new StartingData(1500, 2, 1000000, CryptographicDigest.hash("data".getBytes()));
 		
-		// large test: 10M ADS - each batch is 1% (100k) of ADSes
-		//						 and 10 batches total (~10 % of ADSes updated
-		// WARNING - this test requires a LOT of RAM
-		ProofSizeBenchmark benchLarge = new ProofSizeBenchmark(5000, 2, 10000000, 100000);
-		String largeTest = System.getProperty("user.dir")+"/benchmarks/proof-sizes/data/"+"large_proof_size_test.csv";
-		benchLarge.runProofSizeSingleADS(10, largeTest);
+		ProofSizeBenchmark benchMedium = new ProofSizeBenchmark(data, batchSize);
+		String mediumTest = System.getProperty("user.dir")+"/benchmarks/proof-sizes/data/"+"proof_size_benchmark.csv";
+		benchMedium.runProofSizeBenchmark(nUpdateBatches, mediumTest);
 		
 	}
 }

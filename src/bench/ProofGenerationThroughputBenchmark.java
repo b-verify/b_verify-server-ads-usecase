@@ -223,7 +223,7 @@ public class ProofGenerationThroughputBenchmark {
 	
 	public static void main(String[] args) {
 		// save the data so make sure tests are deterministic 
-		File dataf = new File(System.getProperty("user.dir") + "/benchmarks/proof-throughput/test-data");
+		File dataf = new File(System.getProperty("user.dir") + "/benchmarks/test-data");
 		int nClients = 1500;
 		int maxClientsPerADS = 2;
 		int nTotalADSes = 1000000;
