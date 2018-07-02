@@ -35,7 +35,7 @@ import server.StartingData;
  * used in the b\_verify paper. The exact test data to reproduce these 
  * proofs is available on request, but is too large to include 
  * in the repo. Similar results can be obtained by generating random 
- * test data for the similar size. 
+ * test data for the same test parameters.
  * 
  * @author henryaspegren
  *
@@ -195,7 +195,7 @@ public class ProofSizeBenchmark {
 			int nUpdates = (batch-1)*batchSize;
 			rows.add(getCSVRowProofSize(nADSes, nUpdates, sizeSingle));
 			rows.add(getCSVRowProofSize(nADSes, nUpdates, sizeDouble));
-			rows.add(getCSVRowProofSize(nADSes, 0, sizeTriple));
+			rows.add(getCSVRowProofSize(nADSes, nUpdates, sizeTriple));
 
 		}
 		writeProofSizeRowsToCSV(rows, fileName);
@@ -271,8 +271,12 @@ public class ProofSizeBenchmark {
 		
 		
 		File dataf = new File(System.getProperty("user.dir") + "/benchmarks/test-data");
+		
+		// use this for the test data used in the paper 
 		StartingData data = StartingData.loadFromFile(dataf);
-		// StartingData data2 = new StartingData(1500, 2, 1000000, CryptographicDigest.hash("data".getBytes()));
+		// use this if you do not have that test data and you want to reproduce
+		// similar results
+		StartingData data2 = new StartingData(1500, 2, 1000000, CryptographicDigest.hash("data".getBytes()));
 		
 		ProofSizeBenchmark benchMedium = new ProofSizeBenchmark(data, batchSize);
 		String mediumTest = System.getProperty("user.dir")+"/benchmarks/proof-sizes/data/"+"proof_size_benchmark.csv";
