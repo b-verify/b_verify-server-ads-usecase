@@ -156,9 +156,9 @@ public class ProofSizeBenchmark {
 		ProofSize sizeDouble =  this.getProofSize(this.adsIdLastUpdatedWithDoubleAdsModA);
 		ProofSize sizeTriple = this.getProofSize(this.adsIdLastUpdatedWithThreeAdsModA);
 		
-		rows.add(getCSVRowProofSize(nADSes, 0, sizeSingle));
-		rows.add(getCSVRowProofSize(nADSes, 0, sizeDouble));
-		rows.add(getCSVRowProofSize(nADSes, 0, sizeTriple));
+		rows.add(getCSVRowProofSize(nADSes, 1, 0, sizeSingle));
+		rows.add(getCSVRowProofSize(nADSes, 2, 0, sizeDouble));
+		rows.add(getCSVRowProofSize(nADSes, 3, 0, sizeTriple));
 
 		for(int batch = 2; batch <= nUpdateBatches+1; batch++) {
 			for(int update = 1; update <= batchSize; update++) {
@@ -193,18 +193,19 @@ public class ProofSizeBenchmark {
 			sizeTriple = this.getProofSize(this.adsIdLastUpdatedWithThreeAdsModA);
 			
 			int nUpdates = (batch-1)*batchSize;
-			rows.add(getCSVRowProofSize(nADSes, nUpdates, sizeSingle));
-			rows.add(getCSVRowProofSize(nADSes, nUpdates, sizeDouble));
-			rows.add(getCSVRowProofSize(nADSes, nUpdates, sizeTriple));
+			rows.add(getCSVRowProofSize(nADSes, 1, nUpdates, sizeSingle));
+			rows.add(getCSVRowProofSize(nADSes, 2, nUpdates, sizeDouble));
+			rows.add(getCSVRowProofSize(nADSes, 3, nUpdates, sizeTriple));
 
 		}
 		writeProofSizeRowsToCSV(rows, fileName);
 		this.server.shutdown();
 	}
 	
-	public static List<String> getCSVRowProofSize(int nADSes, int nUpdates, ProofSize size) {
-		return Arrays.asList(String.valueOf(nADSes), String.valueOf(nUpdates),
-				String.valueOf(size.getRawProofSize()), String.valueOf(size.getUpdateSize()), 
+	public static List<String> getCSVRowProofSize(int nADSes, int nADSInUpdate, int nUpdates, ProofSize size) {
+		return Arrays.asList(String.valueOf(nADSes), String.valueOf(nADSInUpdate),
+				String.valueOf(nUpdates), String.valueOf(size.getRawProofSize()), 
+				String.valueOf(size.getUpdateSize()), 
 				String.valueOf(size.getNSignatures()), 
 				String.valueOf(size.getSignaturesSize()),
 				String.valueOf(size.getUpdateProofSize()),
@@ -214,8 +215,8 @@ public class ProofSizeBenchmark {
 	public static void writeProofSizeRowsToCSV(List<List<String>> results, String csvFile) {
 		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(csvFile));
 				CSVPrinter csvPrinter = new CSVPrinter(writer, 
-						CSVFormat.DEFAULT.withHeader("nADSes", "nUpdates",
-								"proofSizeTotal", "updateSize", "nSignatures", "signaturesSize",
+						CSVFormat.DEFAULT.withHeader("nADSes", "nADSModifiedInLastUpdate", "nUpdatesSince", 
+								"proofSizeTotal", "lastUpdateSize", "nSignatures", "signaturesSize",
 								"updateProofSize", "freshnessProofSize", "freshnessProofNoOptimizationSize"));) {
 			for(List<String> resultRow : results) {
 				csvPrinter.printRecord(resultRow);
@@ -276,7 +277,7 @@ public class ProofSizeBenchmark {
 		StartingData data = StartingData.loadFromFile(dataf);
 		// use this if you do not have that test data and you want to reproduce
 		// similar results
-		StartingData data2 = new StartingData(1500, 2, 1000000, CryptographicDigest.hash("data".getBytes()));
+		// StartingData data = new StartingData(1500, 2, 1000000, CryptographicDigest.hash("data".getBytes()));
 		
 		ProofSizeBenchmark benchMedium = new ProofSizeBenchmark(data, batchSize);
 		String mediumTest = System.getProperty("user.dir")+"/benchmarks/proof-sizes/data/"+"proof_size_benchmark.csv";
