@@ -30,6 +30,17 @@ import serialization.generated.MptSerialization.MerklePrefixTrie;
 import server.BVerifyServer;
 import server.StartingData;
 
+/**
+ * This code was used to the proof size benchmarks 
+ * used in the b\_verify paper. The exact test data to reproduce these 
+ * proofs is available on request, but is too large to include 
+ * in the repo. Similar results can be obtained by generating random 
+ * test data for the similar size. 
+ * 
+ * @author henryaspegren
+ *
+ */
+
 /*
  * NOTE on deterministic tests - Java cryptographic libraries make it 
  * difficult to generate key pairs deterministically (which would normally
@@ -46,9 +57,18 @@ public class ProofSizeBenchmark {
 	private final int nADSes;
 	private final int batchSize;
 	
+	// one ads modified 
 	private final byte[] adsIdLastUpdatedWithSingleAdsMod;
+	
+	// two ads modified
 	private final byte[] adsIdLastUpdatedWithDoubleAdsModA;
 	private final byte[] adsIdLastUpdatedWithDoubleAdsModB;
+	
+	// three ADS modified 
+	private final byte[] adsIdLastUpdatedWithThreeAdsModA;
+	private final byte[] adsIdLastUpdatedWithThreeAdsModB;
+	private final byte[] adsIdLastUpdatedWIthThreeAdsModC;
+	
 	
 	private final List<byte[]> adsIdsToUpdate;
 	
@@ -68,8 +88,12 @@ public class ProofSizeBenchmark {
 		// the second ADS ID we update as part of an update to two ADS IDs
 		this.adsIdLastUpdatedWithDoubleAdsModA = adsIds.get(1);
 		this.adsIdLastUpdatedWithDoubleAdsModB = adsIds.get(2);
+		// the third ADS ID we update as part of an update to three ADS IDs
+		this.adsIdLastUpdatedWithThreeAdsModA = adsIds.get(3);
+		this.adsIdLastUpdatedWithThreeAdsModB = adsIds.get(4);
+		this.adsIdLastUpdatedWIthThreeAdsModC = adsIds.get(5);
 		
-		this.adsIdsToUpdate = adsIds.subList(3, adsIds.size());
+		this.adsIdsToUpdate = adsIds.subList(6, adsIds.size());
 		
 		int batch = 1;
 		boolean requireSignatures = true;
@@ -87,6 +111,14 @@ public class ProofSizeBenchmark {
 				List<Map.Entry<byte[], byte[]>> updates = Arrays.asList(Map.entry(this.adsIdLastUpdatedWithDoubleAdsModA, newValueA), 
 						Map.entry(this.adsIdLastUpdatedWithDoubleAdsModB, newValueB));
 				 request = this.request.createPerformUpdateRequest(updates,batch, requireSignatures);
+			}else if (update == 3) {
+				byte[] newValueA =  CryptographicDigest.hash(("NEW VALUE A").getBytes());
+				byte[] newValueB =  CryptographicDigest.hash(("NEW VALUE B").getBytes());
+				byte[] newValueC =  CryptographicDigest.hash(("NEW VALUE B").getBytes());
+				List<Map.Entry<byte[], byte[]>> updates = Arrays.asList(Map.entry(this.adsIdLastUpdatedWithThreeAdsModA, newValueA), 
+						Map.entry(this.adsIdLastUpdatedWithThreeAdsModB, newValueB),
+						Map.entry(this.adsIdLastUpdatedWIthThreeAdsModC, newValueC));
+				request = this.request.createPerformUpdateRequest(updates, batch, requireSignatures);
 			}else {
 				int adsToUpdate = prng.nextInt(this.adsIdsToUpdate.size());	
 				byte[] adsIdToUpdate = this.adsIdsToUpdate.get(adsToUpdate);
@@ -94,7 +126,6 @@ public class ProofSizeBenchmark {
 				request = this.request.createPerformUpdateRequest(adsIdToUpdate, newValue, 
 					batch, requireSignatures);
 			}
-			
 			byte[] response = this.server.getRequestHandler().performUpdate(request.toByteArray());
 			
 			// request should be accepted
@@ -122,10 +153,12 @@ public class ProofSizeBenchmark {
 			
 		// initial proof sizes
 		ProofSize sizeSingle = this.getProofSize(this.adsIdLastUpdatedWithSingleAdsMod);
-		ProofSize sizeDoubleA =  this.getProofSize(this.adsIdLastUpdatedWithDoubleAdsModA);
+		ProofSize sizeDouble =  this.getProofSize(this.adsIdLastUpdatedWithDoubleAdsModA);
+		ProofSize sizeTriple = this.getProofSize(this.adsIdLastUpdatedWithThreeAdsModA);
 		
 		rows.add(getCSVRowProofSize(nADSes, 0, sizeSingle));
-		rows.add(getCSVRowProofSize(nADSes, 0, sizeDoubleA));
+		rows.add(getCSVRowProofSize(nADSes, 0, sizeDouble));
+		rows.add(getCSVRowProofSize(nADSes, 0, sizeTriple));
 
 		for(int batch = 2; batch <= nUpdateBatches+1; batch++) {
 			for(int update = 1; update <= batchSize; update++) {
@@ -156,11 +189,13 @@ public class ProofSizeBenchmark {
 			
 			// updates proof sizes
 			sizeSingle = this.getProofSize(this.adsIdLastUpdatedWithSingleAdsMod);
-			sizeDoubleA =  this.getProofSize(this.adsIdLastUpdatedWithDoubleAdsModA);
+			sizeDouble =  this.getProofSize(this.adsIdLastUpdatedWithDoubleAdsModA);
+			sizeTriple = this.getProofSize(this.adsIdLastUpdatedWithThreeAdsModA);
 			
 			int nUpdates = (batch-1)*batchSize;
 			rows.add(getCSVRowProofSize(nADSes, nUpdates, sizeSingle));
-			rows.add(getCSVRowProofSize(nADSes, nUpdates, sizeDoubleA));
+			rows.add(getCSVRowProofSize(nADSes, nUpdates, sizeDouble));
+			rows.add(getCSVRowProofSize(nADSes, 0, sizeTriple));
 
 		}
 		writeProofSizeRowsToCSV(rows, fileName);

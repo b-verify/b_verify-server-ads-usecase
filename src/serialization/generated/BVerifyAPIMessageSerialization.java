@@ -781,6 +781,12 @@ public final class BVerifyAPIMessageSerialization {
     boolean getAccepted();
   }
   /**
+   * <pre>
+   **
+   *	Response to an update request. If accepted the server
+   *	promises to commit the update.
+   * </pre>
+   *
    * Protobuf type {@code serialization.generated.PerformUpdateResponse}
    */
   public  static final class PerformUpdateResponse extends
@@ -1018,6 +1024,12 @@ public final class BVerifyAPIMessageSerialization {
       return builder;
     }
     /**
+     * <pre>
+     **
+     *	Response to an update request. If accepted the server
+     *	promises to commit the update.
+     * </pre>
+     *
      * Protobuf type {@code serialization.generated.PerformUpdateResponse}
      */
     public static final class Builder extends
@@ -1233,6 +1245,14 @@ public final class BVerifyAPIMessageSerialization {
     com.google.protobuf.ByteString getAdsId();
   }
   /**
+   * <pre>
+   **
+   *	Request that the server return the ADS Root
+   * 	for the specified ADS ID along with a complete
+   *	proof. Anyone can ask the server for a proof 
+   *	for a given ADS
+   * </pre>
+   *
    * Protobuf type {@code serialization.generated.ProveADSRootRequest}
    */
   public  static final class ProveADSRootRequest extends
@@ -1469,6 +1489,14 @@ public final class BVerifyAPIMessageSerialization {
       return builder;
     }
     /**
+     * <pre>
+     **
+     *	Request that the server return the ADS Root
+     * 	for the specified ADS ID along with a complete
+     *	proof. Anyone can ask the server for a proof 
+     *	for a given ADS
+     * </pre>
+     *
      * Protobuf type {@code serialization.generated.ProveADSRootRequest}
      */
     public static final class Builder extends
@@ -1695,6 +1723,13 @@ public final class BVerifyAPIMessageSerialization {
     serialization.generated.BVerifyAPIMessageSerialization.ADSRootProofOrBuilder getProofOrBuilder();
   }
   /**
+   * <pre>
+   **
+   *	Response from a request for the an ADS Root
+   *	proof. Contains the entire proof for that
+   *	ADS Root
+   * </pre>
+   *
    * Protobuf type {@code serialization.generated.ProveADSRootResponse}
    */
   public  static final class ProveADSRootResponse extends
@@ -1955,6 +1990,13 @@ public final class BVerifyAPIMessageSerialization {
       return builder;
     }
     /**
+     * <pre>
+     **
+     *	Response from a request for the an ADS Root
+     *	proof. Contains the entire proof for that
+     *	ADS Root
+     * </pre>
+     *
      * Protobuf type {@code serialization.generated.ProveADSRootResponse}
      */
     public static final class Builder extends
@@ -2274,6 +2316,16 @@ public final class BVerifyAPIMessageSerialization {
     int getFromCommitment();
   }
   /**
+   * <pre>
+   **
+   *	Request for only the Updates for a proof 
+   * 	for the specified ADS Root. This is called
+   * 	by clients with cached proofs to avoid 
+   * 	requiring the server to retransmit the entire proof.
+   *	Instead the server only sends the updates for 
+   * 	the proof starting at the from_commitment.
+   * </pre>
+   *
    * Protobuf type {@code serialization.generated.GetADSProofUpdatesRequest}
    */
   public  static final class GetADSProofUpdatesRequest extends
@@ -2536,6 +2588,16 @@ public final class BVerifyAPIMessageSerialization {
       return builder;
     }
     /**
+     * <pre>
+     **
+     *	Request for only the Updates for a proof 
+     * 	for the specified ADS Root. This is called
+     * 	by clients with cached proofs to avoid 
+     * 	requiring the server to retransmit the entire proof.
+     *	Instead the server only sends the updates for 
+     * 	the proof starting at the from_commitment.
+     * </pre>
+     *
      * Protobuf type {@code serialization.generated.GetADSProofUpdatesRequest}
      */
     public static final class Builder extends
@@ -2794,6 +2856,14 @@ public final class BVerifyAPIMessageSerialization {
     serialization.generated.BVerifyAPIMessageSerialization.ADSProofUpdatesOrBuilder getUpdatesOrBuilder();
   }
   /**
+   * <pre>
+   **
+   *	Response for a request for proof updates.
+   *	Contains the updates required for a client 
+   * 	to produce a fresh, valid proof for an 
+   * 	ADS Root.
+   * </pre>
+   *
    * Protobuf type {@code serialization.generated.GetADSProofUpdatesResponse}
    */
   public  static final class GetADSProofUpdatesResponse extends
@@ -3054,6 +3124,14 @@ public final class BVerifyAPIMessageSerialization {
       return builder;
     }
     /**
+     * <pre>
+     **
+     *	Response for a request for proof updates.
+     *	Contains the updates required for a client 
+     * 	to produce a fresh, valid proof for an 
+     * 	ADS Root.
+     * </pre>
+     *
      * Protobuf type {@code serialization.generated.GetADSProofUpdatesResponse}
      */
     public static final class Builder extends
