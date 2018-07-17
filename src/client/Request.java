@@ -70,6 +70,16 @@ public class Request {
 		return result;
 	}
 	
+	public List<Account> getAccountsThatMustSignFromList(List<byte[]> adsIds){
+		Set<Account> accounts = new HashSet<>();
+		for(byte[] adsId : adsIds) {
+			accounts.addAll(this.adsIdToOwners.get(ByteBuffer.wrap(adsId)));
+		}
+		List<Account> result = accounts.stream().collect(Collectors.toList());
+		Collections.sort(result);
+		return result;
+	}
+	
 	public PerformUpdateRequest createPerformUpdateRequest(List<Map.Entry<byte[], byte[]>> adsModifications,
 			int validAt, boolean requireSignatures) {
 		Update.Builder update = Update.newBuilder()

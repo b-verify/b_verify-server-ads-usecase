@@ -1,6 +1,8 @@
 package server;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -13,9 +15,13 @@ import java.util.stream.IntStream;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import api.BVerifyProtocolServerAPI;
+import client.Request;
 import crpyto.CryptographicDigest;
 import crpyto.CryptographicSignature;
+import mpt.core.Utils;
+import mpt.dictionary.MPTDictionaryPartial;
 import pki.Account;
+import serialization.generated.BVerifyAPIMessageSerialization.ADSModification;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSProofUpdates;
 import serialization.generated.BVerifyAPIMessageSerialization.ADSRootProof;
 import serialization.generated.BVerifyAPIMessageSerialization.GetADSProofUpdatesRequest;
@@ -191,6 +197,76 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 	public byte[] getProofUpdatesMICROBENCHMARK(byte[] adsId) {
 		ADSProofUpdates updates = this.adsManager.getADSProofUpdates(adsId);
 		return updates.toByteArray();
+	}
+	
+	// BENCHMARKING ONLY
+	public boolean checkProofMICROBENCHAMRK(ProveADSRootResponse proofToCheck, Request r, byte[] adsId, List<byte[]> commitments) {
+		try {
+			MPTDictionaryPartial updateProof = MPTDictionaryPartial.deserialize(proofToCheck.getProof().getLastUpdatedProof());
+			byte[] witnessedUpdateCommitment = commitments.get(0);
+			// check that the update was witnessed
+			byte[] proofUpdateCommitment = updateProof.commitment();
+			if(!Arrays.equals(witnessedUpdateCommitment, proofUpdateCommitment)) {
+				logger.log(Level.WARNING, "proof update commitment: "+Utils.byteArrayAsHexString(proofUpdateCommitment)+
+										"\n witnessed update commitment: "+Utils.byteArrayAsHexString(witnessedUpdateCommitment));
+				return false;
+			}
+			byte[] adsValue = null;
+			List<byte[]> adsIds = new ArrayList<>();
+			for(ADSModification adsModification : proofToCheck.getProof().getLastUpdate().getUpdate().getModificationsList()) {
+				byte[] id = adsModification.getAdsId().toByteArray();
+				byte[] value = updateProof.get(adsModification.getAdsId().toByteArray());
+				if(!Arrays.equals(value, adsModification.getNewValue().toByteArray())) {
+					logger.log(Level.WARNING, "ads modification for last update not applied for: "+
+								Utils.byteArrayAsHexString(id));
+					return false;
+				}
+				if(Arrays.equals(id, adsId)) {
+					adsValue = value;
+				}
+				adsIds.add(id);
+			}
+			if(adsValue == null) {
+				logger.log(Level.WARNING, "ads id not included in proof");
+				return false;
+			}
+			
+			// check the signatures on the update
+			List<Account> accounts = r.getAccountsThatMustSignFromList(adsIds);
+			byte[] witness = CryptographicDigest.hash(proofToCheck.getProof().getLastUpdate()
+					.getUpdate().toByteArray());
+			boolean signaturesCorrect = true;
+			for(int i = 0 ; i < accounts.size(); i++) {
+				signaturesCorrect = signaturesCorrect && CryptographicSignature.verify(witness, 
+						proofToCheck.getProof().getLastUpdate().getSignatures(i).toByteArray(), 
+						accounts.get(i).getPublicKey());
+			}
+			if(!signaturesCorrect) {
+				logger.log(Level.WARNING, "signatures are not correct");
+				return false;
+			}
+			// check freshness proof
+			for(int i = 1; i < commitments.size(); i++) {
+				byte[] witnessedCommitment = commitments.get(i);
+				updateProof.processUpdates(proofToCheck.getProof().getFreshnessProof(i-1));
+				byte[] freshnessProofValue = updateProof.get(adsId);
+				byte[] freshnessProofCommitment = updateProof.commitment();
+				if(!Arrays.equals(adsValue, freshnessProofValue)){
+					logger.log(Level.WARNING, "ads value: "+Utils.byteArrayAsHexString(adsValue)+
+							"\n freshness proof value: "+Utils.byteArrayAsHexString(freshnessProofValue));
+				}
+				if(!Arrays.equals(witnessedCommitment, freshnessProofCommitment)) {
+					logger.log(Level.WARNING, "witnessed commitment: "+Utils.byteArrayAsHexString(witnessedCommitment)+
+							"\n freshness proof commitment: "+Utils.byteArrayAsHexString(freshnessProofCommitment));
+					return false;
+				}
+			}
+				
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	@Override
