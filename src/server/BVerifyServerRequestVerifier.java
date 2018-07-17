@@ -203,7 +203,8 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 	public boolean checkProofMICROBENCHAMRK(ProveADSRootResponse proofToCheck, Request r, byte[] adsId, List<byte[]> commitments) {
 		try {
 			MPTDictionaryPartial updateProof = MPTDictionaryPartial.deserialize(proofToCheck.getProof().getLastUpdatedProof());
-			byte[] witnessedUpdateCommitment = commitments.get(0);
+			int updateValidAt = proofToCheck.getProof().getLastUpdate().getUpdate().getValidAtCommitmentNumber();
+			byte[] witnessedUpdateCommitment = commitments.get(updateValidAt);
 			// check that the update was witnessed
 			byte[] proofUpdateCommitment = updateProof.commitment();
 			if(!Arrays.equals(witnessedUpdateCommitment, proofUpdateCommitment)) {
@@ -246,14 +247,15 @@ public class BVerifyServerRequestVerifier implements BVerifyProtocolServerAPI {
 				return false;
 			}
 			// check freshness proof
-			for(int i = 1; i < commitments.size(); i++) {
+			for(int i = updateValidAt+1; i < commitments.size(); i++) {
 				byte[] witnessedCommitment = commitments.get(i);
-				updateProof.processUpdates(proofToCheck.getProof().getFreshnessProof(i-1));
+				updateProof.processUpdates(proofToCheck.getProof().getFreshnessProof(i-updateValidAt-1));
 				byte[] freshnessProofValue = updateProof.get(adsId);
 				byte[] freshnessProofCommitment = updateProof.commitment();
 				if(!Arrays.equals(adsValue, freshnessProofValue)){
 					logger.log(Level.WARNING, "ads value: "+Utils.byteArrayAsHexString(adsValue)+
 							"\n freshness proof value: "+Utils.byteArrayAsHexString(freshnessProofValue));
+					return false;
 				}
 				if(!Arrays.equals(witnessedCommitment, freshnessProofCommitment)) {
 					logger.log(Level.WARNING, "witnessed commitment: "+Utils.byteArrayAsHexString(witnessedCommitment)+
