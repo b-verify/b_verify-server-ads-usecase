@@ -1,5 +1,6 @@
 # b\_verify 
 [![Build Status](https://travis-ci.org/b-verify/reference-server.svg?branch=master)](https://travis-ci.org/b-verify/reference-server)
+
 This is a customized version of the b\_verify server that serves the verification objects for authenticated data structures. The server supports a PUT/GET interface.
 
 ## Throughput Benchmark
