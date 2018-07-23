@@ -3,7 +3,7 @@
   <groupId>b_verify-ads-server</groupId>
   <artifactId>b_verify-ads-server</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <description>A customized version of the b_verify server for serving roots for authenticated data structures.</description>
+  <description>A customized version of the b_verify server for serving verification objects for authenticated data structures.</description>
    <dependencies>
    	<!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
 	<dependency>
