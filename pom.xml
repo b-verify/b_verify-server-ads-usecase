@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>b_verify-server</groupId>
-  <artifactId>b_verify-server</artifactId>
+  <groupId>b_verify-ads-server</groupId>
+  <artifactId>b_verify-ads-server</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <description>A prototype implementation of the b_verify protocol server</description>
+  <description>A customized version of the b_verify server for serving roots for authenticated data structures.</description>
    <dependencies>
    	<!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
 	<dependency>
